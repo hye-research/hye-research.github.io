@@ -107,6 +107,11 @@ a {
   transform: translateY(-1px);
 }
 
+.site-header nav a.active {
+  background: var(--ink);
+  color: var(--panel);
+}
+
 .button.primary {
   background: var(--amber);
   box-shadow: var(--shadow);
@@ -128,6 +133,22 @@ a {
   min-height: min(720px, calc(100vh - 68px));
   padding-bottom: 48px;
   padding-top: 56px;
+}
+
+.page-hero {
+  padding-bottom: 34px;
+  padding-top: 64px;
+}
+
+.page-hero h1 {
+  max-width: 900px;
+}
+
+.astro-page-hero {
+  background:
+    linear-gradient(135deg, rgba(244, 168, 44, 0.3), transparent 42%),
+    radial-gradient(circle at 82% 22%, rgba(255, 143, 177, 0.35) 0 12%, transparent 13%),
+    transparent;
 }
 
 .eyebrow {
@@ -242,6 +263,60 @@ h3 {
   padding-top: 10px;
 }
 
+.home-map {
+  padding-top: 24px;
+}
+
+.link-list {
+  border-bottom: 2px solid var(--line);
+  border-top: 2px solid var(--line);
+}
+
+.link-list a {
+  align-items: baseline;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: 54px minmax(180px, 0.45fr) minmax(0, 1fr);
+  padding: 22px 0;
+  text-decoration: none;
+}
+
+.link-list a + a {
+  border-top: 2px solid rgba(42, 37, 33, 0.25);
+}
+
+.link-list span,
+.link-list strong {
+  font-weight: 800;
+}
+
+.link-list strong {
+  font-size: 1.35rem;
+}
+
+.link-list em {
+  color: var(--muted);
+  font-style: normal;
+}
+
+.page-nav-band {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-bottom: 24px;
+  padding-top: 10px;
+}
+
+.page-nav-band a {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  padding: 8px 12px;
+  text-decoration: none;
+}
+
 .route-card,
 .feature-panel,
 .stacked-list article,
@@ -339,14 +414,131 @@ h3 {
 }
 
 .talk-list,
-.student-grid ul {
+.student-grid ul,
+.clean-list {
   margin: 0;
   padding-left: 20px;
 }
 
 .talk-list li,
-.student-grid li {
+.student-grid li,
+.clean-list li {
   margin-bottom: 8px;
+}
+
+.event-detail-grid {
+  display: grid;
+  gap: 22px;
+  grid-template-columns: 0.9fr 1.1fr;
+  margin-bottom: 22px;
+}
+
+.panelist-grid,
+.committee-grid,
+.sponsor-grid,
+.faq-list {
+  display: grid;
+  gap: 16px;
+}
+
+.panelist-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.panelist-grid article,
+.committee-grid article,
+.sponsor-grid article,
+.faq-list article {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.panelist-grid strong,
+.panelist-grid span {
+  display: block;
+}
+
+.panelist-grid span {
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+.table-wrap {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  overflow-x: auto;
+}
+
+table {
+  border-collapse: collapse;
+  min-width: 860px;
+  width: 100%;
+}
+
+th,
+td {
+  border-bottom: 2px solid rgba(42, 37, 33, 0.18);
+  padding: 14px;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: #f9d38a;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.past-talks {
+  counter-reset: talks;
+  display: grid;
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.past-talks li {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  padding: 16px 18px 16px 58px;
+  position: relative;
+}
+
+.past-talks li::before {
+  background: var(--grape);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  color: var(--panel);
+  content: counter(talks, decimal-leading-zero);
+  counter-increment: talks;
+  font-size: 0.78rem;
+  font-weight: 800;
+  height: 30px;
+  left: 14px;
+  line-height: 26px;
+  position: absolute;
+  text-align: center;
+  top: 14px;
+  width: 30px;
+}
+
+.committee-grid,
+.sponsor-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.committee-heading {
+  margin-top: 42px;
+}
+
+.faq-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .workbook-layout {
@@ -412,12 +604,28 @@ h3 {
   .research-layout,
   .astro-grid,
   .workbook-layout,
-  .student-grid {
+  .student-grid,
+  .event-detail-grid {
     grid-template-columns: 1fr;
   }
 
   .intro-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .panelist-grid,
+  .committee-grid,
+  .sponsor-grid,
+  .faq-list {
+    grid-template-columns: 1fr;
+  }
+
+  .link-list a {
+    grid-template-columns: 42px 1fr;
+  }
+
+  .link-list em {
+    grid-column: 2;
   }
 
   .hero {
@@ -441,6 +649,10 @@ h3 {
 
   .intro-grid {
     grid-template-columns: 1fr;
+  }
+
+  .page-nav-band {
+    gap: 8px;
   }
 
   .hero-portrait {
