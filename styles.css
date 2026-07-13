@@ -146,6 +146,10 @@ a {
   padding: 48px 24px;
 }
 
+.content-section {
+  scroll-margin-top: 92px;
+}
+
 .hero {
   align-items: center;
   display: grid;
