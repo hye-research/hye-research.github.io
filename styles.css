@@ -53,10 +53,10 @@ a {
   background: rgba(243, 232, 210, 0.92);
   border-bottom: 2px solid var(--line);
   display: flex;
-  gap: 20px;
+  gap: 18px;
   justify-content: space-between;
   left: 0;
-  padding: 14px 24px;
+  padding: 10px 24px;
   position: sticky;
   right: 0;
   top: 0;
@@ -67,7 +67,7 @@ a {
 .site-header nav {
   align-items: center;
   display: flex;
-  gap: 10px;
+  gap: 18px;
 }
 
 .brand {
@@ -89,11 +89,11 @@ a {
 .site-header nav {
   flex-wrap: wrap;
   justify-content: flex-end;
+  column-gap: 22px;
+  row-gap: 6px;
 }
 
-.site-header nav a,
 .button {
-  background: var(--panel);
   border: 2px solid var(--line);
   border-radius: 8px;
   font-weight: 700;
@@ -102,14 +102,41 @@ a {
   text-decoration: none;
 }
 
+.site-header nav a {
+  border-bottom: 3px solid transparent;
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1.1;
+  padding: 8px 0 7px;
+  position: relative;
+  text-decoration: none;
+}
+
+.button {
+  background: var(--panel);
+}
+
 .site-header nav a:hover,
 .button:hover {
   transform: translateY(-1px);
 }
 
 .site-header nav a.active {
-  background: var(--ink);
-  color: var(--panel);
+  border-bottom-color: var(--tomato);
+  color: var(--ink);
+}
+
+.site-header nav a.active::before {
+  background: var(--tomato);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  content: "";
+  height: 8px;
+  left: 50%;
+  position: absolute;
+  top: -4px;
+  transform: translateX(-50%);
+  width: 8px;
 }
 
 .button.primary {
@@ -122,22 +149,22 @@ a {
 .intro-grid {
   margin: 0 auto;
   max-width: 1180px;
-  padding: 64px 24px;
+  padding: 48px 24px;
 }
 
 .hero {
   align-items: center;
   display: grid;
-  gap: 44px;
-  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.82fr);
-  min-height: min(720px, calc(100vh - 68px));
-  padding-bottom: 48px;
-  padding-top: 56px;
+  gap: 34px;
+  grid-template-columns: minmax(0, 1.08fr) minmax(230px, 0.72fr);
+  min-height: 0;
+  padding-bottom: 30px;
+  padding-top: 34px;
 }
 
 .page-hero {
-  padding-bottom: 34px;
-  padding-top: 64px;
+  padding-bottom: 24px;
+  padding-top: 38px;
 }
 
 .page-hero h1 {
@@ -167,14 +194,14 @@ p {
 }
 
 h1 {
-  font-size: clamp(2.9rem, 6.2vw, 5.45rem);
-  line-height: 0.96;
-  margin-bottom: 18px;
-  max-width: 780px;
+  font-size: clamp(2.45rem, 5.1vw, 4.55rem);
+  line-height: 0.98;
+  margin-bottom: 14px;
+  max-width: 700px;
 }
 
 h2 {
-  font-size: clamp(2rem, 5vw, 4.2rem);
+  font-size: clamp(1.8rem, 4.1vw, 3.45rem);
   line-height: 1;
   margin-bottom: 16px;
 }
@@ -187,8 +214,8 @@ h3 {
 
 .lead {
   color: var(--muted);
-  font-size: clamp(1.02rem, 1.6vw, 1.2rem);
-  max-width: 640px;
+  font-size: clamp(1rem, 1.35vw, 1.12rem);
+  max-width: 620px;
 }
 
 .hero-actions,
@@ -196,12 +223,12 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-top: 24px;
+  margin-top: 18px;
 }
 
 .hero-portrait {
   aspect-ratio: 1;
-  max-width: 430px;
+  max-width: 330px;
   position: relative;
   width: 100%;
   justify-self: end;
@@ -264,7 +291,7 @@ h3 {
 }
 
 .home-map {
-  padding-top: 24px;
+  padding-top: 20px;
 }
 
 .link-list {
@@ -591,13 +618,10 @@ th {
 }
 
 @media (max-width: 900px) {
-  .site-header,
-  .site-header nav {
-    align-items: flex-start;
-  }
-
   .site-header {
-    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 16px;
   }
 
   .hero,
@@ -630,16 +654,31 @@ th {
 
   .hero {
     min-height: auto;
-    padding-top: 44px;
+    padding-top: 34px;
   }
 
   .hero-portrait {
     justify-self: start;
-    max-width: 360px;
+    max-width: 280px;
   }
 }
 
 @media (max-width: 620px) {
+  .site-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .site-header nav {
+    align-self: stretch;
+    justify-content: flex-start;
+    column-gap: 16px;
+  }
+
+  .site-header nav a {
+    font-size: 0.9rem;
+  }
+
   .section-band,
   .content-section,
   .intro-grid {
@@ -656,11 +695,11 @@ th {
   }
 
   .hero-portrait {
-    max-width: 300px;
+    max-width: 250px;
   }
 
   h1 {
-    font-size: clamp(2.45rem, 15vw, 3.8rem);
+    font-size: clamp(2.25rem, 13vw, 3.45rem);
   }
 
   .site-footer {
