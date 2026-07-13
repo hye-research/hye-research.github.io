@@ -25,13 +25,20 @@ html {
 }
 
 body {
+  display: flex;
+  flex-direction: column;
   margin: 0;
+  min-height: 100svh;
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1.5;
   background:
     radial-gradient(circle at 18px 18px, rgba(42, 37, 33, 0.055) 1px, transparent 1.5px),
     var(--paper);
   background-size: 28px 28px;
+}
+
+main {
+  flex: 1;
 }
 
 img {
@@ -162,6 +169,46 @@ a {
   padding-top: 34px;
 }
 
+.home-page main {
+  display: flex;
+}
+
+.home-page .hero {
+  align-items: center;
+  gap: clamp(28px, 5vw, 76px);
+  grid-template-columns: minmax(280px, 0.78fr) minmax(320px, 1fr);
+  min-height: calc(100svh - 142px);
+  padding-bottom: clamp(28px, 6vh, 70px);
+  padding-top: clamp(28px, 6vh, 70px);
+  width: 100%;
+}
+
+.home-page .hero-copy {
+  align-self: center;
+  border-left: 5px solid var(--tomato);
+  max-width: 560px;
+  padding-left: clamp(18px, 2.3vw, 32px);
+}
+
+.home-page .eyebrow {
+  color: var(--teal);
+  font-size: 0.9rem;
+  margin-bottom: 14px;
+}
+
+.home-page h1 {
+  font-size: clamp(4.4rem, 11vw, 8.8rem);
+  line-height: 0.84;
+  margin-bottom: 24px;
+  max-width: 560px;
+}
+
+.home-page .lead {
+  color: var(--ink);
+  font-size: clamp(1.05rem, 1.55vw, 1.3rem);
+  max-width: 520px;
+}
+
 .page-hero {
   padding-bottom: 24px;
   padding-top: 38px;
@@ -234,6 +281,10 @@ h3 {
   justify-self: end;
 }
 
+.home-page .hero-portrait {
+  max-width: min(44vw, 500px);
+}
+
 .hero-portrait img {
   background: var(--panel);
   border: 3px solid var(--line);
@@ -245,6 +296,12 @@ h3 {
   transform: rotate(1.5deg);
   width: 100%;
   z-index: 2;
+}
+
+.home-page .hero-portrait img {
+  border-width: 2px;
+  object-fit: cover;
+  transform: rotate(0.8deg);
 }
 
 .portrait-shape {
@@ -657,9 +714,24 @@ th {
     padding-top: 34px;
   }
 
+  .home-page .hero {
+    grid-template-columns: 1fr;
+    min-height: calc(100svh - 190px);
+  }
+
+  .home-page .hero-copy {
+    max-width: 680px;
+  }
+
   .hero-portrait {
     justify-self: start;
     max-width: 280px;
+  }
+
+  .home-page .hero-portrait {
+    justify-self: center;
+    max-width: min(460px, 72vw);
+    order: -1;
   }
 }
 
@@ -698,8 +770,24 @@ th {
     max-width: 250px;
   }
 
+  .home-page .hero {
+    min-height: calc(100svh - 240px);
+  }
+
+  .home-page .hero-copy {
+    border-left-width: 4px;
+  }
+
+  .home-page .hero-portrait {
+    max-width: min(320px, 82vw);
+  }
+
   h1 {
     font-size: clamp(2.25rem, 13vw, 3.45rem);
+  }
+
+  .home-page h1 {
+    font-size: clamp(3.4rem, 18vw, 5rem);
   }
 
   .site-footer {
