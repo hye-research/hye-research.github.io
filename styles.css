@@ -478,6 +478,66 @@ h3 {
   padding: 0 0 52px;
 }
 
+.astro-about {
+  align-items: start;
+  border-bottom: 2px solid var(--line);
+  border-top: 2px solid var(--line);
+  display: grid;
+  gap: 32px;
+  grid-template-columns: minmax(0, 1.08fr) minmax(260px, 0.72fr);
+  padding: 30px 0;
+  position: relative;
+}
+
+.astro-about::before {
+  background: var(--amber);
+  border: 2px solid var(--line);
+  content: "";
+  height: 20px;
+  left: 0;
+  position: absolute;
+  top: -12px;
+  transform: rotate(-2deg);
+  width: 116px;
+}
+
+.astro-about-main h2 {
+  max-width: 720px;
+}
+
+.astro-about-main p {
+  font-size: 1.08rem;
+  max-width: 720px;
+}
+
+.astro-about-notes {
+  display: grid;
+  gap: 0;
+}
+
+.astro-about-notes article {
+  border-top: 2px solid rgba(42, 37, 33, 0.22);
+  padding: 16px 0;
+}
+
+.astro-about-notes article:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.astro-about-notes span {
+  color: var(--tomato);
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.astro-about-notes p {
+  margin: 0;
+}
+
 .page-nav-band a {
   background: var(--panel);
   border: 2px solid var(--line);
@@ -771,6 +831,7 @@ th {
   .hero,
   .research-layout,
   .astro-grid,
+  .astro-about,
   .astro-page-shell,
   .workbook-layout,
   .student-grid,
