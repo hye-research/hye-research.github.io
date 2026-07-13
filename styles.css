@@ -223,10 +223,7 @@ a {
 }
 
 .astro-page-hero {
-  align-items: end;
-  display: grid;
-  gap: 28px;
-  grid-template-columns: minmax(0, 1fr) auto;
+  display: block;
 }
 
 .astro-page-hero .lead {
@@ -234,15 +231,13 @@ a {
   max-width: 760px;
 }
 
-.astro-hero-actions {
-  justify-content: flex-end;
-  margin-top: 0;
-}
-
-.astro-hero-actions .button {
-  font-size: 1rem;
-  min-height: 52px;
-  padding: 14px 18px;
+.hero-subscribe-link {
+  border-bottom: 3px solid var(--tomato);
+  display: inline-flex;
+  font-weight: 800;
+  margin-top: 16px;
+  padding-bottom: 4px;
+  text-decoration: none;
 }
 
 .eyebrow {
@@ -506,10 +501,10 @@ h3 {
   border-radius: 8px;
   display: grid;
   gap: 14px;
-  justify-items: center;
+  grid-template-columns: 92px minmax(0, 1fr);
   min-height: 136px;
   padding: 20px;
-  text-align: center;
+  text-align: left;
 }
 
 .astro-about-notes span {
@@ -581,13 +576,6 @@ h3 {
   font-weight: 800;
   margin-bottom: 16px;
   text-transform: uppercase;
-}
-
-.career-event-card .tag {
-  box-sizing: border-box;
-  text-align: center;
-  white-space: nowrap;
-  width: 116px;
 }
 
 .tomato-card {
@@ -886,13 +874,9 @@ th {
   margin-bottom: 0;
 }
 
-.panel-bios {
-  margin-top: 16px;
-}
-
-.panel-bios summary {
-  cursor: pointer;
-  font-weight: 800;
+.panel-bios-trigger {
+  margin-top: 18px;
+  width: fit-content;
 }
 
 .panelist-bio-list {
@@ -907,6 +891,40 @@ th {
   border-radius: 8px;
   color: var(--ink);
   padding: 10px 12px;
+}
+
+.panel-bios-dialog {
+  background: transparent;
+  border: 0;
+  max-width: min(760px, 92vw);
+  padding: 0;
+}
+
+.panel-bios-dialog::backdrop {
+  background: rgba(42, 37, 33, 0.62);
+}
+
+.panel-bios-dialog-frame {
+  background: var(--paper);
+  border: 3px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  max-height: 82vh;
+  overflow-y: auto;
+  padding: 24px;
+  position: relative;
+}
+
+.panel-bios-close {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 8px 12px;
+  position: absolute;
+  right: 16px;
+  top: 16px;
 }
 
 .event-poster {
