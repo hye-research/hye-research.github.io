@@ -133,19 +133,6 @@ a {
   color: var(--ink);
 }
 
-.site-header nav a.active::before {
-  background: var(--tomato);
-  border: 2px solid var(--line);
-  border-radius: 999px;
-  content: "";
-  height: 8px;
-  left: 50%;
-  position: absolute;
-  top: -4px;
-  transform: translateX(-50%);
-  width: 8px;
-}
-
 .button.primary {
   background: var(--amber);
   box-shadow: var(--shadow);
@@ -191,16 +178,17 @@ a {
 }
 
 .home-page .eyebrow {
-  color: var(--teal);
-  font-size: 0.9rem;
-  margin-bottom: 14px;
+  color: var(--tomato);
+  font-size: clamp(1rem, 1.4vw, 1.18rem);
+  margin-bottom: 12px;
+  text-transform: none;
 }
 
 .home-page h1 {
-  font-size: clamp(4.4rem, 11vw, 8.8rem);
-  line-height: 0.84;
-  margin-bottom: 24px;
-  max-width: 560px;
+  font-size: clamp(5.2rem, 13vw, 10rem);
+  line-height: 0.82;
+  margin-bottom: 28px;
+  max-width: 680px;
 }
 
 .home-page .lead {
@@ -787,7 +775,7 @@ th {
   }
 
   .home-page h1 {
-    font-size: clamp(3.4rem, 18vw, 5rem);
+    font-size: clamp(4rem, 19vw, 5.8rem);
   }
 
   .site-footer {
