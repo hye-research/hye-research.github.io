@@ -219,10 +219,47 @@ a {
 }
 
 .astro-page-hero {
-  background:
-    linear-gradient(135deg, rgba(244, 168, 44, 0.3), transparent 42%),
-    radial-gradient(circle at 82% 22%, rgba(255, 143, 177, 0.35) 0 12%, transparent 13%),
-    transparent;
+  overflow: hidden;
+  position: relative;
+}
+
+.astro-page-hero > *:not(.astro-accent) {
+  position: relative;
+  z-index: 2;
+}
+
+.astro-accent {
+  border: 2px solid var(--line);
+  display: block;
+  position: absolute;
+  z-index: 1;
+}
+
+.astro-accent-amber {
+  background: var(--amber);
+  height: 118px;
+  right: 14%;
+  top: 18px;
+  transform: rotate(-7deg);
+  width: 190px;
+}
+
+.astro-accent-pink {
+  background: var(--pink);
+  height: 92px;
+  right: 4%;
+  top: 116px;
+  transform: rotate(10deg);
+  width: 146px;
+}
+
+.astro-accent-teal {
+  background: var(--teal);
+  bottom: 20px;
+  height: 54px;
+  right: 28%;
+  transform: rotate(3deg);
+  width: 170px;
 }
 
 .eyebrow {
@@ -393,6 +430,52 @@ h3 {
   gap: 10px;
   padding-bottom: 24px;
   padding-top: 10px;
+}
+
+.astro-page-shell {
+  align-items: start;
+  display: grid;
+  gap: 38px;
+  grid-template-columns: 210px minmax(0, 1fr);
+  padding-top: 12px;
+}
+
+.astro-side-nav {
+  border-left: 4px solid var(--tomato);
+  padding-left: 16px;
+  position: sticky;
+  top: 82px;
+}
+
+.astro-side-nav .eyebrow {
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.astro-side-nav nav {
+  display: grid;
+  gap: 4px;
+}
+
+.astro-side-nav a {
+  border-bottom: 2px solid transparent;
+  color: var(--ink);
+  font-weight: 800;
+  padding: 8px 0;
+  text-decoration: none;
+}
+
+.astro-side-nav a:hover {
+  border-bottom-color: var(--tomato);
+}
+
+.astro-content {
+  min-width: 0;
+}
+
+.astro-content .content-section {
+  max-width: none;
+  padding: 0 0 52px;
 }
 
 .page-nav-band a {
@@ -688,6 +771,7 @@ th {
   .hero,
   .research-layout,
   .astro-grid,
+  .astro-page-shell,
   .workbook-layout,
   .student-grid,
   .event-detail-grid {
@@ -711,6 +795,21 @@ th {
 
   .link-list em {
     grid-column: 2;
+  }
+
+  .astro-side-nav {
+    border-left: 0;
+    border-top: 4px solid var(--tomato);
+    padding-left: 0;
+    padding-top: 12px;
+    position: static;
+  }
+
+  .astro-side-nav nav {
+    column-gap: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 0;
   }
 
   .hero {
@@ -773,6 +872,27 @@ th {
 
   .page-nav-band {
     gap: 8px;
+  }
+
+  .astro-accent-amber {
+    height: 82px;
+    right: -18px;
+    top: 18px;
+    width: 132px;
+  }
+
+  .astro-accent-pink {
+    height: 64px;
+    right: 24px;
+    top: 94px;
+    width: 96px;
+  }
+
+  .astro-accent-teal {
+    bottom: 18px;
+    height: 38px;
+    right: 120px;
+    width: 104px;
   }
 
   .hero-portrait {
