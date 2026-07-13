@@ -681,8 +681,67 @@ h3 {
 .event-detail-grid {
   display: grid;
   gap: 22px;
-  grid-template-columns: 0.9fr 1.1fr;
+  grid-template-columns: 1fr;
   margin-bottom: 22px;
+}
+
+.upcoming-feature {
+  align-items: center;
+  display: grid;
+  gap: 28px;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 0.45fr);
+}
+
+.speaker-placeholder {
+  align-items: center;
+  aspect-ratio: 1;
+  background:
+    radial-gradient(circle at 50% 37%, var(--panel) 0 19%, transparent 20%),
+    radial-gradient(circle at 50% 88%, var(--amber) 0 42%, transparent 43%),
+    linear-gradient(135deg, #f8c9bc 0 48%, #b9ddd1 48% 100%);
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  justify-self: end;
+  max-width: 230px;
+  min-width: 170px;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.speaker-placeholder::before,
+.speaker-placeholder::after {
+  background: var(--ink);
+  border-radius: 999px;
+  content: "";
+  position: absolute;
+}
+
+.speaker-placeholder::before {
+  height: 10px;
+  top: 38%;
+  width: 10px;
+  transform: translateX(-22px);
+}
+
+.speaker-placeholder::after {
+  height: 10px;
+  top: 38%;
+  width: 10px;
+  transform: translateX(22px);
+}
+
+.speaker-placeholder span {
+  border: 3px solid var(--ink);
+  border-left: 0;
+  border-top: 0;
+  bottom: 30%;
+  height: 18px;
+  position: absolute;
+  transform: rotate(45deg);
+  width: 18px;
 }
 
 .panelist-grid,
@@ -925,10 +984,6 @@ th {
   margin-top: 42px;
 }
 
-.faq-list {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
 .workbook-layout {
   align-items: center;
   grid-template-columns: 0.9fr 1.1fr;
@@ -1010,6 +1065,14 @@ th {
 
   .career-event-card.featured {
     grid-template-columns: 1fr;
+  }
+
+  .upcoming-feature {
+    grid-template-columns: 1fr;
+  }
+
+  .speaker-placeholder {
+    justify-self: start;
   }
 
   .link-list a {
