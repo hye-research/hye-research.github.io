@@ -223,47 +223,26 @@ a {
 }
 
 .astro-page-hero {
-  overflow: hidden;
-  position: relative;
+  align-items: end;
+  display: grid;
+  gap: 28px;
+  grid-template-columns: minmax(0, 1fr) auto;
 }
 
-.astro-page-hero > *:not(.astro-accent) {
-  position: relative;
-  z-index: 2;
+.astro-page-hero .lead {
+  line-height: 1.62;
+  max-width: 760px;
 }
 
-.astro-accent {
-  border: 2px solid var(--line);
-  display: block;
-  position: absolute;
-  z-index: 1;
+.astro-hero-actions {
+  justify-content: flex-end;
+  margin-top: 0;
 }
 
-.astro-accent-amber {
-  background: var(--amber);
-  height: 118px;
-  right: 14%;
-  top: 18px;
-  transform: rotate(-7deg);
-  width: 190px;
-}
-
-.astro-accent-pink {
-  background: var(--pink);
-  height: 92px;
-  right: 4%;
-  top: 116px;
-  transform: rotate(10deg);
-  width: 146px;
-}
-
-.astro-accent-teal {
-  background: var(--teal);
-  bottom: 20px;
-  height: 54px;
-  right: 28%;
-  transform: rotate(3deg);
-  width: 170px;
+.astro-hero-actions .button {
+  font-size: 1rem;
+  min-height: 52px;
+  padding: 14px 18px;
 }
 
 .eyebrow {
@@ -898,6 +877,35 @@ th {
   margin-bottom: 0;
 }
 
+.panel-bios {
+  margin-top: 16px;
+}
+
+.panel-bios summary {
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.panelist-bio-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.panelist-bio-list p {
+  background: rgba(255, 249, 236, 0.72);
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  padding: 10px 12px;
+}
+
+.recording-note {
+  color: var(--muted);
+  font-weight: 800;
+  margin-top: 10px;
+}
+
 .event-poster {
   align-items: end;
   aspect-ratio: 4 / 3;
@@ -1064,6 +1072,7 @@ th {
   .research-layout,
   .astro-grid,
   .astro-about,
+  .astro-page-hero,
   .astro-page-shell,
   .workbook-layout,
   .student-grid,
@@ -1178,27 +1187,6 @@ th {
 
   .page-nav-band {
     gap: 8px;
-  }
-
-  .astro-accent-amber {
-    height: 82px;
-    right: -18px;
-    top: 18px;
-    width: 132px;
-  }
-
-  .astro-accent-pink {
-    height: 64px;
-    right: 24px;
-    top: 94px;
-    width: 96px;
-  }
-
-  .astro-accent-teal {
-    bottom: 18px;
-    height: 38px;
-    right: 120px;
-    width: 104px;
   }
 
   .hero-portrait {
