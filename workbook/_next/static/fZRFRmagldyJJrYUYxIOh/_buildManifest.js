@@ -3,8 +3,8 @@ self.__BUILD_MANIFEST = {
     "afterFiles": [],
     "beforeFiles": [
       {
-        "source": "/mapping-me-workbook//_next/:path+",
-        "destination": "/mapping-me-workbook/_next/:path+"
+        "source": "/workbook//_next/:path+",
+        "destination": "/workbook/_next/:path+"
       }
     ],
     "fallback": []
