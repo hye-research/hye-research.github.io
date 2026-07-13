@@ -500,18 +500,19 @@ h3 {
 }
 
 .astro-about-notes article {
+  align-items: center;
   background: var(--panel);
   border: 2px solid var(--line);
   border-radius: 8px;
   display: grid;
   gap: 14px;
-  grid-template-columns: 82px minmax(0, 1fr);
+  justify-items: center;
   min-height: 136px;
   padding: 20px;
+  text-align: center;
 }
 
 .astro-about-notes span {
-  align-self: start;
   background: var(--amber);
   border: 2px solid var(--line);
   border-radius: 999px;
@@ -521,6 +522,7 @@ h3 {
   font-weight: 800;
   justify-content: center;
   line-height: 1;
+  min-width: 92px;
   padding: 8px 10px;
   text-transform: uppercase;
 }
@@ -579,6 +581,11 @@ h3 {
   font-weight: 800;
   margin-bottom: 16px;
   text-transform: uppercase;
+}
+
+.career-event-card .tag {
+  min-width: 104px;
+  text-align: center;
 }
 
 .tomato-card {
@@ -860,10 +867,10 @@ th {
   padding: 16px;
 }
 
-.career-event-card.featured {
+.career-event-card.wide {
   align-items: stretch;
   column-gap: 32px;
-  grid-column: 1 / -1;
+  grid-column: span 2;
   grid-template-columns: minmax(220px, 0.52fr) minmax(0, 1fr);
   padding: 18px;
 }
@@ -900,12 +907,6 @@ th {
   padding: 10px 12px;
 }
 
-.recording-note {
-  color: var(--muted);
-  font-weight: 800;
-  margin-top: 10px;
-}
-
 .event-poster {
   align-items: end;
   aspect-ratio: 4 / 3;
@@ -936,10 +937,11 @@ th {
   display: block;
   height: 100%;
   object-fit: cover;
+  transform: scale(1.025);
   width: 100%;
 }
 
-.career-event-card.featured .event-poster {
+.career-event-card.wide .event-poster {
   min-height: 230px;
 }
 
@@ -1092,7 +1094,8 @@ th {
     grid-template-columns: 1fr;
   }
 
-  .career-event-card.featured {
+  .career-event-card.wide {
+    grid-column: auto;
     grid-template-columns: 1fr;
   }
 
