@@ -175,11 +175,11 @@ a {
   max-width: 610px;
 }
 
-.home-page .eyebrow {
+.home-page .pronunciation {
   color: var(--tomato);
   font-size: clamp(0.95rem, 1.15vw, 1.08rem);
-  margin-bottom: 10px;
-  text-transform: none;
+  font-weight: 800;
+  margin: -12px 0 20px;
 }
 
 .home-page h1 {
