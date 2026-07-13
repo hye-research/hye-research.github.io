@@ -484,7 +484,7 @@ h3 {
   border-top: 2px solid var(--line);
   display: grid;
   gap: 32px;
-  grid-template-columns: minmax(0, 1.08fr) minmax(260px, 0.72fr);
+  grid-template-columns: minmax(0, 0.92fr) minmax(310px, 0.88fr);
   padding: 30px 0;
   position: relative;
 }
@@ -512,29 +512,45 @@ h3 {
 
 .astro-about-notes {
   display: grid;
-  gap: 0;
+  gap: 12px;
 }
 
 .astro-about-notes article {
-  border-top: 2px solid rgba(42, 37, 33, 0.22);
-  padding: 16px 0;
-}
-
-.astro-about-notes article:first-child {
-  border-top: 0;
-  padding-top: 0;
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 82px minmax(0, 1fr);
+  min-height: 112px;
+  padding: 16px;
 }
 
 .astro-about-notes span {
-  color: var(--tomato);
-  display: block;
+  align-self: start;
+  background: var(--amber);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  display: inline-flex;
   font-size: 0.82rem;
   font-weight: 800;
-  margin-bottom: 6px;
+  justify-content: center;
+  line-height: 1;
+  padding: 8px 10px;
   text-transform: uppercase;
 }
 
+.astro-about-notes article:nth-child(2) span {
+  background: var(--pink);
+}
+
+.astro-about-notes article:nth-child(3) span {
+  background: #b9ddd1;
+}
+
 .astro-about-notes p {
+  align-self: center;
   margin: 0;
 }
 
