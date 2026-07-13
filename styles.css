@@ -911,6 +911,26 @@ th {
   position: relative;
 }
 
+.event-poster.poster-image {
+  align-items: stretch;
+  aspect-ratio: 1 / 1.414;
+  background: var(--ink);
+  min-height: 0;
+  padding: 0;
+}
+
+.event-poster.poster-image::before,
+.event-poster.poster-image::after {
+  display: none;
+}
+
+.event-poster img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
 .career-event-card.featured .event-poster {
   min-height: 230px;
 }
