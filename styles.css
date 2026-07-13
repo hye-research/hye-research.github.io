@@ -584,8 +584,10 @@ h3 {
 }
 
 .career-event-card .tag {
-  min-width: 104px;
+  box-sizing: border-box;
   text-align: center;
+  white-space: nowrap;
+  width: 116px;
 }
 
 .tomato-card {
