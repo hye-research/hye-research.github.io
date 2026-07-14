@@ -787,6 +787,22 @@
       if (!element.dataset.originalStepCount) element.dataset.originalStepCount = normalize(element.textContent || "");
       element.textContent = lang === "zh" ? translateText(element.dataset.originalStepCount) : element.dataset.originalStepCount;
     });
+
+    document.querySelectorAll(".development-note p").forEach((element) => {
+      const link = element.querySelector('a[href="/"]');
+      if (!link) return;
+      const prefix = element.firstChild && element.firstChild.nodeType === Node.TEXT_NODE
+        ? element.firstChild
+        : element.insertBefore(document.createTextNode(""), link);
+      const suffix = link.nextSibling && link.nextSibling.nodeType === Node.TEXT_NODE
+        ? link.nextSibling
+        : element.appendChild(document.createTextNode(""));
+      prefix.nodeValue = lang === "zh"
+        ? "如果你想推动这些工作本继续完善，可以 "
+        : "To nudge these workbooks forward, ";
+      link.textContent = "contact me";
+      suffix.nodeValue = lang === "zh" ? "。" : ".";
+    });
   }
 
   function applyLanguage(lang) {
