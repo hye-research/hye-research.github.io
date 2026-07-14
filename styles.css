@@ -231,15 +231,6 @@ a {
   max-width: 760px;
 }
 
-.hero-subscribe-link {
-  border-bottom: 3px solid var(--tomato);
-  display: inline-flex;
-  font-weight: 800;
-  margin-top: 16px;
-  padding-bottom: 4px;
-  text-decoration: none;
-}
-
 .eyebrow {
   font-size: 0.84rem;
   font-weight: 800;
@@ -465,6 +456,11 @@ h3 {
   grid-template-columns: minmax(0, 0.84fr) minmax(360px, 1fr);
   padding: 30px 0;
   position: relative;
+}
+
+.side-subscribe-link {
+  margin-bottom: 18px;
+  width: 100%;
 }
 
 .astro-about::before {
@@ -858,11 +854,25 @@ th {
 }
 
 .career-event-card.wide {
-  align-items: stretch;
-  column-gap: 32px;
   grid-column: span 2;
-  grid-template-columns: minmax(220px, 0.52fr) minmax(0, 1fr);
+  grid-template-columns: 1fr;
   padding: 18px;
+}
+
+.career-event-card.wide .event-poster.poster-image {
+  aspect-ratio: 16 / 9;
+  max-height: 520px;
+}
+
+.career-event-card.wide .event-poster img {
+  object-position: center center;
+  transform: scale(1.02);
+}
+
+.panel-card-copy {
+  background: var(--panel);
+  position: relative;
+  z-index: 2;
 }
 
 .career-event-card h3 {
@@ -957,12 +967,26 @@ th {
   display: block;
   height: 100%;
   object-fit: cover;
-  transform: scale(1.025);
+  object-position: center 48%;
+  transform: scale(1.075);
   width: 100%;
 }
 
 .career-event-card.wide .event-poster {
-  min-height: 230px;
+  min-height: 0;
+}
+
+.committee-table-wrap {
+  box-shadow: none;
+}
+
+.committee-table {
+  width: 100%;
+}
+
+.committee-table th,
+.committee-table td {
+  vertical-align: middle;
 }
 
 .event-poster::before,
