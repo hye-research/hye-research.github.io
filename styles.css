@@ -459,7 +459,13 @@ h3 {
 }
 
 .side-subscribe-link {
-  margin-bottom: 18px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 28px;
+  min-height: 54px;
+  padding: 12px 14px;
+  text-align: center;
   width: 100%;
 }
 
@@ -860,13 +866,13 @@ th {
 }
 
 .career-event-card.wide .event-poster.poster-image {
-  aspect-ratio: 16 / 9;
-  max-height: 520px;
+  aspect-ratio: 4 / 3;
+  max-height: 720px;
 }
 
 .career-event-card.wide .event-poster img {
   object-position: center center;
-  transform: scale(1.02);
+  transform: scale(1.01);
 }
 
 .panel-card-copy {
@@ -885,7 +891,6 @@ th {
 }
 
 .panel-bios-trigger {
-  margin-top: 18px;
   width: fit-content;
 }
 
