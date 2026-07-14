@@ -469,18 +469,6 @@ h3 {
   width: 100%;
 }
 
-.astro-about::before {
-  background: var(--amber);
-  border: 2px solid var(--line);
-  content: "";
-  height: 20px;
-  left: 0;
-  position: absolute;
-  top: -12px;
-  transform: rotate(-2deg);
-  width: 116px;
-}
-
 .astro-about-main h2 {
   max-width: 620px;
 }
@@ -866,13 +854,13 @@ th {
 }
 
 .career-event-card.wide .event-poster.poster-image {
-  aspect-ratio: 4 / 3;
-  max-height: 720px;
+  aspect-ratio: 3 / 4;
+  max-height: 820px;
 }
 
 .career-event-card.wide .event-poster img {
-  object-position: center center;
-  transform: scale(1.01);
+  object-position: center top;
+  transform: none;
 }
 
 .panel-card-copy {
@@ -892,6 +880,20 @@ th {
 
 .panel-bios-trigger {
   width: fit-content;
+}
+
+.panel-poster-button {
+  appearance: none;
+  background: var(--ink);
+  cursor: zoom-in;
+  font: inherit;
+  padding: 0;
+  text-align: inherit;
+  width: 100%;
+}
+
+.panel-poster-button:hover {
+  transform: translateY(-2px);
 }
 
 .panelist-bio-list {
@@ -915,7 +917,18 @@ th {
   padding: 0;
 }
 
+.poster-dialog {
+  background: transparent;
+  border: 0;
+  max-width: min(760px, 94vw);
+  padding: 0;
+}
+
 .panel-bios-dialog::backdrop {
+  background: rgba(42, 37, 33, 0.62);
+}
+
+.poster-dialog::backdrop {
   background: rgba(42, 37, 33, 0.62);
 }
 
@@ -930,6 +943,23 @@ th {
   position: relative;
 }
 
+.poster-dialog-frame {
+  background: var(--paper);
+  border: 3px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 18px;
+  position: relative;
+}
+
+.poster-dialog-frame img {
+  display: block;
+  height: auto;
+  width: 100%;
+}
+
 .panel-bios-close {
   background: var(--panel);
   border: 2px solid var(--line);
@@ -940,6 +970,18 @@ th {
   position: absolute;
   right: 16px;
   top: 16px;
+}
+
+.poster-dialog-close {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 8px 12px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
 .event-poster {

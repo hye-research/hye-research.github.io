@@ -136,9 +136,9 @@
           </article>
           <article class="career-event-card wide">
             <button class="button panel-bios-trigger" type="button" data-panel-bios-open>Panelist bios</button>
-            <div class="event-poster poster-image">
+            <button class="event-poster poster-image panel-poster-button" type="button" data-panel-poster-open aria-label="Open full Astro Career Panel Discussion poster">
               <img src="assets/astrocareer/panel-discussion.jpg" alt="Poster for Astro Career Panel Discussion">
-            </div>
+            </button>
             <div class="panel-card-copy">
               <h3>Astro Career Panel Discussion</h3>
             </div>
@@ -282,6 +282,12 @@
       <p>Monthly Astro Career Talk Series</p>
       <a href="#top">Back to top</a>
     </footer>
+    <dialog class="poster-dialog" id="panel-poster-dialog" aria-label="Full Astro Career Panel Discussion poster">
+      <div class="poster-dialog-frame">
+        <button class="poster-dialog-close" type="button" aria-label="Close poster preview">Close</button>
+        <img src="assets/astrocareer/panel-discussion.jpg" alt="Full poster for Astro Career Panel Discussion">
+      </div>
+    </dialog>
     <dialog class="panel-bios-dialog" id="panel-bios-dialog" aria-labelledby="panel-bios-title">
       <div class="panel-bios-dialog-frame">
         <button class="panel-bios-close" type="button" aria-label="Close panelist bios">Close</button>
@@ -306,12 +312,23 @@
       const panelBiosDialog = document.getElementById("panel-bios-dialog");
       const panelBiosOpen = document.querySelector("[data-panel-bios-open]");
       const panelBiosClose = document.querySelector(".panel-bios-close");
+      const panelPosterDialog = document.getElementById("panel-poster-dialog");
+      const panelPosterOpen = document.querySelector("[data-panel-poster-open]");
+      const panelPosterClose = document.querySelector(".poster-dialog-close");
 
-      panelBiosOpen?.addEventListener("click", () => panelBiosDialog.showModal());
-      panelBiosClose?.addEventListener("click", () => panelBiosDialog.close());
+      panelBiosOpen?.addEventListener("click", () => panelBiosDialog?.showModal());
+      panelBiosClose?.addEventListener("click", () => panelBiosDialog?.close());
       panelBiosDialog?.addEventListener("click", (event) => {
         if (event.target === panelBiosDialog) {
           panelBiosDialog.close();
+        }
+      });
+
+      panelPosterOpen?.addEventListener("click", () => panelPosterDialog?.showModal());
+      panelPosterClose?.addEventListener("click", () => panelPosterDialog?.close());
+      panelPosterDialog?.addEventListener("click", (event) => {
+        if (event.target === panelPosterDialog) {
+          panelPosterDialog.close();
         }
       });
     </script>
