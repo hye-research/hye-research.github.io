@@ -1,4 +1,4 @@
-const CACHE_NAME = "mapping-me-workbook-v5";
+const CACHE_NAME = "mapping-me-workbook-v6";
 const ASSETS = ["/workbook/energy_map", "/workbook/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {

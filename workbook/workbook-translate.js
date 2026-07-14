@@ -14,7 +14,7 @@
     "Your emotion notes save in this browser on this device. They are not uploaded.": "你的情绪笔记只会保存在这台设备的浏览器里，不会上传。",
     "Your boundary notes save in this browser on this device. They are not uploaded.": "你的边界笔记只会保存在这台设备的浏览器里，不会上传。",
     "Your self-appreciation notes save in this browser on this device. They are not uploaded.": "你的自我欣赏笔记只会保存在这台设备的浏览器里，不会上传。",
-    "To nudge these workbooks forward, contact contact@run2achieve.info.": "如果你想推动这些工作本继续完善，可以 contact me。",
+    "To nudge these workbooks forward, contact me.": "如果你想推动这些工作本继续完善，可以 contact me。",
     "In development": "开发中",
 
     "Energy Map": "能量地图",
