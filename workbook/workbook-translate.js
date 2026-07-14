@@ -14,7 +14,7 @@
     "Your emotion notes save in this browser on this device. They are not uploaded.": "你的情绪笔记只会保存在这台设备的浏览器里，不会上传。",
     "Your boundary notes save in this browser on this device. They are not uploaded.": "你的边界笔记只会保存在这台设备的浏览器里，不会上传。",
     "Your self-appreciation notes save in this browser on this device. They are not uploaded.": "你的自我欣赏笔记只会保存在这台设备的浏览器里，不会上传。",
-    "To nudge these workbooks forward, contact contact@run2achieve.info.": "如果想推动这些工作本继续完善，可以联系 contact@run2achieve.info。",
+    "To nudge these workbooks forward, contact contact@run2achieve.info.": "如果你想推动这些工作本继续完善，可以 contact me。",
     "In development": "开发中",
 
     "Energy Map": "能量地图",
@@ -33,8 +33,8 @@
     "Explore self-stories, belonging, language, and beliefs in motion.": "探索关于自己的故事、归属感、语言和正在变化的信念。",
     "Processing My Emotions": "处理我的情绪",
     "Make space for feelings, mixed signals, body clues, and gentle next steps.": "给情绪、混杂信号、身体线索和温和的下一步留出空间。",
-    "Exploring Boundaries": "探索边界",
-    "Notice limits, access needs, honest yeses, and relationship care.": "留意限制、支持需求、诚实的同意，以及关系里的照顾。",
+    "Exploring Boundaries": "了解我的边界",
+    "Notice limits, access needs, honest yeses, and relationship care.": "梳理哪些事情会让你太勉强，哪些支持会让你更容易参与，以及怎样在关系里更诚实地说“可以”和“不可以”。",
     "My Getting-Started Toolkit": "我的开始行动工具包",
     "Collect small tools that help you begin when tasks feel sticky or blocked.": "收集一些小工具，帮助你在卡住或很难开始时先动起来。",
 
