@@ -3,11 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Neurodiversity Workbook | Haoyang Ye</title>
-    <meta name="description" content="Mapping Me Workbook: a local-first neurodiversity workbook library.">
+    <title>Neurodiversity Resources | Haoyang Ye</title>
+    <meta name="description" content="Neurodiversity resources by Dr Haoyang Ye, including Mapping Me Workbook and illustrated book projects.">
     <link rel="stylesheet" href="styles.css">
   </head>
-  <body>
+  <body class="neurodiversity-page">
     <header class="site-header" id="top">
       <a class="brand" href="index.html" aria-label="Dr Haoyang Ye home">
         <span class="brand-mark">HY</span>
@@ -23,51 +23,49 @@
     </header>
 
     <main>
-      <section class="page-hero section-band">
-        <p class="eyebrow">Neurodiversity</p>
-        <h1>Mapping Me Workbook</h1>
+      <section class="page-hero section-band neurodiversity-hero">
+        <p class="eyebrow">Community · Neurodiversity</p>
+        <h1 class="single-line-title">Neurodiversity Resources</h1>
         <p class="lead">
-          A local-first workbook library for neurodivergent users. The framing is understanding,
-          not correction.
+          I am neurodivergent myself, and I have supported neurodivergent individuals through
+          university settings and psychological services. I welcome invitations to give talks,
+          workshops, or webinars for institutions interested in neurodiversity-informed support.
         </p>
-        <div class="hero-actions">
-          <a class="button primary" href="workbook/">Open workbook library</a>
-        </div>
-      </section>
-
-      <section class="content-section">
-        <div class="workbook-layout">
-          <div class="image-frame">
-            <img src="assets/brain-is-different-page-1.png" alt="Illustrated page from the neurodiversity visual system">
-          </div>
-          <div class="workbook-copy">
-            <article>
-              <h2>Included workbooks</h2>
+        <div class="neuro-resource-grid">
+          <article class="neuro-resource-card workbook-resource">
+            <div class="resource-preview workbook-preview">
+              <img src="assets/workbook-library-preview.svg" alt="Preview of the Mapping Me workbook library">
+            </div>
+            <div>
+              <span class="tag">Mapping Me</span>
+              <h2>Workbook<br>Library</h2>
               <p>
-                Energy Map, Sensory Map, Learning Style Map, Discovering My Values, What I Love About
-                Myself, Checking-In With My Body, and additional in-development tools.
+                A local-first workbook library for self-understanding. Notes stay in the browser
+                on the user's own device and are not uploaded.
               </p>
-            </article>
-            <article>
-              <h2>Privacy model</h2>
+            </div>
+            <a class="button primary" href="workbook/">Open workbook library</a>
+          </article>
+          <article class="neuro-resource-card illustrated-resource">
+            <div class="resource-preview illustrated-preview">
+              <img src="assets/brain-is-different-page-1.png" alt="Illustrated page from the neurodiversity visual system">
+            </div>
+            <div>
+              <span class="tag">Illustrated book</span>
+              <h2>Neurodiversity Illustrated</h2>
               <p>
-                Workbook notes save in the browser on the user's own device. They are not uploaded.
+                A public-facing project that uses accessible media, gentle language, and visual
+                storytelling to introduce neurodiversity to wider audiences.
               </p>
-            </article>
-            <article>
-              <h2>Visual language</h2>
-              <p>
-                Warm paper textures, bold collage shapes, clear silhouettes, and non-pathologizing
-                language. The interface helps people notice patterns without forcing a fixed label.
-              </p>
-            </article>
-          </div>
+            </div>
+            <a class="button" href="illustrated-book/">Open illustrated books</a>
+          </article>
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
-      <p>Dr Haoyang Ye · Mapping Me Workbook</p>
+      <p>Dr Haoyang Ye · Neurodiversity resources</p>
       <a href="#top">Back to top</a>
     </footer>
   </body>

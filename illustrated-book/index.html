@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Illustrated Books</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #24302f;
+      --muted: #64716d;
+      --paper: #fffdf8;
+      --panel: #fff8ec;
+      --line: #2f3532;
+      --green: #7fb3a6;
+      --yellow: #f2cb75;
+      --pink: #e7a0a9;
+      --blue: #8cb6cf;
+      --lavender: #b8a7cf;
+      --shadow: rgba(37, 43, 41, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 16% 10%, rgba(242, 203, 117, 0.34), transparent 30%),
+        radial-gradient(circle at 88% 6%, rgba(127, 179, 166, 0.28), transparent 28%),
+        linear-gradient(135deg, #f7f0e2 0%, #e8f0ec 100%);
+      letter-spacing: 0;
+    }
+
+    .shell {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      padding: 28px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 22px;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 760px;
+      font-size: clamp(2.2rem, 7vw, 5.4rem);
+      line-height: 0.95;
+    }
+
+    .summary {
+      max-width: 360px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.45;
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+    }
+
+    .category {
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 5px 5px 0 var(--line);
+      overflow: hidden;
+    }
+
+    .category:nth-child(5n + 1) {
+      background: #fff8ec;
+    }
+
+    .category:nth-child(5n + 2) {
+      background: #f4e8f2;
+    }
+
+    .category:nth-child(5n + 3) {
+      background: #e9f1ea;
+    }
+
+    .category:nth-child(5n + 4) {
+      background: #eef3f8;
+    }
+
+    .category:nth-child(5n) {
+      background: #fbefd7;
+    }
+
+    .category.under-development {
+      background: #e4ded2 !important;
+      box-shadow: none;
+      color: #6b6457;
+      filter: saturate(0.35);
+      opacity: 0.78;
+    }
+
+    .category.under-development summary {
+      cursor: default;
+    }
+
+    .category.under-development .count {
+      background: rgba(255, 255, 255, 0.42);
+      color: #6b6457;
+    }
+
+    .category summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 18px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .category summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .category summary:focus-visible {
+      outline: 4px solid rgba(47, 127, 117, 0.35);
+      outline-offset: -7px;
+    }
+
+    .category-title {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.16rem;
+      line-height: 1.16;
+    }
+
+    .count {
+      flex: none;
+      border: 2px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.58);
+      padding: 0.24rem 0.55rem;
+      font-size: 0.78rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .category-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.4;
+    }
+
+    .book-list {
+      border-top: 2px solid var(--line);
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+    }
+
+    .book-card {
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 253, 248, 0.78);
+      color: var(--ink);
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr);
+      gap: 14px;
+      min-height: 126px;
+      padding: 10px;
+      text-decoration: none;
+    }
+
+    .book-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .book-card img {
+      width: 96px;
+      height: 102px;
+      border: 2px solid rgba(47, 53, 50, 0.22);
+      border-radius: 6px;
+      object-fit: cover;
+      object-position: left center;
+      background: var(--paper);
+    }
+
+    .book-card strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1.03rem;
+      line-height: 1.15;
+    }
+
+    .book-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.38;
+    }
+
+    .empty-slot {
+      border: 2px dashed rgba(47, 53, 50, 0.55);
+      border-radius: 8px;
+      background: rgba(255, 253, 248, 0.42);
+      color: var(--muted);
+      padding: 14px;
+      font-size: 0.92rem;
+      line-height: 1.42;
+    }
+
+    .development-note {
+      background: #e4ded2;
+      border: 2px dashed var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin: 22px 0 18px;
+      padding: 14px 16px;
+    }
+
+    .source-note {
+      background: #fff8ec;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 5px 5px 0 var(--line);
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.45;
+      margin-bottom: 22px;
+      padding: 14px 16px;
+    }
+
+    .source-note strong {
+      color: var(--ink);
+    }
+
+    footer {
+      margin-top: 26px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 720px) {
+      .shell {
+        padding: 18px;
+      }
+
+      header {
+        display: grid;
+        align-items: start;
+      }
+
+      .book-card {
+        grid-template-columns: 76px minmax(0, 1fr);
+      }
+
+      .book-card img {
+        width: 76px;
+        height: 86px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <p class="eyebrow">Neurodiversity Database</p>
+        <h1>Illustrated Books</h1>
+      </div>
+    </header>
+
+    <section class="source-note" aria-label="Image source note">
+      <strong>Image note.</strong> These draft images were generated with ChatGPT. We would love to work with artists to make future versions warmer, more accurate, and more accessible.
+    </section>
+
+    <section class="category-grid" aria-label="Illustrated book categories">
+      <details class="category" open>
+        <summary>
+          <div class="category-title">
+            <h2>Understanding Myself</h2>
+            <span class="count">1 book</span>
+          </div>
+          <p class="category-note">Stories about noticing how my own brain works.</p>
+        </summary>
+        <div class="book-list">
+          <a class="book-card" href="brain-is-different/">
+            <img src="brain-is-different/Page%201.png" alt="">
+            <div>
+              <strong>Different Brains</strong>
+              <p>A picture book about fireworks, tiny sounds, slow answers, bright feelings, and all kinds of brains.</p>
+            </div>
+          </a>
+        </div>
+      </details>
+
+      <details class="category" open>
+        <summary>
+          <div class="category-title">
+            <h2>Masking &amp; Self-Protection</h2>
+            <span class="count">1 comic</span>
+          </div>
+          <p class="category-note">Hiding, copying, social safety, energy cost, and choosing protection.</p>
+        </summary>
+        <div class="book-list">
+          <a class="book-card" href="Mask%20Comic/index.html">
+            <img src="Mask%20Comic/Mask%20Comic%201.png" alt="">
+            <div>
+              <strong>Mask Comic</strong>
+              <p>A one-page comic about the masks someone may use to get through social and school situations.</p>
+            </div>
+          </a>
+        </div>
+      </details>
+
+      <details class="category" open>
+        <summary>
+          <div class="category-title">
+            <h2>Social Interaction &amp; Communication</h2>
+            <span class="count">4 comics</span>
+          </div>
+          <p class="category-note">Conversation, friendship, misunderstanding, boundaries, and connection.</p>
+        </summary>
+        <div class="book-list">
+          <a class="book-card" href="Social%20and%20Communication/Clear%20words%20help/index.html">
+            <img src="Social%20and%20Communication/Clear%20words%20help/Clearwordshelp.png" alt="">
+            <div>
+              <strong>Clear Words Help</strong>
+              <p>A comic about how specific words can give a social moment something to hold.</p>
+            </div>
+          </a>
+          <a class="book-card" href="Social%20and%20Communication/Many%20ways%20to%20say%20hello/index.html">
+            <img src="Social%20and%20Communication/Many%20ways%20to%20say%20hello/manywaystosayhello.png" alt="">
+            <div>
+              <strong>Many Ways to Say Hello</strong>
+              <p>A comic about different ways people begin connection.</p>
+            </div>
+          </a>
+          <a class="book-card" href="Social%20and%20Communication/Share%20my%20favorite%20thing/index.html">
+            <img src="Social%20and%20Communication/Share%20my%20favorite%20thing/sharingmyfavouritething.png" alt="">
+            <div>
+              <strong>Sharing My Favourite Thing</strong>
+              <p>A comic about favourite facts as one way of saying, I want to connect with you.</p>
+            </div>
+          </a>
+          <a class="book-card" href="Social%20and%20Communication/Same%20frequency/index.html">
+            <img src="Social%20and%20Communication/Same%20frequency/samefrequency.png" alt="">
+            <div>
+              <strong>Same Frequency</strong>
+              <p>A comic about finding connection through shared attention, noticing, and small moments of mutual interest.</p>
+            </div>
+          </a>
+        </div>
+      </details>
+    </section>
+
+    <div class="development-note">More illustrated books are in development.</div>
+
+    <section class="category-grid" aria-label="Illustrated book categories in development">
+      <details class="category under-development">
+        <summary>
+          <div class="category-title">
+            <h2>Sensory Experiences</h2>
+            <span class="count">In development</span>
+          </div>
+          <p class="category-note">Light, sound, texture, movement, body signals, and sensory support.</p>
+        </summary>
+        <div class="book-list"><div class="empty-slot">No finished books here yet.</div></div>
+      </details>
+
+      <details class="category under-development">
+        <summary>
+          <div class="category-title">
+            <h2>Emotions &amp; Self-Regulation</h2>
+            <span class="count">In development</span>
+          </div>
+          <p class="category-note">Feelings, recovery, overwhelm, rest, and gentle regulation tools.</p>
+        </summary>
+        <div class="book-list"><div class="empty-slot">No finished books here yet.</div></div>
+      </details>
+
+      <details class="category under-development">
+        <summary>
+          <div class="category-title">
+            <h2>School Life</h2>
+            <span class="count">In development</span>
+          </div>
+          <p class="category-note">Classrooms, learning routines, transitions, homework, and support at school.</p>
+        </summary>
+        <div class="book-list"><div class="empty-slot">No finished books here yet.</div></div>
+      </details>
+
+      <details class="category under-development">
+        <summary>
+          <div class="category-title">
+            <h2>Family &amp; Everyday Life</h2>
+            <span class="count">In development</span>
+          </div>
+          <p class="category-note">Home, family rhythms, daily care, chores, rest, and shared understanding.</p>
+        </summary>
+        <div class="book-list"><div class="empty-slot">No finished books here yet.</div></div>
+      </details>
+
+      <details class="category under-development">
+        <summary>
+          <div class="category-title">
+            <h2>Neurodivergent Identity</h2>
+            <span class="count">In development</span>
+          </div>
+          <p class="category-note">Language, belonging, pride, difference, and self-recognition.</p>
+        </summary>
+        <div class="book-list"><div class="empty-slot">No finished books here yet.</div></div>
+      </details>
+
+      <details class="category under-development">
+        <summary>
+          <div class="category-title">
+            <h2>Growing Up Neurodivergent</h2>
+            <span class="count">In development</span>
+          </div>
+          <p class="category-note">Childhood, change, confidence, needs, and growing into self-knowledge.</p>
+        </summary>
+        <div class="book-list"><div class="empty-slot">No finished books here yet.</div></div>
+      </details>
+
+      <details class="category under-development">
+        <summary>
+          <div class="category-title">
+            <h2>Neurodivergent Adulthood</h2>
+            <span class="count">In development</span>
+          </div>
+          <p class="category-note">Work, care, relationships, burnout, accommodations, and adult identity.</p>
+        </summary>
+        <div class="book-list"><div class="empty-slot">No finished books here yet.</div></div>
+      </details>
+
+      <details class="category under-development">
+        <summary>
+          <div class="category-title">
+            <h2>Understanding &amp; Supporting Neurodivergent Children</h2>
+            <span class="count">In development</span>
+          </div>
+          <p class="category-note">Books for adults who want to understand, support, and listen better.</p>
+        </summary>
+        <div class="book-list"><div class="empty-slot">No finished books here yet.</div></div>
+      </details>
+    </section>
+
+    <footer>
+      <p>If you would like to create an illustrated book and share it on this page, please <a href="../index.html">contact me</a>.</p>
+    </footer>
+  </main>
+</body>
+</html>
