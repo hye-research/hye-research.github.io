@@ -701,8 +701,18 @@
     "What did this show about you?": "这件事显示了你的什么？"
   };
 
+  const reverseTranslations = new Map();
+  Object.entries(translations).forEach(([english, chinese]) => reverseTranslations.set(chinese, english));
+  Object.entries(supplementalTranslations).forEach(([english, chinese]) => reverseTranslations.set(chinese, english));
+  phraseTranslations.forEach(([english, chinese]) => reverseTranslations.set(chinese, english));
+
   function normalize(text) {
     return text.replace(/\s+/g, " ").trim();
+  }
+
+  function englishSource(text) {
+    const normalized = normalize(text);
+    return reverseTranslations.get(normalized) || normalized || text;
   }
 
   function translateText(text) {
@@ -740,7 +750,8 @@
   }
 
   function storeOriginal(node, key, value) {
-    if (!node[key]) node[key] = value;
+    const source = englishSource(value);
+    if (!node[key] || /[\u3400-\u9fff]/.test(node[key])) node[key] = source;
   }
 
   function translateNode(node, lang) {
@@ -754,7 +765,8 @@
       if (!element.hasAttribute(attribute)) return;
       const key = `data-original-${attribute}`;
       if (!element.hasAttribute(key)) element.setAttribute(key, element.getAttribute(attribute));
-      const original = element.getAttribute(key);
+      const original = englishSource(element.getAttribute(key));
+      element.setAttribute(key, original);
       element.setAttribute(attribute, lang === "zh" ? translateText(original) : original);
     });
   }
