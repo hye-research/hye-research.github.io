@@ -695,10 +695,16 @@
     "You can like parts of yourself that are not about achievement: your laugh, softness, dramatic reactions, daydreaming, or tiny joys.": "你也可以喜欢那些和成就无关的部分：你的笑、柔软、夸张反应、白日梦，或很小的快乐。",
     "Notice: what part of you do you like, even if it is not useful or impressive?": "留意：你喜欢自己的哪一部分，即使它不实用，也不厉害？",
     "Collect recent moments when you felt proud of yourself, glad you were you, or quietly impressed by what you did.": "收集最近那些让你为自己骄傲、庆幸自己是自己，或悄悄觉得自己做得不错的时刻。",
-    "Write down something from the past that still makes you feel warm, moved, strong, brave, kind, or glad you were you.": "写下一件过去的事：它到现在还让你觉得温暖、被打动、有力量、勇敢、善良，或庆幸你是你。",
+    "Write down something from the past that still makes you feel warm, moved, strong, brave, kind, or glad you were you.": "写下一件过去的事：现在想起来，它仍然会让你觉得温暖、感动、有力量、勇敢、善良，或者庆幸自己是自己。",
     "Maybe it was years ago. What happened? What did you do? What did it take from you? Why does it still feel impressive now?": "也许那是很多年前的事。发生了什么？你做了什么？它当时需要你付出什么？为什么现在想起来仍然觉得不错？",
     "A recent moment, tiny or big...": "最近的一个时刻，小的大的都可以……",
-    "What did this show about you?": "这件事显示了你的什么？"
+    "What did this show about you?": "这件事显示了你的什么？",
+    "Example: I thought I was only visual, but movement and repetition may matter more than I expected.": "例如：我以前以为自己只是视觉型学习者，但动作和重复可能比我想的更重要。",
+    "Example: The social setting cards made me realize I learn differently when someone is watching.": "例如：社交环境这几张卡让我意识到，有人在看时我的学习状态会不一样。",
+    "Example: Next time I revise, I want to try speaking key ideas out loud and drawing a quick map.": "例如：下次复习时，我想试试把关键想法说出来，再画一张快速地图。",
+    "Use interaction, interest, choice, and movement to make attention easier to access.": "用互动、兴趣、选择和身体活动，让注意力更容易进入状态。",
+    "Use clear structure, examples, repetition, and time to prepare as legitimate learning supports.": "把清楚的结构、例子、重复和准备时间当作正当的学习支持。",
+    "Notice: which signals tend to arrive late?": "留意：哪些信号常常来得比较晚？"
   };
 
   const reverseTranslations = new Map();
@@ -746,7 +752,7 @@
   function shouldSkipTextNode(node) {
     const parent = node.parentElement;
     if (!parent) return true;
-    return parent.closest("script, style, textarea, input, select, option, noscript");
+    return parent.closest("script, style, textarea, input, noscript");
   }
 
   function storeOriginal(node, key, value) {
