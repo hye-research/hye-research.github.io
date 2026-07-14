@@ -272,6 +272,7 @@
     "Values marked": "已标记的价值观",
     "This is my value": "这是我的价值观",
     "Maybe": "也许",
+    "Not selected": "未选择",
     "Visual": "视觉",
     "Auditory": "听觉",
     "Reading / writing": "阅读 / 写作",
@@ -699,12 +700,49 @@
     "Maybe it was years ago. What happened? What did you do? What did it take from you? Why does it still feel impressive now?": "也许那是很多年前的事。发生了什么？你做了什么？它当时需要你付出什么？为什么现在想起来仍然觉得不错？",
     "A recent moment, tiny or big...": "最近的一个时刻，小的大的都可以……",
     "What did this show about you?": "这件事显示了你的什么？",
+    "Add your own check": "添加你自己的检查项",
+    "Add your own value": "添加你自己的价值观",
+    "Examples: what helps me learn, what makes learning harder, what I want teachers or teammates to know, one support I want to try.": "例如：什么帮助我学习，什么让学习更难，我希望老师或队友知道什么，我想试一个什么支持。",
+    "Friction can be a clue": "卡住和不舒服也可能是线索",
+    "Relief has information": "松一口气的感觉也有信息",
+    "What you protect": "你会保护的东西",
+    "Admiration points somewhere": "你欣赏的东西会指向某个方向",
+    "Cost matters": "成本也重要",
+    "What matters can shift": "重要的东西会变化",
+    "When something feels wrong, it may be pointing toward a value that is being crowded, rushed, or ignored.": "当某件事感觉不对劲时，它可能在指向一个被挤压、被催促或被忽略的价值观。",
+    "A moment of relief can show what your nervous system, attention, or sense of self has been needing.": "一个松一口气的瞬间，可能会告诉你：你的神经系统、注意力或自我感一直需要什么。",
+    "The things you defend, save, repair, or make room for often reveal values before you can name them.": "你会维护、保存、修复或腾出空间的东西，常常会在你说出名字之前先显示你的价值观。",
+    "People, places, tools, and communities you admire may carry qualities you want near your own life.": "你欣赏的人、地方、工具和社群，可能带着你也希望靠近自己生活的品质。",
+    "A value is allowed to be real even when living it costs energy. The cost is information, not failure.": "一个价值观即使需要能量去实践，也仍然是真实的。成本是信息，不是失败。",
+    "Some values stay steady. Others become more important in certain seasons, relationships, bodies, or environments.": "有些价值观比较稳定；有些会在特定阶段、关系、身体状态或环境里变得更重要。",
+    "Notice: what kind of situation makes you quietly tense?": "留意：什么样的情境会让你悄悄紧绷？",
+    "Notice: what makes your shoulders drop a little?": "留意：什么会让你的肩膀稍微放下来一点？",
+    "Notice: what do you keep making space for?": "留意：你一直在为什么东西腾出空间？",
+    "Notice: what do you admire without needing to become it?": "留意：你欣赏什么，但不需要把自己变成它？",
+    "Notice: which values need support, pacing, or boundaries?": "留意：哪些价值观需要支持、节奏或边界？",
+    "Notice: what matters more right now than it used to?": "留意：现在什么比以前更重要？",
     "Example: I thought I was only visual, but movement and repetition may matter more than I expected.": "例如：我以前以为自己只是视觉型学习者，但动作和重复可能比我想的更重要。",
     "Example: The social setting cards made me realize I learn differently when someone is watching.": "例如：社交环境这几张卡让我意识到，有人在看时我的学习状态会不一样。",
     "Example: Next time I revise, I want to try speaking key ideas out loud and drawing a quick map.": "例如：下次复习时，我想试试把关键想法说出来，再画一张快速地图。",
     "Use interaction, interest, choice, and movement to make attention easier to access.": "用互动、兴趣、选择和身体活动，让注意力更容易进入状态。",
     "Use clear structure, examples, repetition, and time to prepare as legitimate learning supports.": "把清楚的结构、例子、重复和准备时间当作正当的学习支持。",
     "Notice: which signals tend to arrive late?": "留意：哪些信号常常来得比较晚？"
+  };
+
+
+  const valueTranslations = {
+    "Acceptance": "接纳", "Balance": "平衡", "Calmness": "平静", "Comfort": "舒适", "Contentment": "满足", "Health": "健康", "Hygiene": "卫生", "Peace": "安宁", "Pleasantness": "愉悦", "Relaxation": "放松", "Rest": "休息", "Security": "安全感", "Serenity": "宁静", "Silence": "安静", "Simplicity": "简单", "Stability": "稳定", "Stillness": "静止", "Tranquility": "安宁",
+    "Affection": "亲近感", "Appreciation": "欣赏", "Approachability": "容易接近", "Availability": "在场与可联系", "Belonging": "归属感", "Benevolence": "善意", "Camaraderie": "伙伴感", "Care": "照顾", "Charity": "慈善", "Closeness": "亲密", "Compassion": "同理与慈悲", "Connection": "连接", "Cooperation": "合作", "Cordiality": "友善", "Courtesy": "礼貌", "Empathy": "共情", "Encouragement": "鼓励", "Family": "家庭", "Friendliness": "友好", "Generosity": "慷慨", "Giving": "给予", "Helpfulness": "乐于帮助", "Hospitality": "好客", "Intimacy": "亲密关系", "Kindness": "善良", "Love": "爱", "Loyalty": "忠诚", "Sharing": "分享", "Solidarity": "团结", "Support": "支持", "Sympathy": "体恤", "Teamwork": "团队合作", "Trust": "信任", "Warmth": "温暖",
+    "Accuracy": "准确", "Acknowledgement": "被承认", "Candor": "坦诚", "Commitment": "承诺", "Congruency": "内外一致", "Correctness": "正确", "Credibility": "可信度", "Dependability": "可靠", "Dignity": "尊严", "Directness": "直接", "Discretion": "谨慎", "Duty": "责任", "Fidelity": "忠实", "Frankness": "直率", "Honesty": "诚实", "Honor": "荣誉", "Integrity": "正直", "Reliability": "可靠性", "Respect": "尊重", "Sincerity": "真诚", "Soundness": "稳妥", "Thoroughness": "周全", "Trustworthiness": "值得信赖", "Truth": "真实",
+    "Accessibility": "可及性", "Altruism": "利他", "Contribution": "贡献", "Diversity": "多样性", "Fairness": "公平", "Impartiality": "公正", "Impact": "影响", "Justice": "正义", "Liberation": "解放", "Making a difference": "带来改变", "Philanthropy": "公益", "Service": "服务", "Selflessness": "无私", "Unity": "合一", "Usefulness": "有用", "Utility": "实用",
+    "Adaptability": "适应力", "Assertiveness": "坚定表达", "Assurance": "笃定", "Certainty": "确定感", "Choice": "选择", "Control": "掌控", "Conviction": "信念", "Decisiveness": "果断", "Direction": "方向", "Firmness": "坚定", "Flexibility": "灵活", "Freedom": "自由", "Independence": "独立", "Liberty": "自由权", "Open-mindedness": "开放心态", "Openness": "开放", "Privacy": "隐私", "Proactivity": "主动", "Self-control": "自我控制", "Self-reliance": "自立", "Willfulness": "意志", "Willingness": "愿意尝试",
+    "Awareness": "觉察", "Challenge": "挑战", "Clarity": "清晰", "Clear-mindedness": "头脑清楚", "Consciousness": "意识", "Curiosity": "好奇", "Depth": "深度", "Discovery": "发现", "Education": "教育", "Experience": "经验", "Exploration": "探索", "Fascination": "着迷", "Growth": "成长", "Guidance": "引导", "Insightfulness": "洞察", "Inspiration": "灵感", "Intelligence": "智慧", "Intuition": "直觉", "Knowledge": "知识", "Learning": "学习", "Mastery": "精通", "Mindfulness": "正念", "Perceptiveness": "敏锐", "Reflection": "反思", "Understanding": "理解", "Vision": "愿景", "Wisdom": "智慧", "Wonder": "惊奇",
+    "Amusement": "好玩", "Articulacy": "表达清楚", "Beauty": "美", "Charm": "魅力", "Creativity": "创造力", "Delight": "喜悦", "Dreaming": "想象", "Elegance": "优雅", "Enjoyment": "享受", "Entertainment": "娱乐", "Expressiveness": "表达力", "Fashion": "风格", "Flow": "心流", "Fun": "乐趣", "Grace": "优美", "Humor": "幽默", "Imagination": "想象力", "Originality": "原创性", "Outlandishness": "奇特", "Passion": "热情", "Playfulness": "玩心", "Pleasure": "快乐", "Recreation": "休闲", "Silliness": "傻气的好玩", "Spontaneity": "自发", "Surprise": "惊喜", "Uniqueness": "独特", "Variety": "变化", "Wittiness": "机智",
+    "Activeness": "活跃", "Adventure": "冒险", "Agility": "敏捷", "Alertness": "警觉", "Ambition": "抱负", "Audacity": "大胆", "Boldness": "勇敢直接", "Bravery": "勇气", "Buoyancy": "轻盈有活力", "Courage": "勇气", "Daring": "敢尝试", "Determination": "决心", "Drive": "驱动力", "Dynamism": "动能", "Eagerness": "热切", "Energy": "能量", "Enthusiasm": "热忱", "Excitement": "兴奋", "Exhilaration": "振奋", "Fearlessness": "无畏", "Fierceness": "有力量的强烈", "Fortitude": "坚韧", "Heroism": "英雄气概", "Intensity": "强度", "Intrepidness": "无畏探索", "Liveliness": "活力", "Nerve": "胆量", "Perkiness": "精神劲", "Resilience": "韧性", "Resolve": "决意", "Speed": "速度", "Spunk": "劲头", "Strength": "力量", "Vigor": "活力", "Vitality": "生命力", "Vivacity": "生气勃勃", "Zeal": "热忱",
+    "Accomplishment": "完成感", "Achievement": "成就", "Adroitness": "熟练灵巧", "Being the best": "做到最好", "Brilliance": "出色", "Capability": "能力", "Carefulness": "仔细", "Cleverness": "聪明", "Completion": "完成", "Concentration": "专注", "Confidence": "自信", "Dexterity": "灵巧", "Diligence": "勤勉", "Discipline": "自律", "Effectiveness": "有效", "Efficiency": "效率", "Endurance": "耐力", "Excellence": "卓越", "Expertise": "专业能力", "Focus": "专注", "Industry": "勤奋", "Ingenuity": "巧思", "Inventiveness": "发明创造", "Meticulousness": "细致", "Perfection": "完美", "Precision": "精确", "Preparedness": "准备充分", "Professionalism": "专业性", "Resourcefulness": "会想办法", "Rigor": "严谨", "Skillfulness": "有技巧", "Success": "成功",
+    "Cleanliness": "干净", "Consistency": "一致性", "Continuity": "连续性", "Decorum": "得体", "Economy": "节省", "Expediency": "便利", "Financial independence": "经济独立", "Frugality": "节俭", "Investing": "投入与投资", "Neatness": "整洁", "Order": "秩序", "Organization": "组织性", "Practicality": "实际", "Pragmatism": "务实", "Prudence": "审慎", "Punctuality": "准时", "Reason": "理性", "Reasonableness": "合理", "Realism": "现实感", "Structure": "结构", "Temperance": "节制", "Thrift": "节约", "Tidiness": "整齐", "Timeliness": "及时",
+    "Affluence": "富足", "Attractiveness": "吸引力", "Celebrity": "知名度", "Coolness": "酷", "Dominance": "主导", "Fame": "名声", "Leadership": "领导力", "Looking good": "好看体面", "Majesty": "庄严", "Persuasiveness": "说服力", "Poise": "从容", "Polish": "精致", "Popularity": "受欢迎", "Potency": "力量感", "Power": "权力", "Recognition": "被认可", "Refinement": "讲究", "Richness": "丰盛", "Significance": "重要性", "Supremacy": "领先", "Victory": "胜利", "Wealth": "财富", "Winning": "赢",
+    "Awe": "敬畏", "Devotion": "投入与奉献", "Devoutness": "虔诚", "Faith": "信念", "Holiness": "神圣", "Hopefulness": "希望感", "Humility": "谦逊", "Piety": "虔敬", "Purity": "纯净", "Religiousness": "宗教性", "Reverence": "敬重", "Ritual": "仪式", "Sacredness": "神圣感", "Sacrifice": "牺牲", "Spirit": "精神", "Spirituality": "精神性", "Thankfulness": "感恩", "Transcendence": "超越", "Virtue": "美德"
   };
 
   const reverseTranslations = new Map();
@@ -788,6 +826,20 @@
     });
   }
 
+  function updateValueBankLabels(lang) {
+    document.querySelectorAll(".value-chip").forEach((element) => {
+      const originalLabel = element.getAttribute("data-original-aria-label") || "";
+      const labelSource = originalLabel ? originalLabel.split(".")[0] : "";
+      const raw = element.dataset.originalValueLabel || labelSource || normalize(element.textContent || "").split(" / ")[0];
+      if (!raw) return;
+      element.dataset.originalValueLabel = raw;
+      const chinese = valueTranslations[raw];
+      element.textContent = lang === "zh" && chinese ? raw + " / " + chinese : raw;
+      const state = element.classList.contains("mine") ? "This is my value" : element.classList.contains("maybe") ? "Maybe" : "Not selected";
+      element.setAttribute("aria-label", lang === "zh" && chinese ? raw + " / " + chinese + ". " + translateText(state) : raw + ". " + state + ".");
+    });
+  }
+
   function translateSpecialElements(lang) {
     document.querySelectorAll(".step-count").forEach((element) => {
       if (!element.dataset.originalStepCount) element.dataset.originalStepCount = normalize(element.textContent || "");
@@ -821,6 +873,7 @@
     nodes.forEach((node) => translateNode(node, lang));
     document.querySelectorAll("[placeholder], [title], [aria-label]").forEach((element) => translateAttributes(element, lang));
     translateSpecialElements(lang);
+    updateValueBankLabels(lang);
     updateButtons(lang);
   }
 
