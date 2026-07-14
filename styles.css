@@ -652,7 +652,15 @@ h3 {
   font-size: 1.08rem;
 }
 
+.section-heading h2 {
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 0.95;
+  margin-top: 6px;
+  max-width: 760px;
+}
+
 .research-layout,
+.research-page-shell,
 .astro-grid,
 .workbook-layout,
 .student-grid {
@@ -662,6 +670,428 @@ h3 {
 
 .research-layout {
   grid-template-columns: 0.85fr 1.15fr;
+}
+
+.research-page-hero .lead {
+  line-height: 1.62;
+  max-width: 760px;
+}
+
+.research-role {
+  align-items: start;
+  border-top: 2px solid var(--line);
+  display: grid;
+  gap: 20px;
+  grid-template-columns: minmax(180px, 0.36fr) minmax(0, 1fr);
+  margin-bottom: 0;
+  margin-top: 18px;
+  max-width: 920px;
+  padding-top: 18px;
+}
+
+.research-role p {
+  color: var(--ink);
+  font-size: clamp(1.02rem, 1.5vw, 1.2rem);
+  font-weight: 850;
+  line-height: 1.35;
+  margin-bottom: 0;
+}
+
+.role-label {
+  color: var(--muted);
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 900;
+  margin-bottom: 7px;
+  text-transform: uppercase;
+}
+
+.role-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.role-chips span {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 850;
+  padding: 6px 10px;
+}
+
+.research-page-shell {
+  align-items: start;
+  gap: 38px;
+  grid-template-columns: 210px minmax(0, 1fr);
+  padding-top: 12px;
+}
+
+.research-content {
+  min-width: 0;
+}
+
+.research-content .content-section {
+  max-width: none;
+  padding: 0 0 52px;
+}
+
+.research-card-grid,
+.research-collab-list {
+  display: grid;
+  gap: 18px;
+}
+
+.research-card-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.research-collab-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.publication-panel,
+.talk-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.publication-panel,
+.talk-panel {
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  padding: 18px;
+}
+
+.publication-entry,
+.talk-entry {
+  border-bottom: 1px solid rgba(51, 40, 29, 0.18);
+  padding-bottom: 16px;
+}
+
+.publication-entry:last-child,
+.talk-entry:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.publication-entry h3,
+.talk-entry h3 {
+  font-size: clamp(1rem, 1.5vw, 1.18rem);
+  margin-bottom: 6px;
+}
+
+.publication-meta {
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.talk-entry p {
+  margin-bottom: 0;
+}
+
+@property --drift-x {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --drift-y {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+.interest-map {
+  background:
+    linear-gradient(90deg, rgba(36, 31, 27, 0.06) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(36, 31, 27, 0.06) 1px, transparent 1px),
+    #fff8ec;
+  background-size: 34px 34px;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  min-height: 520px;
+  overflow: hidden;
+  position: relative;
+  --interest-zoom: 1;
+}
+
+.interest-zoom-controls {
+  display: flex;
+  gap: 8px;
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  z-index: 4;
+}
+
+.interest-zoom-controls button {
+  align-items: center;
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  box-shadow: 3px 3px 0 var(--line);
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-size: 1.2rem;
+  font-weight: 900;
+  height: 38px;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+  width: 38px;
+}
+
+.interest-zoom-controls button:hover,
+.interest-zoom-controls button:focus-visible {
+  transform: translateY(-1px);
+}
+
+.interest-map-lines {
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.interest-map-lines line {
+  stroke: rgba(36, 31, 27, 0.42);
+  stroke-linecap: round;
+  stroke-width: 3;
+}
+
+.interest-node {
+  align-items: center;
+  aspect-ratio: 1;
+  background: var(--panel);
+  border: 3px solid var(--line);
+  border-radius: 999px;
+  box-shadow: 5px 5px 0 var(--line);
+  color: var(--ink);
+  cursor: grab;
+  display: flex;
+  font: inherit;
+  font-size: var(--node-font, 0.86rem);
+  font-weight: 900;
+  justify-content: center;
+  left: var(--x);
+  line-height: 1.08;
+  padding: 16px;
+  position: absolute;
+  text-align: center;
+  top: var(--y);
+  touch-action: none;
+  transform: translate(-50%, -50%) translate(var(--drift-x, 0), var(--drift-y, 0)) scale(calc(var(--interest-zoom, 1) * var(--active-scale, 1)));
+  transition: box-shadow 160ms ease, transform 160ms ease;
+  width: var(--node-size, 120px);
+  z-index: 1;
+}
+
+.node-xl {
+  --node-font: 1rem;
+  --node-size: clamp(142px, 15vw, 176px);
+}
+
+.node-lg {
+  --node-font: 0.92rem;
+  --node-size: clamp(124px, 13vw, 154px);
+}
+
+.node-md {
+  --node-font: 0.84rem;
+  --node-size: clamp(108px, 11vw, 136px);
+}
+
+.node-sm {
+  --node-font: 0.78rem;
+  --node-size: clamp(94px, 9vw, 116px);
+}
+
+.interest-node span {
+  max-width: 12ch;
+}
+
+.interest-node:hover,
+.interest-node:focus-visible,
+.interest-node.is-dragging {
+  box-shadow: 7px 7px 0 var(--line);
+  --active-scale: 1.08;
+}
+
+.interest-node.is-dragging {
+  animation-play-state: paused;
+  cursor: grabbing;
+  z-index: 2;
+}
+
+.interest-node:nth-of-type(odd) {
+  animation: interestFloatA var(--float, 8s) ease-in-out infinite;
+}
+
+.interest-node:nth-of-type(even) {
+  animation: interestFloatB var(--float, 8s) ease-in-out infinite;
+}
+
+@keyframes interestFloatA {
+  0%,
+  100% {
+    --drift-x: 0px;
+    --drift-y: 0px;
+  }
+  50% {
+    --drift-x: 7px;
+    --drift-y: -8px;
+  }
+}
+
+@keyframes interestFloatB {
+  0%,
+  100% {
+    --drift-x: 0px;
+    --drift-y: 0px;
+  }
+  50% {
+    --drift-x: -8px;
+    --drift-y: 7px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interest-node {
+    animation: none;
+  }
+}
+
+.node-primary {
+  background: #f8c9bc;
+}
+
+.node-amber {
+  background: #f9d38a;
+}
+
+.node-teal {
+  background: #b9ddd1;
+}
+
+.node-pink {
+  background: #f7cfda;
+}
+
+.node-grape {
+  background: #d3c3ec;
+}
+
+.node-green {
+  background: #d7e7a9;
+}
+
+.research-card-grid article,
+.research-collab-list article {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+.research-card-grid article:nth-child(3n + 1),
+.research-collab-list article:nth-child(3n + 1) {
+  background: #fff8ec;
+}
+
+.research-card-grid article:nth-child(3n + 2),
+.research-collab-list article:nth-child(3n + 2) {
+  background: #e9f4f1;
+}
+
+.research-card-grid article:nth-child(3n),
+.research-collab-list article:nth-child(3n) {
+  background: #f5edff;
+}
+
+.school-outreach-card {
+  background: #e6f4c7 !important;
+}
+
+.outreach-card-media {
+  aspect-ratio: 16 / 9;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  margin: 12px auto 14px;
+  object-fit: cover;
+  width: min(100%, 280px);
+}
+
+.translation-card {
+  grid-column: 1 / -1;
+}
+
+.translation-list {
+  align-items: start;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 16px;
+}
+
+.translation-list figure {
+  background: #fff;
+  border: 2px solid rgba(42, 37, 33, 0.28);
+  border-radius: 8px;
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 12px;
+}
+
+.translation-list img {
+  aspect-ratio: 4 / 5;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  height: auto;
+  object-fit: cover;
+  width: 100%;
+}
+
+.light-book-cover img {
+  object-fit: contain;
+  padding: 15%;
+  width: 100%;
+}
+
+.translation-list figcaption {
+  display: grid;
+  gap: 4px;
+}
+
+.translation-list span {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 750;
+}
+
+.research-collab-list article {
+  display: block;
+}
+
+.research-collab-list p {
+  margin-bottom: 0;
+}
+
+.text-link {
+  font-weight: 800;
 }
 
 .feature-panel {
@@ -1337,6 +1767,11 @@ th {
 
   .hero,
   .research-layout,
+  .research-page-shell,
+  .research-role,
+  .research-card-grid,
+  .translation-list,
+  .research-collab-list,
   .astro-grid,
   .astro-about,
   .astro-page-hero,
@@ -1483,6 +1918,30 @@ th {
 
   .single-line-title {
     font-size: 7.4vw;
+  }
+
+  .interest-map {
+    min-height: 520px;
+  }
+
+  .interest-node {
+    width: var(--mobile-node-size, 108px);
+  }
+
+  .node-xl {
+    --mobile-node-size: 128px;
+  }
+
+  .node-lg {
+    --mobile-node-size: 118px;
+  }
+
+  .node-md {
+    --mobile-node-size: 108px;
+  }
+
+  .node-sm {
+    --mobile-node-size: 96px;
   }
 
   .home-page h1 {

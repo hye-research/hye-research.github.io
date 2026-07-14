@@ -23,58 +23,393 @@
     </header>
 
     <main>
-      <section class="page-hero section-band">
+      <section class="page-hero section-band research-page-hero">
         <p class="eyebrow">Research</p>
-        <h1>From imaging methodology to AI-enabled radio astronomy.</h1>
-        <p class="lead">
-          My work has a deep methodological root in radio interferometric imaging and a growing
-          interdisciplinary branch in AI x radio astronomy.
-        </p>
-      </section>
-
-      <section class="content-section">
-        <div class="research-layout">
-          <article class="feature-panel">
-            <h2>Research positioning</h2>
-            <p>
-              I work on tools and workflows that make large radio surveys more precise, scalable,
-              and scientifically useful. The central thread is turning complex interferometric data
-              into reliable images and source populations that can support galaxy-evolution science.
-            </p>
-          </article>
-          <div class="stacked-list">
-            <article>
-              <span class="tag">Imaging methods</span>
-              <h3>Least-misfit gridding and wide-field pipelines</h3>
-              <p>
-                Work on gridding, W-stacking, and sub-arcsecond LOFAR wide-field processing, with
-                methods connected to production radio astronomy software.
-              </p>
-            </article>
-            <article>
-              <span class="tag">AI x radio</span>
-              <h3>Cross-resolution source identification</h3>
-              <p>
-                Machine-learning approaches for separating star-forming galaxies and AGN across
-                radio survey regimes, including radio-quiet AGN recovery.
-              </p>
-            </article>
-            <article>
-              <span class="tag">Infrastructure</span>
-              <h3>Scientific computing and SKA-era workflows</h3>
-              <p>
-                Experience across SRCNet, SKA management and infrastructure, and collaborations
-                involving high-performance data systems.
-              </p>
-            </article>
+        <h1>Research</h1>
+        <div class="research-role">
+          <div>
+            <span class="role-label">Current role</span>
+            <p>Postdoctoral Researcher</p>
+          </div>
+          <div>
+            <span class="role-label">Affiliation</span>
+            <p>Astrophysics Group, Cavendish Laboratory, University of Cambridge</p>
+            <div class="role-chips" aria-label="Additional affiliations">
+              <span>SKA</span>
+              <span>LOFAR</span>
+              <span>UKSRC</span>
+              <span>Clare Hall</span>
+            </div>
           </div>
         </div>
       </section>
+
+      <div class="research-page-shell section-band">
+        <aside class="astro-side-nav research-side-nav" aria-label="Research page sections">
+          <p class="eyebrow">On this page</p>
+          <nav>
+            <a href="#interests">Research interests</a>
+            <a href="#collaborations">Collaborations</a>
+            <a href="#publications">Publications</a>
+            <a href="#talks">Talks</a>
+            <a href="#outreach">Outreach activities</a>
+          </nav>
+        </aside>
+
+        <div class="research-content">
+          <section class="content-section" id="interests">
+            <div class="section-heading">
+              <p class="eyebrow">Interactive map</p>
+              <h2>Research interests</h2>
+            </div>
+            <div class="interest-map" data-interest-map aria-label="Connected research interest map">
+              <div class="interest-zoom-controls" aria-label="Research interest map zoom controls">
+                <button type="button" data-zoom-out aria-label="Zoom out">−</button>
+                <button type="button" data-zoom-in aria-label="Zoom in">+</button>
+              </div>
+              <svg class="interest-map-lines" aria-hidden="true"></svg>
+              <button class="interest-node node-primary node-xl" type="button" data-node="radio" style="--x: 12%; --y: 18%; --float: 7s;">
+                <span>Radio astronomy</span>
+              </button>
+              <button class="interest-node node-amber node-lg" type="button" data-node="interferometry" style="--x: 27%; --y: 29%; --float: 8.5s;">
+                <span>Radio interferometry</span>
+              </button>
+              <button class="interest-node node-teal node-lg" type="button" data-node="imaging" style="--x: 40%; --y: 42%; --float: 7.8s;">
+                <span>Radio imaging</span>
+              </button>
+              <button class="interest-node node-pink node-lg" type="button" data-node="multiwavelength" style="--x: 62%; --y: 15%; --float: 9s;">
+                <span>Multi-wavelength astronomy</span>
+              </button>
+              <button class="interest-node node-grape node-md" type="button" data-node="crossid" style="--x: 68%; --y: 36%; --float: 8.2s;">
+                <span>Cross-identification of astronomical sources</span>
+              </button>
+              <button class="interest-node node-green node-md" type="button" data-node="classification" style="--x: 82%; --y: 52%; --float: 7.4s;">
+                <span>Astrophysical source classification</span>
+              </button>
+              <button class="interest-node node-primary node-md" type="button" data-node="catalogue" style="--x: 58%; --y: 58%; --float: 8.8s;">
+                <span>Catalogue construction</span>
+              </button>
+              <button class="interest-node node-amber node-md" type="button" data-node="ai" style="--x: 22%; --y: 72%; --float: 7.2s;">
+                <span>AI-assisted methods</span>
+              </button>
+              <button class="interest-node node-teal node-md" type="button" data-node="ml" style="--x: 39%; --y: 79%; --float: 8s;">
+                <span>Machine learning</span>
+              </button>
+              <button class="interest-node node-pink node-sm" type="button" data-node="simulation" style="--x: 74%; --y: 78%; --float: 9.2s;">
+                <span>Data simulation</span>
+              </button>
+              <button class="interest-node node-grape node-sm" type="button" data-node="culture" style="--x: 91%; --y: 24%; --float: 7.6s;">
+                <span>Research culture</span>
+              </button>
+            </div>
+          </section>
+
+          <section class="content-section" id="collaborations">
+            <div class="section-heading">
+              <p class="eyebrow">Collaborations</p>
+              <h2>Selected directions for collaboration.</h2>
+            </div>
+            <div class="research-collab-list">
+              <article>
+                <h3>Radio survey methods and data products</h3>
+                <p>Imaging, calibration, validation, and interpretation of large radio datasets.</p>
+              </article>
+              <article>
+                <h3>Machine learning for astronomical interpretation</h3>
+                <p>Trustworthy methods whose results can be checked, interpreted, and used by scientists in real research workflows.</p>
+              </article>
+              <article>
+                <h3>Research culture and scientific infrastructure</h3>
+                <p>Tools, documentation, data workflows, and collaboration practices that make research easier to share, check, and build on.</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="content-section" id="publications">
+            <div class="section-heading">
+              <p class="eyebrow">Publications</p>
+              <h2>Selected publications</h2>
+            </div>
+            <article class="publication-panel">
+              <div class="publication-entry">
+                <h3>1 arcsecond imaging strategy for LoTSS survey using the International LOFAR Telescope</h3>
+                <p class="publication-meta">Ye et al., A&amp;A, 691, A347, 2024</p>
+                <p>
+                  Built the first large-area 1″ imaging pipeline for the International LOFAR
+                  Telescope and produced a 1″ image and catalogue in ELAIS-N1. Later work built
+                  deeper high-resolution imaging products from this pipeline and used related data
+                  products in high-redshift radio relic science.
+                </p>
+              </div>
+              <div class="publication-entry">
+                <h3>High accuracy wide-field imaging method in radio interferometry</h3>
+                <p class="publication-meta">Ye, Gull, Tan &amp; Nikolic, MNRAS, 510, 4110-4125, 2022</p>
+                <p>
+                  Developed an optimised w-stacking kernel for higher-accuracy wide-field imaging
+                  with fewer w-planes. The method is integrated into WSClean and is now the default
+                  w-stacking kernel used by major low-frequency radio arrays.
+                </p>
+              </div>
+              <div class="publication-entry">
+                <h3>Optimal gridding and degridding in radio interferometry imaging</h3>
+                <p class="publication-meta">Ye, Gull, Tan &amp; Nikolic, MNRAS, 491, 1146-1159, 2020</p>
+                <p>
+                  Derived optimal gridding and degridding kernels with analytical error bounds,
+                  reducing error by more than two orders of magnitude compared with traditional
+                  PSWF kernels for the same support size, with highly consistent error control
+                  across the retained area.
+                </p>
+              </div>
+              <div class="publication-entry">
+                <h3>Imaging algorithm optimization for scale-out processing</h3>
+                <p class="publication-meta">Ye, Hague, Gull, Tan &amp; Nikolic, in Big Data in Astronomy, Elsevier, 2020</p>
+                <p>
+                  A systematic treatment of scalability strategies for radio imaging algorithms,
+                  software engineering, and parallel processing in the SKA era.
+                </p>
+              </div>
+            </article>
+          </section>
+
+          <section class="content-section" id="talks">
+            <div class="section-heading">
+              <p class="eyebrow">Talks</p>
+              <h2>Research talks and seminars</h2>
+            </div>
+            <article class="talk-panel">
+              <div class="talk-entry">
+                <h3>European Astronomical Society Annual Meeting</h3>
+                <p class="publication-meta">Jul 2026 · Lausanne, Switzerland</p>
+              </div>
+              <div class="talk-entry">
+                <h3>AI in Radio Astronomy Workshop</h3>
+                <p class="publication-meta">Mar 2026 · Royal Observatory Edinburgh, UK</p>
+              </div>
+              <div class="talk-entry">
+                <h3>SKA UK All-Hands Meeting</h3>
+                <p class="publication-meta">Sep 2024 · Durham University, UK</p>
+              </div>
+              <div class="talk-entry">
+                <h3>European VLBI Network Symposium</h3>
+                <p class="publication-meta">Jul 2022 · Cork, Ireland</p>
+              </div>
+              <div class="talk-entry">
+                <h3>European Astronomical Society Annual Meeting</h3>
+                <p class="publication-meta">Jun 2022 · Valencia, Spain</p>
+              </div>
+              <div class="talk-entry">
+                <h3>How to make the most of a conference</h3>
+                <p class="publication-meta">2021 · Postgraduate workshop, School of Astronomy and Space Science, Nanjing University</p>
+              </div>
+              <div class="talk-entry">
+                <h3>Invited seminars and talks</h3>
+                <p class="publication-meta">2014-2019 · ASTRON, MSSL, ESO, Tsinghua University, Nanjing University, and the 5th SKA China Summer School</p>
+              </div>
+            </article>
+          </section>
+
+          <section class="content-section" id="outreach">
+            <div class="section-heading">
+              <p class="eyebrow">Outreach activities</p>
+              <h2>Public-facing and community-facing work.</h2>
+            </div>
+            <div class="research-card-grid">
+              <article>
+                <span class="tag">AstroCareer</span>
+                <h3>Monthly Astro Career Talk Series</h3>
+                <p>
+                  A career conversation series for researchers in astronomy, astrophysics, and
+                  cosmology.
+                </p>
+                <a class="text-link" href="astrocareer.html">Open AstroCareer</a>
+              </article>
+              <article>
+                <span class="tag">Neurodiversity</span>
+                <h3>Neurodiversity resources</h3>
+                <p>
+                  Workbook and illustrated resources for self-understanding, access needs, and
+                  public-facing neurodiversity education.
+                </p>
+                <a class="text-link" href="workbook.html">Open resources</a>
+              </article>
+              <article>
+                <span class="tag">Outreach talks</span>
+                <h3>Public astronomy talks and school engagement</h3>
+                <p>
+                  I am coordinating the three-day Physics at Work outreach event for the Astrophysics
+                  Group. I have also given outreach talks for Cambridge Open Days, She Talks Science
+                  at Murray Edwards College, Hills Road Sixth Form College, and the Cavendish
+                  Physics at Work programme, including public introductions to radio interferometry,
+                  exoplanets, and gravitational-wave astronomy.
+                </p>
+              </article>
+              <article class="school-outreach-card">
+                <span class="tag">Schools</span>
+                <h3>Mullard Radio Astronomy Observatory tours</h3>
+                <img class="outreach-card-media" src="assets/outreach/mrao-lords-bridge.jpg" alt="The 5-km Ryle Telescope at the Mullard Radio Telescope Observatory">
+                <p>
+                  Supported school visits and public engagement as a tour guide at the Mullard Radio
+                  Astronomy Observatory.
+                </p>
+              </article>
+              <article class="translation-card">
+                <span class="tag">Translation</span>
+                <h3>Popular-science translation</h3>
+                <p>
+                  Translated popular-science materials into Chinese, including two volumes in the
+                  Tianshu series, Light: A Very Short Introduction, and Ada's Adventures in Science.
+                </p>
+                <div class="translation-list" aria-label="Translated popular-science books">
+                  <figure>
+                    <img src="assets/books/tianshu-02.webp" alt="Tianshu series translated book cover">
+                    <figcaption>
+                      <strong>Tianshu series</strong>
+                      <span>Two volumes · English to Simplified Chinese</span>
+                    </figcaption>
+                  </figure>
+                  <figure class="light-book-cover">
+                    <img src="assets/books/oxford-light.webp" alt="Light: A Very Short Introduction translated book cover">
+                    <figcaption>
+                      <strong>Light: A Very Short Introduction</strong>
+                      <span>By Ian A. Walmsley · English to Simplified Chinese</span>
+                    </figcaption>
+                  </figure>
+                  <figure>
+                    <img src="assets/books/ada-adventures.jpg" alt="Ada's Adventures in Science translated project image">
+                    <figcaption>
+                      <strong>Ada's Adventures in Science</strong>
+                      <span>Simplified Chinese and Traditional Chinese translations</span>
+                    </figcaption>
+                  </figure>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+      </div>
     </main>
 
     <footer class="site-footer">
       <p>Dr Haoyang Ye · Research</p>
       <a href="#top">Back to top</a>
     </footer>
+    <script>
+      (() => {
+        const map = document.querySelector("[data-interest-map]");
+        if (!map) return;
+
+        const svg = map.querySelector(".interest-map-lines");
+        const nodes = [...map.querySelectorAll(".interest-node")];
+        const zoomIn = map.querySelector("[data-zoom-in]");
+        const zoomOut = map.querySelector("[data-zoom-out]");
+        let zoom = 1;
+        const links = [
+          ["radio", "interferometry"],
+          ["interferometry", "imaging"],
+          ["imaging", "catalogue"],
+          ["imaging", "simulation"],
+          ["radio", "multiwavelength"],
+          ["multiwavelength", "crossid"],
+          ["crossid", "classification"],
+          ["classification", "catalogue"],
+          ["ai", "ml"],
+          ["ml", "classification"],
+          ["ml", "crossid"],
+          ["ai", "catalogue"],
+          ["simulation", "ml"],
+          ["culture", "ai"],
+          ["culture", "catalogue"],
+          ["culture", "radio"]
+        ];
+
+        const lineFor = (from, to) => {
+          const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          line.dataset.from = from;
+          line.dataset.to = to;
+          svg.appendChild(line);
+        };
+
+        links.forEach(([from, to]) => lineFor(from, to));
+
+        const applyZoom = () => {
+          map.style.setProperty("--interest-zoom", zoom.toFixed(2));
+          updateLines();
+        };
+
+        const nodeCenter = (node) => {
+          const mapBox = map.getBoundingClientRect();
+          const nodeBox = node.getBoundingClientRect();
+          return {
+            x: nodeBox.left - mapBox.left + nodeBox.width / 2,
+            y: nodeBox.top - mapBox.top + nodeBox.height / 2
+          };
+        };
+
+        const updateLines = () => {
+          const byName = new Map(nodes.map((node) => [node.dataset.node, node]));
+          svg.setAttribute("viewBox", `0 0 ${map.clientWidth} ${map.clientHeight}`);
+          svg.querySelectorAll("line").forEach((line) => {
+            const from = nodeCenter(byName.get(line.dataset.from));
+            const to = nodeCenter(byName.get(line.dataset.to));
+            line.setAttribute("x1", from.x);
+            line.setAttribute("y1", from.y);
+            line.setAttribute("x2", to.x);
+            line.setAttribute("y2", to.y);
+          });
+        };
+
+        const moveNode = (node, clientX, clientY) => {
+          const box = map.getBoundingClientRect();
+          const x = ((clientX - box.left) / box.width) * 100;
+          const y = ((clientY - box.top) / box.height) * 100;
+          node.style.setProperty("--x", `${Math.min(88, Math.max(4, x))}%`);
+          node.style.setProperty("--y", `${Math.min(82, Math.max(8, y))}%`);
+          updateLines();
+        };
+
+        nodes.forEach((node) => {
+          node.addEventListener("pointerdown", (event) => {
+            node.setPointerCapture(event.pointerId);
+            node.classList.add("is-dragging");
+            moveNode(node, event.clientX, event.clientY);
+          });
+
+          node.addEventListener("pointermove", (event) => {
+            if (!node.classList.contains("is-dragging")) return;
+            moveNode(node, event.clientX, event.clientY);
+          });
+
+          node.addEventListener("pointerup", () => {
+            node.classList.remove("is-dragging");
+          });
+
+          node.addEventListener("pointercancel", () => {
+            node.classList.remove("is-dragging");
+          });
+        });
+
+        zoomIn.addEventListener("click", () => {
+          zoom = Math.min(1.35, zoom + 0.1);
+          applyZoom();
+        });
+
+        zoomOut.addEventListener("click", () => {
+          zoom = Math.max(0.75, zoom - 0.1);
+          applyZoom();
+        });
+
+        window.addEventListener("resize", updateLines);
+        let animationFrame;
+        const syncAnimatedLines = () => {
+          updateLines();
+          animationFrame = window.requestAnimationFrame(syncAnimatedLines);
+        };
+
+        applyZoom();
+        if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          animationFrame = window.requestAnimationFrame(syncAnimatedLines);
+        }
+      })();
+    </script>
   </body>
 </html>
