@@ -82,6 +82,42 @@ a {
   text-decoration: none;
 }
 
+.hero-email-link {
+  align-items: center;
+  background: var(--amber);
+  border: 2px solid var(--line);
+  box-shadow: 3px 3px 0 var(--line);
+  border-radius: 999px;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+  margin-top: 18px;
+  min-height: 42px;
+  padding: 8px 13px 8px 11px;
+  text-decoration: none;
+  width: fit-content;
+}
+
+.hero-email-link svg {
+  flex: none;
+  fill: none;
+  height: 20px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  width: 20px;
+}
+
+.hero-email-link span {
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.hero-email-link:hover {
+  transform: translateY(-1px);
+}
+
 .brand-mark {
   align-items: center;
   background: var(--tomato);
@@ -1270,6 +1306,11 @@ th {
   .home-page .pronunciation::before {
     left: 50%;
     transform: translateX(-50%);
+  }
+
+  .hero-email-link {
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
