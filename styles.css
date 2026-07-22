@@ -1065,10 +1065,23 @@ h3 {
   width: 100%;
 }
 
-.light-book-cover img {
-  object-fit: contain;
-  padding: 7.5%;
+.book-cover-frame {
+  aspect-ratio: 4 / 5;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
   width: 100%;
+}
+
+.book-cover-frame img {
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 3px;
+  height: 85%;
+  object-fit: contain;
+  padding: 0;
+  width: 85%;
 }
 
 .translation-list figcaption {
