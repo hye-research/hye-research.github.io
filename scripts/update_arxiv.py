@@ -33,9 +33,10 @@ CATEGORY_NAMES = {
 
 
 def daily_window(issue_date: dt.date) -> tuple[dt.datetime, dt.datetime]:
-    """Return the 24-hour UTC window ending at 07:00 on the issue date."""
+    """Return the UTC window ending at 07:00, spanning the weekend on Mondays."""
     end = dt.datetime.combine(issue_date, dt.time(hour=7), tzinfo=dt.timezone.utc)
-    return end - dt.timedelta(days=1), end
+    days = 3 if issue_date.weekday() == 0 else 1
+    return end - dt.timedelta(days=days), end
 
 
 def clean_text(value: str | None) -> str:
@@ -168,6 +169,9 @@ def main() -> None:
     args = parser.parse_args()
 
     issue_date = args.date or dt.datetime.now(dt.timezone.utc).date()
+    if issue_date.weekday() >= 5:
+        print(f"Skipped {issue_date}: weekend issues are not created")
+        return
     start, end = daily_window(issue_date)
     papers = fetch_period(start, end)
     issue = make_issue(issue_date, papers)

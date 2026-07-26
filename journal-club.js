@@ -143,7 +143,7 @@ const chinese = {
   "Daily database": "每日论文数据库",
   "Updates automatically": "自动更新",
   "Every date is archived in the background.": "每一天都会在后台自动归档。",
-  "A scheduled background job checks arXiv every day at 07:00 UTC, stores the complete issue, and prepares the archive—even when nobody opens the website.": "后台定时任务每天 07:00 UTC 检查 arXiv、保存完整日期并建立归档，即使没有人打开网页也会照常运行。",
+  "A scheduled background job checks arXiv every weekday at 07:00 UTC, stores the complete issue, and prepares the archive—even when nobody opens the website.": "后台定时任务每个工作日 07:00 UTC 检查 arXiv、保存完整日期并建立归档，即使没有人打开网页也会照常运行。",
   "Last scheduled sync": "上次定时同步",
   "Next scheduled sync": "下次定时同步",
   "Manual recovery": "手动补救",
@@ -551,12 +551,12 @@ function renderHome() {
           <p class="eyebrow">Daily database · Updates automatically</p>
           <h2>Every date is archived in the background.</h2>
           <p>
-            A scheduled background job checks arXiv every day at 07:00 UTC, stores the complete issue,
+            A scheduled background job checks arXiv every weekday at 07:00 UTC, stores the complete issue,
             and prepares the archive—even when nobody opens the website.
           </p>
           <div class="sync-schedule">
             <span><strong>First scheduled sync</strong> Monday, 27 July · 07:00 UTC</span>
-            <span><strong>Schedule</strong> Every day · 07:00 UTC</span>
+            <span><strong>Schedule</strong> Monday–Friday · 07:00 UTC</span>
           </div>
         </div>
       </div>
@@ -619,7 +619,7 @@ function renderHome() {
     <section class="journal-workflow content-section">
       <p class="eyebrow">The workflow</p>
       <div class="workflow-grid">
-        <div><strong>01</strong><h3>Collect</h3><p>New papers arrive from arXiv every day.</p></div>
+        <div><strong>01</strong><h3>Collect</h3><p>New papers arrive from arXiv every weekday.</p></div>
         <div><strong>02</strong><h3>Understand</h3><p>AI extracts the question, method, result, and limitations.</p></div>
         <div><strong>03</strong><h3>Shortlist</h3><p>You choose what is relevant and add personal notes.</p></div>
         <div><strong>04</strong><h3>Present</h3><p>The app prepares slides, figures, and speaking notes.</p></div>

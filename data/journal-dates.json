@@ -3,19 +3,9 @@
   "source": "arXiv API",
   "dates": [
     {
-      "id": "2026-07-26",
-      "label": "Sunday, 26 July 2026",
-      "eyebrow": "Latest date",
-      "total": 0,
-      "status": "published",
-      "description": "Automatically imported from arXiv and preserved in the daily archive.",
-      "topics": {},
-      "dataUrl": "data/dates/2026-07-26.json"
-    },
-    {
       "id": "2026-07-24",
       "label": "Friday, 24 July 2026",
-      "eyebrow": "Past date",
+      "eyebrow": "Latest date",
       "total": 43,
       "status": "published",
       "description": "Automatically imported from arXiv and preserved in the daily archive.",
