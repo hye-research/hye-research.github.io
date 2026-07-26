@@ -3,18 +3,9 @@
   "source": "arXiv API",
   "dates": [
     {
-      "id": "2026-07-27",
-      "label": "Monday, 27 July 2026",
-      "eyebrow": "Latest date",
-      "total": 0,
-      "status": "scheduled",
-      "description": "Daily archive begins at 07:00 UTC on Monday, 27 July 2026.",
-      "topics": {}
-    },
-    {
       "id": "2026-07-26",
       "label": "Sunday, 26 July 2026",
-      "eyebrow": "Past date",
+      "eyebrow": "Latest date",
       "total": 0,
       "status": "published",
       "description": "Automatically imported from arXiv and preserved in the daily archive.",
