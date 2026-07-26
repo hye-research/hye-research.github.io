@@ -1245,26 +1245,6 @@ a {
   font-size: 0.82rem;
 }
 
-.visitor-unlock {
-  align-items: center;
-  background: var(--teal);
-  border: 2px solid var(--line);
-  box-shadow: var(--shadow);
-  color: white;
-  display: flex;
-  gap: 30px;
-  justify-content: space-between;
-  margin-bottom: 50px;
-}
-
-.visitor-unlock h2 {
-  margin-bottom: 8px;
-}
-
-.visitor-unlock p:last-child {
-  margin-bottom: 0;
-}
-
 .import-week {
   align-items: center;
   background: var(--amber);
@@ -3291,7 +3271,6 @@ th {
     min-height: 220px;
   }
 
-  .visitor-unlock,
   .week-login-banner {
     align-items: flex-start;
     flex-direction: column;

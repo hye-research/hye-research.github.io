@@ -496,14 +496,6 @@ function renderVisitor() {
       </div>
     </section>
 
-    <section class="visitor-unlock content-section">
-      <div>
-        <p class="eyebrow">Member workspace</p>
-        <h2>Unlock all features</h2>
-        <p>Sign in to unlock AI explanations, shortlist, imports, and presentation generation.</p>
-      </div>
-      <button class="button primary" data-view="login">Sign in</button>
-    </section>
   `;
 }
 
