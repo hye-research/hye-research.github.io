@@ -116,8 +116,8 @@ const chinese = {
   "Two ways in.": "两种进入方式。",
   "Browse the public archive, or sign in to use the complete research workflow.": "浏览公开归档，或者登录使用完整的研究工作流程。",
   "Visitor entrance": "访客入口",
-  "Explore by category": "按分类浏览",
-  "Browse weekly archives and see paper titles organised by astrophysics topic. No account needed.": "浏览每周归档，查看按天体物理主题整理的论文标题，无需账号。",
+  "Browse weekly archive": "浏览每周归档",
+  "Open previous weekly issues and browse their papers. No account needed.": "打开往期周刊并浏览其中的论文，无需账号。",
   "Continue as visitor": "以访客身份继续",
   "Member entrance": "登录入口",
   "Open your workspace": "打开个人工作台",
@@ -132,6 +132,8 @@ const chinese = {
   "← Choose another entrance": "← 选择其他入口",
   "Public library": "公开论文库",
   "Browse papers by subject or open a previous weekly issue.": "按照主题浏览论文，或者打开往期周刊。",
+  "Weekly archive": "每周归档",
+  "Open any week to browse its papers. Topic filters are created from that week’s actual arXiv data.": "打开任意一周浏览论文；主题筛选会根据该周真实的 arXiv 数据生成。",
   "Categories": "分类",
   "Browse category": "浏览分类",
   "Sign in to unlock AI explanations, shortlist, imports, and presentation generation.": "登录后解锁 AI 解读、候选清单、论文导入和演示文稿生成。",
@@ -384,8 +386,7 @@ function appNav(active) {
   if (state.access !== "member") {
     return `
       <nav class="journal-app-nav visitor-app-nav" aria-label="Journal Club sections">
-        <button class="${active === "visitor" ? "active" : ""}" data-view="visitor">Categories</button>
-        <button class="${active === "archive" ? "active" : ""}" data-view="visitor" data-scroll-archive="true">Archive</button>
+        <button class="${active === "visitor" || active === "archive" ? "active" : ""}" data-view="visitor">Archive</button>
         <button class="member-unlock" data-view="login">Sign in</button>
         <button class="language-toggle" data-language="${state.language === "en" ? "zh" : "en"}">
           ${state.language === "en" ? "中文" : "EN"}
@@ -426,8 +427,8 @@ function renderGateway() {
       <button class="entrance-card visitor-entrance" data-access="visitor">
         <span class="entrance-icon" aria-hidden="true">◎</span>
         <span class="eyebrow">Visitor entrance</span>
-        <strong>Explore by category</strong>
-        <span>Browse weekly archives and see paper titles organised by astrophysics topic. No account needed.</span>
+        <strong>Browse weekly archive</strong>
+        <span>Open previous weekly issues and browse their papers. No account needed.</span>
         <span class="entrance-cta">Continue as visitor →</span>
       </button>
       <button class="entrance-card member-entrance" data-view="login">
@@ -464,37 +465,19 @@ function renderLogin() {
 }
 
 function renderVisitor() {
-  const categories = [
-    { name: "Radio", symbol: "⌁", count: 18 },
-    { name: "Galaxies", symbol: "◌", count: 42 },
-    { name: "Cosmology", symbol: "✦", count: 31 },
-    { name: "Methods", symbol: "⌘", count: 12 }
-  ];
-
   app.innerHTML = `
     <section class="visitor-header section-band">
       <button class="back-button" data-view="gateway">← Choose another entrance</button>
       <div class="weekly-title-row">
         <div>
           <p class="eyebrow">Public library · Visitor</p>
-          <h1>Explore by category</h1>
-          <p class="lead">Browse papers by subject or open a previous weekly issue.</p>
+          <h1>Weekly archive</h1>
+          <p class="lead">
+            Open any week to browse its papers. Topic filters are created from that
+            week’s actual arXiv data.
+          </p>
         </div>
         ${appNav("visitor")}
-      </div>
-    </section>
-
-    <section class="visitor-categories content-section">
-      <p class="eyebrow">Categories</p>
-      <div class="category-grid">
-        ${categories.map((category) => `
-          <button class="category-card" data-visitor-topic="${category.name}">
-            <span class="category-symbol">${category.symbol}</span>
-            <strong>${category.name}</strong>
-            <span>${category.count} papers this week</span>
-            <span class="entrance-cta">Browse category →</span>
-          </button>
-        `).join("")}
       </div>
     </section>
 
@@ -872,7 +855,6 @@ app.addEventListener("click", (event) => {
   const shortlistButton = event.target.closest("[data-shortlist]");
   const languageButton = event.target.closest("[data-language]");
   const accessButton = event.target.closest("[data-access]");
-  const visitorTopicButton = event.target.closest("[data-visitor-topic]");
   const loginButton = event.target.closest("[data-demo-login]");
   const signoutButton = event.target.closest("[data-signout]");
   const importButton = event.target.closest("[data-import]");
@@ -888,11 +870,6 @@ app.addEventListener("click", (event) => {
     render();
   } else if (accessButton) {
     setAccess(accessButton.dataset.access);
-  } else if (visitorTopicButton) {
-    state.access = "visitor";
-    sessionStorage.setItem(sessionKey, "visitor");
-    state.filter = visitorTopicButton.dataset.visitorTopic;
-    openWeek(journalWeeks[0].id);
   } else if (importButton) {
     state.importStatus = "loading";
     render();
