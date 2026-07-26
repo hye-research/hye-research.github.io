@@ -109,7 +109,7 @@ const state = {
   filter: "All",
   openPaper: null,
   shortlist: readShortlist(),
-  language: localStorage.getItem(languageKey) || "en",
+  language: "en",
   access: null,
   importStatus: "idle",
   aiExplanations: readJsonStorage(aiStorageKey, {}),
@@ -458,9 +458,6 @@ function appNav(active) {
       <nav class="journal-app-nav visitor-app-nav" aria-label="Journal Club sections">
         <button class="${active === "visitor" || active === "archive" ? "active" : ""}" data-view="visitor">Archive</button>
         <button class="member-unlock" data-view="login">Sign in</button>
-        <button class="language-toggle" data-language="${state.language === "en" ? "zh" : "en"}">
-          ${state.language === "en" ? "中文" : "EN"}
-        </button>
       </nav>
     `;
   }
@@ -474,9 +471,6 @@ function appNav(active) {
       <button class="${active === "shortlist" ? "active" : ""}" data-view="shortlist">
         Shortlist <span>${state.shortlist.length}</span>
       </button>
-      <button class="language-toggle" data-language="${state.language === "en" ? "zh" : "en"}">
-        ${state.language === "en" ? "中文" : "EN"}
-      </button>
       <button class="signout-button" data-signout="true">Sign out</button>
     </nav>
   `;
@@ -489,9 +483,6 @@ function renderGateway() {
       <h1>Journal Club</h1>
       <h2>Two ways in.</h2>
       <p class="lead">Browse the public archive, or sign in to use the complete research workflow.</p>
-      <button class="gateway-language" data-language="${state.language === "en" ? "zh" : "en"}">
-        ${state.language === "en" ? "中文" : "EN"}
-      </button>
     </section>
     <section class="gateway-grid content-section">
       <button class="entrance-card visitor-entrance" data-access="visitor">
@@ -708,11 +699,15 @@ function paperCard(paper) {
         </div>
         <h3>${paper.title}</h3>
         <p class="paper-authors">${paper.authors}</p>
-        <p class="paper-question-preview"><strong>Abstract</strong>${paper.abstract || paper.question}</p>
+        ${expanded ? "" : `
+          <p class="paper-question-preview"><strong>Abstract</strong>${paper.abstract || paper.question}</p>
+        `}
         <div class="paper-card-actions">
-          <a class="paper-primary-link" href="${paper.link}" target="_blank" rel="noreferrer">
-            Open on arXiv ↗
-          </a>
+          ${expanded ? "" : `
+            <a class="paper-primary-link" href="${paper.link}" target="_blank" rel="noreferrer">
+              Open on arXiv ↗
+            </a>
+          `}
           <button class="explain-button" data-paper="${paper.id}">
             ${expanded ? "Hide AI explanation" : "Read AI explanation"}
           </button>
@@ -724,44 +719,51 @@ function paperCard(paper) {
         </div>
       </div>
       ${expanded ? `
-        <div class="ai-explanation">
-          <div class="ai-explanation-heading">
-            <span class="ai-spark">AI</span>
-            <div><strong>Paper explained</strong><small>AI analysis based on the abstract · verify against the paper</small></div>
-          </div>
-          <div class="ai-language-picker" role="group" aria-label="AI explanation language">
-            <button
-              class="${selectedAiLanguage === "en" ? "active" : ""}"
-              data-generate-ai="${paper.id}"
-              data-ai-language="en"
-              ${aiLoading ? "disabled" : ""}
-            >English</button>
-            <button
-              class="${selectedAiLanguage === "zh" ? "active" : ""}"
-              data-generate-ai="${paper.id}"
-              data-ai-language="zh"
-              ${aiLoading ? "disabled" : ""}
-            >中文</button>
-          </div>
-          ${ai ? `
-            <dl class="explanation-grid">
-              <div><dt>Scientific question</dt><dd>${escapeHtml(ai.scientific_question)}</dd></div>
-              <div><dt>Why it matters</dt><dd>${escapeHtml(ai.why_it_matters)}</dd></div>
-              <div><dt>Method</dt><dd>${escapeHtml(ai.method)}</dd></div>
-              <div><dt>Data / instrument</dt><dd>${escapeHtml(ai.data_instruments)}</dd></div>
-              <div><dt>Main result</dt><dd>${escapeHtml(ai.main_result)}</dd></div>
-              <div><dt>Limitations</dt><dd>${escapeHtml(ai.limitations)}</dd></div>
-              <div class="discussion-cell"><dt>Question for the room</dt><dd>${escapeHtml(ai.discussion_question)}</dd></div>
-            </dl>
-          ` : `
-            <div class="ai-generate-panel">
-              <p>${aiLoading
-                ? "AI is reading the abstract and preparing your explanation…"
-                : `Choose ${selectedAiLanguage === "zh" ? "中文" : "English"} above to generate the explanation.`}</p>
-              ${aiError ? `<p class="ai-error">${escapeHtml(aiError)}</p>` : ""}
+        <div class="paper-reading-compare">
+          <section class="original-abstract-panel">
+            <p class="eyebrow">Original abstract</p>
+            <h4>What the authors wrote</h4>
+            <p>${escapeHtml(paper.abstract || paper.question)}</p>
+            <a class="arxiv-link" href="${paper.link}" target="_blank" rel="noreferrer">Open arXiv source ↗</a>
+          </section>
+          <section class="ai-explanation">
+            <div class="ai-explanation-heading">
+              <span class="ai-spark">AI</span>
+              <div><strong>Paper explained</strong><small>AI analysis based on the abstract · verify against the paper</small></div>
             </div>
-          `}
-          <a class="arxiv-link" href="${paper.link}" target="_blank" rel="noreferrer">Open arXiv source ↗</a>
+            <div class="ai-language-picker" role="group" aria-label="AI explanation language">
+              <button
+                class="${selectedAiLanguage === "en" ? "active" : ""}"
+                data-generate-ai="${paper.id}"
+                data-ai-language="en"
+                ${aiLoading ? "disabled" : ""}
+              >English</button>
+              <button
+                class="${selectedAiLanguage === "zh" ? "active" : ""}"
+                data-generate-ai="${paper.id}"
+                data-ai-language="zh"
+                ${aiLoading ? "disabled" : ""}
+              >中文</button>
+            </div>
+            ${ai ? `
+              <dl class="explanation-grid">
+                <div><dt>Scientific question</dt><dd>${escapeHtml(ai.scientific_question)}</dd></div>
+                <div><dt>Why it matters</dt><dd>${escapeHtml(ai.why_it_matters)}</dd></div>
+                <div><dt>Method</dt><dd>${escapeHtml(ai.method)}</dd></div>
+                <div><dt>Data / instrument</dt><dd>${escapeHtml(ai.data_instruments)}</dd></div>
+                <div><dt>Main result</dt><dd>${escapeHtml(ai.main_result)}</dd></div>
+                <div><dt>Limitations</dt><dd>${escapeHtml(ai.limitations)}</dd></div>
+                <div class="discussion-cell"><dt>Question for the room</dt><dd>${escapeHtml(ai.discussion_question)}</dd></div>
+              </dl>
+            ` : `
+              <div class="ai-generate-panel">
+                <p>${aiLoading
+                  ? "AI is reading the abstract and preparing your explanation…"
+                  : `Choose ${selectedAiLanguage === "zh" ? "中文" : "English"} above to generate the explanation.`}</p>
+                ${aiError ? `<p class="ai-error">${escapeHtml(aiError)}</p>` : ""}
+              </div>
+            `}
+          </section>
         </div>
       ` : ""}
     </article>
