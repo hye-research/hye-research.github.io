@@ -99,7 +99,7 @@ let journalWeeks = [
 const app = document.querySelector("#journal-app");
 const storageKey = "hy-journal-shortlist";
 const languageKey = "hy-journal-language";
-const sessionKey = "hy-journal-demo-session";
+const sessionKey = "hy-journal-owner-session-v2";
 const state = {
   view: sessionStorage.getItem(sessionKey) === "member" ? "home" : "gateway",
   activeWeek: journalWeeks[0].id,
@@ -125,10 +125,10 @@ const chinese = {
   "Sign in": "登录",
   "Private workspace": "私人工作台",
   "Sign in to Journal Club": "登录论文讨论会",
-  "The prototype uses a demo session. Production login will be securely handled by the app backend.": "当前原型使用演示会话；正式版本将由 App 后端安全处理登录。",
+  "Owner sign-in is temporarily disabled while secure authentication is being connected.": "正在连接安全认证，管理员登录暂时停用。",
   "Email": "邮箱",
   "Password": "密码",
-  "Enter demo workspace": "进入演示工作台",
+  "Secure owner sign-in coming soon": "安全的管理员登录即将开放",
   "← Choose another entrance": "← 选择其他入口",
   "Public library": "公开论文库",
   "Browse papers by subject or open a previous weekly issue.": "按照主题浏览论文，或者打开往期周刊。",
@@ -481,13 +481,13 @@ function renderLogin() {
           <p class="eyebrow">Private workspace</p>
           <h1>Sign in to Journal Club</h1>
           <p class="lead">
-            The prototype uses a demo session. Production login will be securely handled by the app backend.
+            Owner sign-in is temporarily disabled while secure authentication is being connected.
           </p>
         </div>
         <form class="login-form">
-          <label>Email<input type="email" value="hy297@cam.ac.uk" autocomplete="email"></label>
-          <label>Password<input type="password" value="journalclub" autocomplete="current-password"></label>
-          <button type="submit" class="button primary" data-demo-login="true">Enter demo workspace</button>
+          <label>Email<input type="email" autocomplete="email" disabled></label>
+          <label>Password<input type="password" autocomplete="current-password" disabled></label>
+          <button type="button" class="button primary" disabled>Secure owner sign-in coming soon</button>
         </form>
       </div>
     </section>
@@ -880,7 +880,6 @@ app.addEventListener("click", (event) => {
   const shortlistButton = event.target.closest("[data-shortlist]");
   const languageButton = event.target.closest("[data-language]");
   const accessButton = event.target.closest("[data-access]");
-  const loginButton = event.target.closest("[data-demo-login]");
   const signoutButton = event.target.closest("[data-signout]");
   const importButton = event.target.closest("[data-import]");
   const exportButton = event.target.closest("[data-export-shortlist]");
@@ -888,9 +887,6 @@ app.addEventListener("click", (event) => {
 
   if (exportButton && !exportButton.disabled) {
     exportShortlist();
-  } else if (loginButton) {
-    event.preventDefault();
-    setAccess("member");
   } else if (signoutButton) {
     sessionStorage.removeItem(sessionKey);
     state.access = null;
@@ -922,13 +918,6 @@ app.addEventListener("click", (event) => {
   } else if (generateButton && !generateButton.disabled) {
     generateButton.textContent = "AI + PowerPoint connection comes in phase 2";
     generateButton.classList.add("demo-state");
-  }
-});
-
-app.addEventListener("submit", (event) => {
-  if (event.target.matches(".login-form")) {
-    event.preventDefault();
-    setAccess("member");
   }
 });
 

@@ -15,7 +15,7 @@ from pathlib import Path
 
 
 API_URL = "https://export.arxiv.org/api/query"
-USER_AGENT = "HaoyangYeJournalClub/1.0 (mailto:hy297@cam.ac.uk)"
+USER_AGENT = "HaoyangYeJournalClub/1.0 (+https://hye-research.github.io/journal-club.html)"
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "data" / "journal-dates.json"
 DATES_DIR = ROOT / "data" / "dates"
