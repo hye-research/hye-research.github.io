@@ -1,0 +1,24 @@
+{
+  "generatedAt": "2026-07-26T14:20:18.169780+00:00",
+  "source": "arXiv API",
+  "weeks": [
+    {
+      "id": "2026-W29",
+      "label": "13 July–19 July 2026",
+      "eyebrow": "Latest week",
+      "total": 490,
+      "status": "published",
+      "description": "Automatically imported from arXiv and preserved in the weekly archive.",
+      "topics": {
+        "Galaxies": 153,
+        "High Energy": 131,
+        "Cosmology": 112,
+        "Stars": 107,
+        "Methods": 95,
+        "Radio": 86,
+        "Exoplanets": 68
+      },
+      "dataUrl": "data/weeks/2026-W29.json"
+    }
+  ]
+}

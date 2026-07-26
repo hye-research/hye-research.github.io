@@ -2,3 +2,5 @@
 *.log
 node_modules/
 .notion-*.json
+__pycache__/
+*.pyc
