@@ -1,5 +1,5 @@
 {
-  "generatedAt": null,
+  "generatedAt": "2026-07-26T14:57:54.028286+00:00",
   "source": "arXiv API",
   "dates": [
     {
@@ -10,6 +10,16 @@
       "status": "scheduled",
       "description": "Daily archive begins at 07:00 UTC on Monday, 27 July 2026.",
       "topics": {}
+    },
+    {
+      "id": "2026-07-26",
+      "label": "Sunday, 26 July 2026",
+      "eyebrow": "Past date",
+      "total": 0,
+      "status": "published",
+      "description": "Automatically imported from arXiv and preserved in the daily archive.",
+      "topics": {},
+      "dataUrl": "data/dates/2026-07-26.json"
     }
   ]
 }
