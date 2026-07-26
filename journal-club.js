@@ -299,6 +299,10 @@ const chinese = {
   "Would the calibration test detect failure on an unknown out-of-distribution target?": "这种校准测试能否发现模型在未知分布外目标上的失效？"
 };
 
+function t(text) {
+  return state.language === "zh" ? chinese[text] || text : text;
+}
+
 function readShortlist() {
   try {
     return JSON.parse(localStorage.getItem(storageKey)) || [];
