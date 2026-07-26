@@ -829,6 +829,37 @@ a {
   width: 42px;
 }
 
+.ai-generate-panel {
+  background: rgba(255, 249, 236, 0.78);
+  border: 1.5px solid var(--line);
+  padding: 18px;
+}
+
+.ai-generate-panel p {
+  margin-top: 0;
+}
+
+.generate-ai-button {
+  background: var(--teal);
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 900;
+  padding: 10px 14px;
+}
+
+.generate-ai-button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.ai-generate-panel .ai-error {
+  color: #991b1b;
+  margin: 12px 0 0;
+}
+
 .explanation-grid {
   display: grid;
   gap: 14px;

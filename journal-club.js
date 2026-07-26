@@ -99,6 +99,7 @@ let journalWeeks = [
 const app = document.querySelector("#journal-app");
 const storageKey = "hy-journal-shortlist";
 const languageKey = "hy-journal-language";
+const aiStorageKey = "hy-journal-ai-explanations-v1";
 const supabaseUrl = "https://zwbyvbygswhdlpruofht.supabase.co";
 const supabasePublishableKey = "sb_publishable_Rqy1myWykBBkRTG9opvVhw_o-PiDe8T";
 const supabaseClient = window.supabase?.createClient(supabaseUrl, supabasePublishableKey);
@@ -110,7 +111,10 @@ const state = {
   shortlist: readShortlist(),
   language: localStorage.getItem(languageKey) || "en",
   access: null,
-  importStatus: "idle"
+  importStatus: "idle",
+  aiExplanations: readJsonStorage(aiStorageKey, {}),
+  aiLoading: null,
+  aiError: null
 };
 
 const chinese = {
@@ -301,6 +305,23 @@ const chinese = {
 
 function t(text) {
   return state.language === "zh" ? chinese[text] || text : text;
+}
+
+function readJsonStorage(key, fallback) {
+  try {
+    return JSON.parse(localStorage.getItem(key)) || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 function readShortlist() {
@@ -667,6 +688,9 @@ function paperCard(paper) {
 
   const selected = state.shortlist.includes(paper.id);
   const expanded = state.openPaper === paper.id;
+  const ai = state.aiExplanations[paper.id];
+  const aiLoading = state.aiLoading === paper.id;
+  const aiError = state.aiError?.paperId === paper.id ? state.aiError.message : "";
   return `
     <article class="weekly-paper ${expanded ? "expanded" : ""}">
       <div class="weekly-paper-main">
@@ -697,16 +721,29 @@ function paperCard(paper) {
         <div class="ai-explanation">
           <div class="ai-explanation-heading">
             <span class="ai-spark">AI</span>
-            <div><strong>Paper explained</strong><small>Prototype summary · verify against the paper</small></div>
+            <div><strong>Paper explained</strong><small>AI analysis based on the abstract · verify against the paper</small></div>
           </div>
-          <dl class="explanation-grid">
-            <div><dt>Why it matters</dt><dd>${paper.why || "AI analysis queued."}</dd></div>
-            <div><dt>Method</dt><dd>${paper.method || "AI analysis queued."}</dd></div>
-            <div><dt>Data / instrument</dt><dd>${paper.data || "AI analysis queued."}</dd></div>
-            <div><dt>Main result</dt><dd>${paper.result || "AI analysis queued."}</dd></div>
-            <div><dt>Limitations</dt><dd>${paper.limitations || "AI analysis queued."}</dd></div>
-            <div class="discussion-cell"><dt>Question for the room</dt><dd>${paper.discuss || "AI analysis queued."}</dd></div>
-          </dl>
+          ${ai ? `
+            <dl class="explanation-grid">
+              <div><dt>Scientific question</dt><dd>${escapeHtml(ai.scientific_question)}</dd></div>
+              <div><dt>Why it matters</dt><dd>${escapeHtml(ai.why_it_matters)}</dd></div>
+              <div><dt>Method</dt><dd>${escapeHtml(ai.method)}</dd></div>
+              <div><dt>Data / instrument</dt><dd>${escapeHtml(ai.data_instruments)}</dd></div>
+              <div><dt>Main result</dt><dd>${escapeHtml(ai.main_result)}</dd></div>
+              <div><dt>Limitations</dt><dd>${escapeHtml(ai.limitations)}</dd></div>
+              <div class="discussion-cell"><dt>Question for the room</dt><dd>${escapeHtml(ai.discussion_question)}</dd></div>
+            </dl>
+          ` : `
+            <div class="ai-generate-panel">
+              <p>${aiLoading
+                ? "AI is reading the abstract and preparing your explanation…"
+                : "Generate a fresh explanation from this paper’s title and abstract."}</p>
+              <button class="generate-ai-button" data-generate-ai="${paper.id}" ${aiLoading ? "disabled" : ""}>
+                ${aiLoading ? "Generating…" : "Generate AI explanation"}
+              </button>
+              ${aiError ? `<p class="ai-error">${escapeHtml(aiError)}</p>` : ""}
+            </div>
+          `}
           <details class="paper-abstract">
             <summary>Original abstract</summary>
             <p>${paper.abstract}</p>
@@ -905,8 +942,11 @@ app.addEventListener("click", (event) => {
   const importButton = event.target.closest("[data-import]");
   const exportButton = event.target.closest("[data-export-shortlist]");
   const generateButton = event.target.closest(".generate-deck");
+  const generateAiButton = event.target.closest("[data-generate-ai]");
 
-  if (exportButton && !exportButton.disabled) {
+  if (generateAiButton && !generateAiButton.disabled) {
+    generateAiExplanation(generateAiButton.dataset.generateAi);
+  } else if (exportButton && !exportButton.disabled) {
     exportShortlist();
   } else if (signoutButton) {
     supabaseClient?.auth.signOut().finally(() => {
@@ -942,6 +982,40 @@ app.addEventListener("click", (event) => {
     generateButton.classList.add("demo-state");
   }
 });
+
+async function generateAiExplanation(paperId) {
+  const match = findPaper(paperId);
+  if (!match || !supabaseClient) return;
+  state.aiLoading = paperId;
+  state.aiError = null;
+  render();
+
+  const { data, error } = await supabaseClient.functions.invoke("explain-paper", {
+    body: {
+      title: match.paper.title,
+      abstract: match.paper.abstract,
+      language: state.language
+    }
+  });
+
+  state.aiLoading = null;
+  if (error || !data?.explanation) {
+    let message = data?.error || error?.message || "The AI explanation could not be generated.";
+    if (error?.context) {
+      try {
+        const details = await error.context.json();
+        message = details.error || message;
+      } catch {
+        // Keep the original invocation error.
+      }
+    }
+    state.aiError = { paperId, message };
+  } else {
+    state.aiExplanations[paperId] = data.explanation;
+    localStorage.setItem(aiStorageKey, JSON.stringify(state.aiExplanations));
+  }
+  render();
+}
 
 app.addEventListener("submit", (event) => {
   if (!event.target.matches(".login-form")) return;

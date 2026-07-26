@@ -1,0 +1,4 @@
+project_id = "zwbyvbygswhdlpruofht"
+
+[functions.explain-paper]
+verify_jwt = true
