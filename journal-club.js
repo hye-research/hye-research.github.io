@@ -203,6 +203,8 @@ const chinese = {
   "Exoplanets": "系外行星",
   "Stars": "恒星",
   "Scientific question": "科学问题",
+  "Abstract": "摘要",
+  "Open on arXiv ↗": "在 arXiv 打开 ↗",
   "Read AI explanation": "阅读 AI 解读",
   "Hide AI explanation": "收起 AI 解读",
   "＋ Add to shortlist": "＋ 加入候选清单",
@@ -641,7 +643,10 @@ function paperCard(paper) {
           </div>
           <h3>${paper.title}</h3>
           <p class="paper-authors">${paper.authors}</p>
-          <p class="paper-question-preview"><strong>Scientific question</strong>${paper.question || paper.abstract}</p>
+          <p class="paper-question-preview"><strong>Abstract</strong>${paper.abstract || paper.question}</p>
+          <a class="paper-primary-link" href="${paper.link}" target="_blank" rel="noreferrer">
+            Open on arXiv ↗
+          </a>
         </div>
       </article>
     `;
@@ -660,8 +665,11 @@ function paperCard(paper) {
         </div>
         <h3>${paper.title}</h3>
         <p class="paper-authors">${paper.authors}</p>
-        <p class="paper-question-preview"><strong>Scientific question</strong>${paper.question || paper.abstract}</p>
+        <p class="paper-question-preview"><strong>Abstract</strong>${paper.abstract || paper.question}</p>
         <div class="paper-card-actions">
+          <a class="paper-primary-link" href="${paper.link}" target="_blank" rel="noreferrer">
+            Open on arXiv ↗
+          </a>
           <button class="explain-button" data-paper="${paper.id}">
             ${expanded ? "Hide AI explanation" : "Read AI explanation"}
           </button>
@@ -790,7 +798,7 @@ function renderShortlist() {
             <div>
               <span class="eyebrow">${week.label} · ${paper.category}</span>
               <h3>${paper.title}</h3>
-              <p>${paper.question || paper.abstract}</p>
+              <p>${paper.abstract || paper.question}</p>
               <details class="shortlist-abstract">
                 <summary>Original abstract</summary>
                 <p>${paper.abstract}</p>
