@@ -839,7 +839,8 @@ a {
   margin-top: 0;
 }
 
-.generate-ai-button {
+.generate-ai-button,
+.ai-language-picker button {
   background: var(--teal);
   border: 2px solid var(--line);
   border-radius: 6px;
@@ -850,9 +851,26 @@ a {
   padding: 10px 14px;
 }
 
-.generate-ai-button:disabled {
+.generate-ai-button:disabled,
+.ai-language-picker button:disabled {
   cursor: wait;
   opacity: 0.65;
+}
+
+.ai-language-picker {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.ai-language-picker button {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.ai-language-picker button.active {
+  background: var(--teal);
+  color: white;
 }
 
 .ai-generate-panel .ai-error {

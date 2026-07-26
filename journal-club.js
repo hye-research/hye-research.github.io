@@ -99,7 +99,7 @@ let journalWeeks = [
 const app = document.querySelector("#journal-app");
 const storageKey = "hy-journal-shortlist";
 const languageKey = "hy-journal-language";
-const aiStorageKey = "hy-journal-ai-explanations-v1";
+const aiStorageKey = "hy-journal-ai-explanations-v2";
 const supabaseUrl = "https://zwbyvbygswhdlpruofht.supabase.co";
 const supabasePublishableKey = "sb_publishable_Rqy1myWykBBkRTG9opvVhw_o-PiDe8T";
 const supabaseClient = window.supabase?.createClient(supabaseUrl, supabasePublishableKey);
@@ -113,6 +113,7 @@ const state = {
   access: null,
   importStatus: "idle",
   aiExplanations: readJsonStorage(aiStorageKey, {}),
+  aiLanguage: {},
   aiLoading: null,
   aiError: null
 };
@@ -688,9 +689,11 @@ function paperCard(paper) {
 
   const selected = state.shortlist.includes(paper.id);
   const expanded = state.openPaper === paper.id;
-  const ai = state.aiExplanations[paper.id];
-  const aiLoading = state.aiLoading === paper.id;
-  const aiError = state.aiError?.paperId === paper.id ? state.aiError.message : "";
+  const selectedAiLanguage = state.aiLanguage[paper.id] || state.language;
+  const aiCacheKey = `${paper.id}:${selectedAiLanguage}`;
+  const ai = state.aiExplanations[aiCacheKey];
+  const aiLoading = state.aiLoading === aiCacheKey;
+  const aiError = state.aiError?.cacheKey === aiCacheKey ? state.aiError.message : "";
   return `
     <article class="weekly-paper ${expanded ? "expanded" : ""}">
       <div class="weekly-paper-main">
@@ -723,6 +726,20 @@ function paperCard(paper) {
             <span class="ai-spark">AI</span>
             <div><strong>Paper explained</strong><small>AI analysis based on the abstract · verify against the paper</small></div>
           </div>
+          <div class="ai-language-picker" role="group" aria-label="AI explanation language">
+            <button
+              class="${selectedAiLanguage === "en" ? "active" : ""}"
+              data-generate-ai="${paper.id}"
+              data-ai-language="en"
+              ${aiLoading ? "disabled" : ""}
+            >English</button>
+            <button
+              class="${selectedAiLanguage === "zh" ? "active" : ""}"
+              data-generate-ai="${paper.id}"
+              data-ai-language="zh"
+              ${aiLoading ? "disabled" : ""}
+            >中文</button>
+          </div>
           ${ai ? `
             <dl class="explanation-grid">
               <div><dt>Scientific question</dt><dd>${escapeHtml(ai.scientific_question)}</dd></div>
@@ -737,17 +754,10 @@ function paperCard(paper) {
             <div class="ai-generate-panel">
               <p>${aiLoading
                 ? "AI is reading the abstract and preparing your explanation…"
-                : "Generate a fresh explanation from this paper’s title and abstract."}</p>
-              <button class="generate-ai-button" data-generate-ai="${paper.id}" ${aiLoading ? "disabled" : ""}>
-                ${aiLoading ? "Generating…" : "Generate AI explanation"}
-              </button>
+                : `Choose ${selectedAiLanguage === "zh" ? "中文" : "English"} above to generate the explanation.`}</p>
               ${aiError ? `<p class="ai-error">${escapeHtml(aiError)}</p>` : ""}
             </div>
           `}
-          <details class="paper-abstract">
-            <summary>Original abstract</summary>
-            <p>${paper.abstract}</p>
-          </details>
           <a class="arxiv-link" href="${paper.link}" target="_blank" rel="noreferrer">Open arXiv source ↗</a>
         </div>
       ` : ""}
@@ -849,10 +859,6 @@ function renderShortlist() {
               <span class="eyebrow">${week.label} · ${paper.category}</span>
               <h3>${paper.title}</h3>
               <p>${paper.abstract || paper.question}</p>
-              <details class="shortlist-abstract">
-                <summary>Original abstract</summary>
-                <p>${paper.abstract}</p>
-              </details>
               <a class="shortlist-source-link" href="${paper.link}" target="_blank" rel="noreferrer">
                 Read original on arXiv ↗
               </a>
@@ -945,7 +951,10 @@ app.addEventListener("click", (event) => {
   const generateAiButton = event.target.closest("[data-generate-ai]");
 
   if (generateAiButton && !generateAiButton.disabled) {
-    generateAiExplanation(generateAiButton.dataset.generateAi);
+    generateAiExplanation(
+      generateAiButton.dataset.generateAi,
+      generateAiButton.dataset.aiLanguage
+    );
   } else if (exportButton && !exportButton.disabled) {
     exportShortlist();
   } else if (signoutButton) {
@@ -983,10 +992,17 @@ app.addEventListener("click", (event) => {
   }
 });
 
-async function generateAiExplanation(paperId) {
+async function generateAiExplanation(paperId, language) {
   const match = findPaper(paperId);
   if (!match || !supabaseClient) return;
-  state.aiLoading = paperId;
+  const cacheKey = `${paperId}:${language}`;
+  state.aiLanguage[paperId] = language;
+  if (state.aiExplanations[cacheKey]) {
+    state.aiError = null;
+    render();
+    return;
+  }
+  state.aiLoading = cacheKey;
   state.aiError = null;
   render();
 
@@ -994,7 +1010,7 @@ async function generateAiExplanation(paperId) {
     body: {
       title: match.paper.title,
       abstract: match.paper.abstract,
-      language: state.language
+      language
     }
   });
 
@@ -1009,9 +1025,9 @@ async function generateAiExplanation(paperId) {
         // Keep the original invocation error.
       }
     }
-    state.aiError = { paperId, message };
+    state.aiError = { cacheKey, message };
   } else {
-    state.aiExplanations[paperId] = data.explanation;
+    state.aiExplanations[cacheKey] = data.explanation;
     localStorage.setItem(aiStorageKey, JSON.stringify(state.aiExplanations));
   }
   render();
