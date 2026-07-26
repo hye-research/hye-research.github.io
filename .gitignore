@@ -4,3 +4,4 @@ node_modules/
 .notion-*.json
 __pycache__/
 *.pyc
+.journal-club-owner.json

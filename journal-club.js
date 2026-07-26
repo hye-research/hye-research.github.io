@@ -100,14 +100,15 @@ const app = document.querySelector("#journal-app");
 const storageKey = "hy-journal-shortlist";
 const languageKey = "hy-journal-language";
 const sessionKey = "hy-journal-owner-session-v2";
+const isLocalOwnerHost = ["127.0.0.1", "localhost"].includes(window.location.hostname);
 const state = {
-  view: sessionStorage.getItem(sessionKey) === "member" ? "home" : "gateway",
+  view: isLocalOwnerHost && sessionStorage.getItem(sessionKey) === "member" ? "home" : "gateway",
   activeWeek: journalWeeks[0].id,
   filter: "All",
   openPaper: null,
   shortlist: readShortlist(),
   language: localStorage.getItem(languageKey) || "en",
-  access: sessionStorage.getItem(sessionKey) || null,
+  access: isLocalOwnerHost ? sessionStorage.getItem(sessionKey) || null : null,
   importStatus: "idle"
 };
 
@@ -126,6 +127,8 @@ const chinese = {
   "Private workspace": "私人工作台",
   "Sign in to Journal Club": "登录论文讨论会",
   "Owner sign-in is temporarily disabled while secure authentication is being connected.": "正在连接安全认证，管理员登录暂时停用。",
+  "Owner credentials are stored only on this computer.": "管理员凭据只保存在这台电脑上。",
+  "Open the local owner workspace on your Mac to sign in.": "请在你的 Mac 上打开本地管理员工作台进行登录。",
   "Email": "邮箱",
   "Password": "密码",
   "Secure owner sign-in coming soon": "安全的管理员登录即将开放",
@@ -475,6 +478,7 @@ function renderGateway() {
 }
 
 function renderLogin() {
+  const localLogin = isLocalOwnerHost;
   app.innerHTML = `
     <section class="login-shell section-band">
       <button class="back-button" data-view="gateway">← Choose another entrance</button>
@@ -483,13 +487,18 @@ function renderLogin() {
           <p class="eyebrow">Private workspace</p>
           <h1>Sign in to Journal Club</h1>
           <p class="lead">
-            Owner sign-in is temporarily disabled while secure authentication is being connected.
+            ${localLogin
+              ? "Owner credentials are stored only on this computer."
+              : "Open the local owner workspace on your Mac to sign in."}
           </p>
         </div>
         <form class="login-form">
-          <label>Email<input type="email" autocomplete="email" disabled></label>
-          <label>Password<input type="password" autocomplete="current-password" disabled></label>
-          <button type="button" class="button primary" disabled>Secure owner sign-in coming soon</button>
+          <label>Email<input name="email" type="email" autocomplete="email" ${localLogin ? "required" : "disabled"}></label>
+          <label>Password<input name="password" type="password" autocomplete="current-password" ${localLogin ? "required" : "disabled"}></label>
+          <button type="submit" class="button primary" ${localLogin ? "" : "disabled"}>
+            ${localLogin ? "Sign in" : "Secure owner sign-in coming soon"}
+          </button>
+          <p class="login-message" aria-live="polite"></p>
         </form>
       </div>
     </section>
@@ -927,6 +936,35 @@ app.addEventListener("click", (event) => {
     generateButton.textContent = "AI + PowerPoint connection comes in phase 2";
     generateButton.classList.add("demo-state");
   }
+});
+
+app.addEventListener("submit", (event) => {
+  if (!event.target.matches(".login-form") || !isLocalOwnerHost) return;
+  event.preventDefault();
+  const form = event.target;
+  const message = form.querySelector(".login-message");
+  const payload = {
+    email: form.elements.email.value,
+    password: form.elements.password.value
+  };
+
+  fetch("/api/local-owner-login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+    .then((response) => {
+      if (!response.ok) throw new Error("Invalid email or password.");
+      return response.json();
+    })
+    .then((result) => {
+      if (!result.success) throw new Error("Invalid email or password.");
+      form.reset();
+      setAccess("member");
+    })
+    .catch((error) => {
+      message.textContent = error.message;
+    });
 });
 
 async function loadJournalData() {
