@@ -99,16 +99,17 @@ let journalWeeks = [
 const app = document.querySelector("#journal-app");
 const storageKey = "hy-journal-shortlist";
 const languageKey = "hy-journal-language";
-const sessionKey = "hy-journal-owner-session-v2";
-const isLocalOwnerHost = ["127.0.0.1", "localhost"].includes(window.location.hostname);
+const supabaseUrl = "https://zwbyvbygswhdlpruofht.supabase.co";
+const supabasePublishableKey = "sb_publishable_Rqy1myWykBBkRTG9opvVhw_o-PiDe8T";
+const supabaseClient = window.supabase?.createClient(supabaseUrl, supabasePublishableKey);
 const state = {
-  view: isLocalOwnerHost && sessionStorage.getItem(sessionKey) === "member" ? "home" : "gateway",
+  view: "gateway",
   activeWeek: journalWeeks[0].id,
   filter: "All",
   openPaper: null,
   shortlist: readShortlist(),
   language: localStorage.getItem(languageKey) || "en",
-  access: isLocalOwnerHost ? sessionStorage.getItem(sessionKey) || null : null,
+  access: null,
   importStatus: "idle"
 };
 
@@ -129,6 +130,10 @@ const chinese = {
   "Owner sign-in is temporarily disabled while secure authentication is being connected.": "正在连接安全认证，管理员登录暂时停用。",
   "Owner credentials are stored only on this computer.": "管理员凭据只保存在这台电脑上。",
   "Open the local owner workspace on your Mac to sign in.": "请在你的 Mac 上打开本地管理员工作台进行登录。",
+  "Enter your approved email and we will send you a secure one-time sign-in link.": "输入已获准的邮箱，我们会向你发送安全的一次性登录链接。",
+  "Send magic link": "发送登录链接",
+  "Check your email for the sign-in link.": "请检查邮箱中的登录链接。",
+  "Sending…": "正在发送…",
   "Email": "邮箱",
   "Password": "密码",
   "Secure owner sign-in coming soon": "安全的管理员登录即将开放",
@@ -399,7 +404,6 @@ async function openWeek(weekId) {
 function setAccess(access) {
   state.access = access;
   state.view = access === "member" ? "home" : "visitor";
-  sessionStorage.setItem(sessionKey, access);
   render();
 }
 
@@ -478,7 +482,6 @@ function renderGateway() {
 }
 
 function renderLogin() {
-  const localLogin = isLocalOwnerHost;
   app.innerHTML = `
     <section class="login-shell section-band">
       <button class="back-button" data-view="gateway">← Choose another entrance</button>
@@ -487,17 +490,12 @@ function renderLogin() {
           <p class="eyebrow">Private workspace</p>
           <h1>Sign in to Journal Club</h1>
           <p class="lead">
-            ${localLogin
-              ? "Owner credentials are stored only on this computer."
-              : "Open the local owner workspace on your Mac to sign in."}
+            Enter your approved email and we will send you a secure one-time sign-in link.
           </p>
         </div>
         <form class="login-form">
-          <label>Email<input name="email" type="email" autocomplete="email" ${localLogin ? "required" : "disabled"}></label>
-          <label>Password<input name="password" type="password" autocomplete="current-password" ${localLogin ? "required" : "disabled"}></label>
-          <button type="submit" class="button primary" ${localLogin ? "" : "disabled"}>
-            ${localLogin ? "Sign in" : "Secure owner sign-in coming soon"}
-          </button>
+          <label>Email<input name="email" type="email" autocomplete="email" required></label>
+          <button type="submit" class="button primary">Send magic link</button>
           <p class="login-message" aria-live="polite"></p>
         </form>
       </div>
@@ -905,10 +903,11 @@ app.addEventListener("click", (event) => {
   if (exportButton && !exportButton.disabled) {
     exportShortlist();
   } else if (signoutButton) {
-    sessionStorage.removeItem(sessionKey);
-    state.access = null;
-    state.view = "gateway";
-    render();
+    supabaseClient?.auth.signOut().finally(() => {
+      state.access = null;
+      state.view = "gateway";
+      render();
+    });
   } else if (accessButton) {
     setAccess(accessButton.dataset.access);
   } else if (importButton) {
@@ -939,32 +938,38 @@ app.addEventListener("click", (event) => {
 });
 
 app.addEventListener("submit", (event) => {
-  if (!event.target.matches(".login-form") || !isLocalOwnerHost) return;
+  if (!event.target.matches(".login-form")) return;
   event.preventDefault();
   const form = event.target;
   const message = form.querySelector(".login-message");
-  const payload = {
-    email: form.elements.email.value,
-    password: form.elements.password.value
-  };
+  const submitButton = form.querySelector("button[type='submit']");
+  submitButton.disabled = true;
+  submitButton.textContent = t("Sending…");
+  message.textContent = "";
 
-  fetch("/api/local-owner-login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  })
-    .then((response) => {
-      if (!response.ok) throw new Error("Invalid email or password.");
-      return response.json();
-    })
-    .then((result) => {
-      if (!result.success) throw new Error("Invalid email or password.");
-      form.reset();
-      setAccess("member");
-    })
-    .catch((error) => {
-      message.textContent = error.message;
-    });
+  if (!supabaseClient) {
+    message.textContent = "The secure sign-in service could not load. Please refresh and try again.";
+    submitButton.disabled = false;
+    submitButton.textContent = t("Send magic link");
+    return;
+  }
+
+  supabaseClient.auth.signInWithOtp({
+    email: form.elements.email.value.trim(),
+    options: {
+      shouldCreateUser: false,
+      emailRedirectTo: new URL("journal-club.html", window.location.href).href
+    }
+  }).then(({ error }) => {
+    if (error) throw error;
+    form.reset();
+    message.textContent = t("Check your email for the sign-in link.");
+  }).catch((error) => {
+    message.textContent = error.message;
+  }).finally(() => {
+    submitButton.disabled = false;
+    submitButton.textContent = t("Send magic link");
+  });
 });
 
 async function loadJournalData() {
@@ -981,4 +986,22 @@ async function loadJournalData() {
   }
 }
 
-loadJournalData().finally(render);
+async function initialiseJournalClub() {
+  await loadJournalData();
+  if (supabaseClient) {
+    const { data } = await supabaseClient.auth.getSession();
+    if (data.session) {
+      state.access = "member";
+      state.view = "home";
+    }
+    supabaseClient.auth.onAuthStateChange((_event, session) => {
+      const wasMember = state.access === "member";
+      state.access = session ? "member" : null;
+      if (session && !wasMember) state.view = "home";
+      render();
+    });
+  }
+  render();
+}
+
+initialiseJournalClub();
