@@ -1232,6 +1232,13 @@ a {
   border: 1px solid #86efac;
 }
 
+.login-message.pending {
+  display: block;
+  color: #1e3a8a;
+  background: #dbeafe;
+  border: 1px solid #93c5fd;
+}
+
 .login-message.error {
   display: block;
   color: #991b1b;

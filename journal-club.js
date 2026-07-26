@@ -133,6 +133,7 @@ const chinese = {
   "Enter your approved email and we will send you a secure one-time sign-in link.": "输入已获准的邮箱，我们会向你发送安全的一次性登录链接。",
   "Send magic link": "发送登录链接",
   "Magic link sent. Please check your inbox and spam folder.": "登录链接已发送。请检查你的收件箱和垃圾邮件文件夹。",
+  "Sending your secure sign-in link…": "正在发送安全登录链接，请稍候…",
   "Email sent ✓": "邮件已发送 ✓",
   "Sending…": "正在发送…",
   "Email": "邮箱",
@@ -497,7 +498,7 @@ function renderLogin() {
         <form class="login-form">
           <label>Email<input name="email" type="email" autocomplete="email" required></label>
           <button type="submit" class="button primary">Send magic link</button>
-          <p class="login-message" role="status" aria-live="polite"></p>
+          <p class="login-message" role="status" aria-live="assertive" hidden></p>
         </form>
       </div>
     </section>
@@ -946,11 +947,14 @@ app.addEventListener("submit", (event) => {
   const submitButton = form.querySelector("button[type='submit']");
   submitButton.disabled = true;
   submitButton.textContent = t("Sending…");
-  message.textContent = "";
-  message.className = "login-message";
+  message.hidden = false;
+  message.style.display = "block";
+  message.textContent = t("Sending your secure sign-in link…");
+  message.className = "login-message pending";
 
   if (!supabaseClient) {
     message.textContent = "The secure sign-in service could not load. Please refresh and try again.";
+    message.className = "login-message error";
     submitButton.disabled = false;
     submitButton.textContent = t("Send magic link");
     return;
@@ -966,11 +970,11 @@ app.addEventListener("submit", (event) => {
     if (error) throw error;
     form.reset();
     message.textContent = t("Magic link sent. Please check your inbox and spam folder.");
-    message.classList.add("success");
+    message.className = "login-message success";
     submitButton.textContent = t("Email sent ✓");
   }).catch((error) => {
-    message.textContent = error.message;
-    message.classList.add("error");
+    message.textContent = `${state.language === "zh" ? "发送失败：" : "Could not send the link: "}${error.message}`;
+    message.className = "login-message error";
   }).finally(() => {
     submitButton.disabled = false;
     if (!message.classList.contains("success")) {
