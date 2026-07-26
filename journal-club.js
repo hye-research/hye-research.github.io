@@ -116,8 +116,8 @@ const chinese = {
   "Two ways in.": "两种进入方式。",
   "Browse the public archive, or sign in to use the complete research workflow.": "浏览公开归档，或者登录使用完整的研究工作流程。",
   "Visitor entrance": "访客入口",
-  "Browse weekly archive": "浏览每周归档",
-  "Open previous weekly issues and browse their papers. No account needed.": "打开往期周刊并浏览其中的论文，无需账号。",
+  "Browse daily archive": "浏览每日归档",
+  "Open previous daily issues and browse their papers. No account needed.": "打开往期日期并浏览其中的论文，无需账号。",
   "Continue as visitor": "以访客身份继续",
   "Member entrance": "登录入口",
   "Open your workspace": "打开个人工作台",
@@ -132,23 +132,29 @@ const chinese = {
   "← Choose another entrance": "← 选择其他入口",
   "Public library": "公开论文库",
   "Browse papers by subject or open a previous weekly issue.": "按照主题浏览论文，或者打开往期周刊。",
-  "Weekly archive": "每周归档",
-  "Open any week to browse its papers. Topic filters are created from that week’s actual arXiv data.": "打开任意一周浏览论文；主题筛选会根据该周真实的 arXiv 数据生成。",
+  "Daily archive": "每日归档",
+  "Open any date to browse its papers. Topic filters are created from that date’s actual arXiv data.": "打开任意日期浏览论文；主题筛选会根据该日真实的 arXiv 数据生成。",
   "Categories": "分类",
   "Browse category": "浏览分类",
   "Sign in to unlock AI explanations, shortlist, imports, and presentation generation.": "登录后解锁 AI 解读、候选清单、论文导入和演示文稿生成。",
   "Unlock all features": "解锁全部功能",
   "Member workspace": "会员工作台",
   "Import last week’s papers": "导入上一周论文",
-  "Weekly database": "每周论文数据库",
+  "Daily database": "每日论文数据库",
   "Updates automatically": "自动更新",
-  "Every week is archived in the background.": "每一周都会在后台自动归档。",
-  "A scheduled background job checks arXiv every week, stores the complete issue, and prepares the archive—even when nobody opens the website.": "后台定时任务每周检查 arXiv、保存完整周刊并建立归档，即使没有人打开网页也会照常运行。",
+  "Every date is archived in the background.": "每一天都会在后台自动归档。",
+  "A scheduled background job checks arXiv every day at 07:00 UTC, stores the complete issue, and prepares the archive—even when nobody opens the website.": "后台定时任务每天 07:00 UTC 检查 arXiv、保存完整日期并建立归档，即使没有人打开网页也会照常运行。",
   "Last scheduled sync": "上次定时同步",
   "Next scheduled sync": "下次定时同步",
   "Manual recovery": "手动补救",
-  "Sync last week now": "立即同步上一周",
-  "Use this only to repair a missed update or refresh an incomplete weekly issue.": "仅在定时更新遗漏或某一期数据不完整时使用。",
+  "Sync today now": "立即同步今天",
+  "Use this only to repair a missed update or refresh an incomplete daily issue.": "仅在定时更新遗漏或某一天数据不完整时使用。",
+  "Latest date": "最新日期",
+  "Past date": "往期日期",
+  "Past dates": "往期日期",
+  "Open latest date": "打开最新日期",
+  "Export shortlist JSON": "导出候选清单 JSON",
+  "Download a portable backup for another browser.": "下载可以带到其他浏览器的备份。",
   "Fetch from arXiv, classify the papers, and prepare bilingual AI summaries.": "从 arXiv 获取论文、完成分类，并准备中英双语 AI 摘要。",
   "Import papers": "导入论文",
   "Connecting to arXiv…": "正在连接 arXiv…",
@@ -158,6 +164,7 @@ const chinese = {
   "Visitor": "访客",
   "Member": "会员",
   "Astrophysics · weekly reading": "天体物理 · 每周阅读",
+  "Astrophysics · daily reading": "天体物理 · 每日阅读",
   "Find the papers worth discussing. AI-assisted explanations, your own shortlist, and presentation-ready notes in one place.": "找到真正值得讨论的论文。在一个地方完成 AI 辅助解读、个人候选清单和演示文稿准备。",
   "Overview": "总览",
   "Latest week": "最新一周",
@@ -292,6 +299,27 @@ function saveShortlist() {
   localStorage.setItem(storageKey, JSON.stringify(state.shortlist));
 }
 
+function exportShortlist() {
+  const papers = state.shortlist.map((id) => {
+    const match = findPaper(id);
+    return match ? { ...match.paper, archiveDate: match.week.id } : { id };
+  });
+  const payload = {
+    exportedAt: new Date().toISOString(),
+    source: "Haoyang Ye Journal Club",
+    papers
+  };
+  const file = new Blob([`${JSON.stringify(payload, null, 2)}\n`], {
+    type: "application/json"
+  });
+  const url = URL.createObjectURL(file);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `journal-club-shortlist-${new Date().toISOString().slice(0, 10)}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 function applyTranslations() {
   document.documentElement.lang = state.language === "zh" ? "zh-CN" : "en";
   document.title = state.language === "zh"
@@ -328,7 +356,9 @@ function applyTranslations() {
 
 function findPaper(id) {
   for (const week of journalWeeks) {
-    const paper = week.papers.find((item) => item.id === id);
+    const paper = Array.isArray(week.papers)
+      ? week.papers.find((item) => item.id === id)
+      : null;
     if (paper) return { paper, week };
   }
   return null;
@@ -399,7 +429,7 @@ function appNav(active) {
     <nav class="journal-app-nav" aria-label="Journal Club sections">
       <button class="${active === "home" ? "active" : ""}" data-view="home">Overview</button>
       <button class="${active === "week" ? "active" : ""}" data-week="${journalWeeks[0].id}">
-        Latest week
+        Latest date
       </button>
       <button class="${active === "shortlist" ? "active" : ""}" data-view="shortlist">
         Shortlist <span>${state.shortlist.length}</span>
@@ -415,7 +445,7 @@ function appNav(active) {
 function renderGateway() {
   app.innerHTML = `
     <section class="gateway-hero section-band">
-      <p class="eyebrow">Astrophysics · weekly reading</p>
+      <p class="eyebrow">Astrophysics · daily reading</p>
       <h1>Journal Club</h1>
       <h2>Two ways in.</h2>
       <p class="lead">Browse the public archive, or sign in to use the complete research workflow.</p>
@@ -427,8 +457,8 @@ function renderGateway() {
       <button class="entrance-card visitor-entrance" data-access="visitor">
         <span class="entrance-icon" aria-hidden="true">◎</span>
         <span class="eyebrow">Visitor entrance</span>
-        <strong>Browse weekly archive</strong>
-        <span>Open previous weekly issues and browse their papers. No account needed.</span>
+        <strong>Browse daily archive</strong>
+        <span>Open previous daily issues and browse their papers. No account needed.</span>
         <span class="entrance-cta">Continue as visitor →</span>
       </button>
       <button class="entrance-card member-entrance" data-view="login">
@@ -471,10 +501,10 @@ function renderVisitor() {
       <div class="weekly-title-row">
         <div>
           <p class="eyebrow">Public library · Visitor</p>
-          <h1>Weekly archive</h1>
+          <h1>Daily archive</h1>
           <p class="lead">
-            Open any week to browse its papers. Topic filters are created from that
-            week’s actual arXiv data.
+            Open any date to browse its papers. Topic filters are created from that
+            date’s actual arXiv data.
           </p>
         </div>
         ${appNav("visitor")}
@@ -483,7 +513,7 @@ function renderVisitor() {
 
     <section class="week-archive content-section" id="public-archive">
       <div class="section-heading-row">
-        <div><p class="eyebrow">Archive</p><h2>Past weeks</h2></div>
+        <div><p class="eyebrow">Archive</p><h2>Past dates</h2></div>
       </div>
       <div class="archive-grid">
         ${journalWeeks.map((week) => `
@@ -504,7 +534,7 @@ function renderHome() {
   app.innerHTML = `
     <section class="journal-dashboard-hero section-band">
       <div>
-        <p class="eyebrow">Astrophysics · weekly reading · Member</p>
+        <p class="eyebrow">Astrophysics · daily reading · Member</p>
         <h1>Journal Club</h1>
         <p class="lead">
           Find the papers worth discussing. AI-assisted explanations, your own shortlist,
@@ -518,24 +548,24 @@ function renderHome() {
       <div class="import-week-copy">
         <span class="import-icon" aria-hidden="true">↻</span>
         <div>
-          <p class="eyebrow">Weekly database · Updates automatically</p>
-          <h2>Every week is archived in the background.</h2>
+          <p class="eyebrow">Daily database · Updates automatically</p>
+          <h2>Every date is archived in the background.</h2>
           <p>
-            A scheduled background job checks arXiv every week, stores the complete issue,
+            A scheduled background job checks arXiv every day at 07:00 UTC, stores the complete issue,
             and prepares the archive—even when nobody opens the website.
           </p>
           <div class="sync-schedule">
-            <span><strong>Last scheduled sync</strong> Monday, 20 July · 06:15 UTC</span>
-            <span><strong>Next scheduled sync</strong> Monday, 27 July · 06:15 UTC</span>
+            <span><strong>First scheduled sync</strong> Monday, 27 July · 07:00 UTC</span>
+            <span><strong>Schedule</strong> Every day · 07:00 UTC</span>
           </div>
         </div>
       </div>
       <div class="import-week-action">
         <span class="eyebrow">Manual recovery</span>
         <button class="import-button" data-import="true">
-          ${state.importStatus === "idle" ? "Sync last week now" : state.importStatus === "loading" ? "Connecting to arXiv…" : "Prototype import complete"}
+          ${state.importStatus === "idle" ? "Sync today now" : state.importStatus === "loading" ? "Connecting to arXiv…" : "Prototype import complete"}
         </button>
-        <small>Use this only to repair a missed update or refresh an incomplete weekly issue.</small>
+        <small>Use this only to repair a missed update or refresh an incomplete daily issue.</small>
         ${state.importStatus === "done" ? `
           <small>The real import will be enabled after the database and secure backend are connected.</small>
         ` : ""}
@@ -553,14 +583,14 @@ function renderHome() {
         </span>
         <span class="week-feature-title">${latest.total} new astrophysics papers</span>
         <span class="week-topic-summary">${topicChips(latest.topics)}</span>
-        <span class="week-feature-cta">Open latest week</span>
+        <span class="week-feature-cta">Open latest date</span>
       </button>
 
       <button class="shortlist-feature" data-view="shortlist">
         <span class="eyebrow">My reading list</span>
         <strong><span>${state.shortlist.length}</span> shortlisted papers</strong>
         <span>
-          Choose papers across different weeks, add your notes, then prepare a Journal Club deck.
+          Choose papers across different dates, add your notes, then prepare a Journal Club deck.
         </span>
         <span class="week-feature-cta">Open shortlist</span>
       </button>
@@ -570,7 +600,7 @@ function renderHome() {
       <div class="section-heading-row">
         <div>
           <p class="eyebrow">Archive</p>
-          <h2>Past weeks</h2>
+          <h2>Past dates</h2>
         </div>
         <span class="prototype-label">Prototype dataset</span>
       </div>
@@ -589,7 +619,7 @@ function renderHome() {
     <section class="journal-workflow content-section">
       <p class="eyebrow">The workflow</p>
       <div class="workflow-grid">
-        <div><strong>01</strong><h3>Collect</h3><p>New papers arrive from arXiv each week.</p></div>
+        <div><strong>01</strong><h3>Collect</h3><p>New papers arrive from arXiv every day.</p></div>
         <div><strong>02</strong><h3>Understand</h3><p>AI extracts the question, method, result, and limitations.</p></div>
         <div><strong>03</strong><h3>Shortlist</h3><p>You choose what is relevant and add personal notes.</p></div>
         <div><strong>04</strong><h3>Present</h3><p>The app prepares slides, figures, and speaking notes.</p></div>
@@ -677,7 +707,7 @@ function renderWeek() {
 
   app.innerHTML = `
     <section class="weekly-header section-band">
-      <button class="back-button" data-view="home">← All weeks</button>
+      <button class="back-button" data-view="home">← All dates</button>
       <div class="weekly-title-row">
         <div>
           <p class="eyebrow">${week.eyebrow} · ${week.id}</p>
@@ -720,12 +750,11 @@ function renderWeek() {
       ` : `
         <div class="archive-empty">
           <span>${week.id}</span>
-          <h2>This archived issue is ready for real arXiv data.</h2>
+          <h2>This daily issue is waiting for its scheduled arXiv import.</h2>
           <p>
-            The production pipeline will keep every week here automatically. For now, open
-            the latest week to explore the complete interaction.
+            The daily archive begins at 07:00 UTC on Monday, 27 July 2026.
           </p>
-          <button class="button primary" data-week="${journalWeeks[0].id}">Open latest week</button>
+          <button class="button primary" data-view="visitor">Open daily archive</button>
         </div>
       `}
     </section>
@@ -786,8 +815,8 @@ function renderShortlist() {
           <div class="shortlist-empty">
             <span aria-hidden="true">☆</span>
             <h2>Your shortlist is empty.</h2>
-            <p>Open the latest week and select the papers you want to discuss.</p>
-            <button class="button primary" data-week="${journalWeeks[0].id}">Browse latest week</button>
+            <p>Open the latest date and select the papers you want to discuss.</p>
+            <button class="button primary" data-week="${journalWeeks[0].id}">Browse latest date</button>
           </div>
         `}
       </div>
@@ -819,6 +848,10 @@ function renderShortlist() {
           Include one key figure per paper
         </label>
         <button class="generate-deck" ${items.length ? "" : "disabled"}>Generate presentation</button>
+        <button class="export-shortlist" data-export-shortlist="true" ${items.length ? "" : "disabled"}>
+          Export shortlist JSON
+        </button>
+        <small>Download a portable backup for another browser.</small>
         <small>
           In the production version, AI will read the PDFs, explain selected figures,
           and create an editable PowerPoint with speaker notes.
@@ -850,9 +883,12 @@ app.addEventListener("click", (event) => {
   const loginButton = event.target.closest("[data-demo-login]");
   const signoutButton = event.target.closest("[data-signout]");
   const importButton = event.target.closest("[data-import]");
+  const exportButton = event.target.closest("[data-export-shortlist]");
   const generateButton = event.target.closest(".generate-deck");
 
-  if (loginButton) {
+  if (exportButton && !exportButton.disabled) {
+    exportShortlist();
+  } else if (loginButton) {
     event.preventDefault();
     setAccess("member");
   } else if (signoutButton) {
@@ -898,11 +934,11 @@ app.addEventListener("submit", (event) => {
 
 async function loadJournalData() {
   try {
-    const response = await fetch("data/journal-weeks.json", { cache: "no-store" });
+    const response = await fetch("data/journal-dates.json", { cache: "no-store" });
     if (!response.ok) return;
     const payload = await response.json();
-    if (Array.isArray(payload.weeks) && payload.weeks.length) {
-      journalWeeks = payload.weeks;
+    if (Array.isArray(payload.dates) && payload.dates.length) {
+      journalWeeks = payload.dates;
       state.activeWeek = journalWeeks[0].id;
     }
   } catch {

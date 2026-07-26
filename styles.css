@@ -1036,6 +1036,21 @@ a {
   background: var(--teal);
 }
 
+.export-shortlist {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 900;
+  padding: 10px;
+}
+
+.export-shortlist:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
 .deck-builder small {
   line-height: 1.45;
 }
@@ -1179,8 +1194,12 @@ a {
 }
 
 .visitor-header {
-  padding-bottom: 20px;
+  padding-bottom: 6px;
   padding-top: 46px;
+}
+
+.visitor-header + .week-archive {
+  padding-top: 8px;
 }
 
 .visitor-header h1 {

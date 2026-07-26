@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fetch the previous complete arXiv week and update the Journal Club archive."""
+"""Fetch one daily arXiv window and update the Journal Club daily archive."""
 
 from __future__ import annotations
 
@@ -17,8 +17,8 @@ from pathlib import Path
 API_URL = "https://export.arxiv.org/api/query"
 USER_AGENT = "HaoyangYeJournalClub/1.0 (mailto:hy297@cam.ac.uk)"
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "data" / "journal-weeks.json"
-WEEKS_DIR = ROOT / "data" / "weeks"
+OUTPUT = ROOT / "data" / "journal-dates.json"
+DATES_DIR = ROOT / "data" / "dates"
 ATOM = {"atom": "http://www.w3.org/2005/Atom"}
 
 CATEGORY_NAMES = {
@@ -32,11 +32,10 @@ CATEGORY_NAMES = {
 }
 
 
-def previous_complete_week(today: dt.date) -> tuple[dt.datetime, dt.datetime]:
-    """Return the previous Monday 00:00 through current Monday 00:00 UTC."""
-    current_monday = today - dt.timedelta(days=today.weekday())
-    end = dt.datetime.combine(current_monday, dt.time.min, tzinfo=dt.timezone.utc)
-    return end - dt.timedelta(days=7), end
+def daily_window(issue_date: dt.date) -> tuple[dt.datetime, dt.datetime]:
+    """Return the 24-hour UTC window ending at 07:00 on the issue date."""
+    end = dt.datetime.combine(issue_date, dt.time(hour=7), tzinfo=dt.timezone.utc)
+    return end - dt.timedelta(days=1), end
 
 
 def clean_text(value: str | None) -> str:
@@ -72,7 +71,7 @@ def fetch_page(search_query: str, start: int, max_results: int) -> ET.Element:
         return ET.fromstring(response.read())
 
 
-def fetch_week(start: dt.datetime, end: dt.datetime) -> list[dict]:
+def fetch_period(start: dt.datetime, end: dt.datetime) -> list[dict]:
     # arXiv date ranges are inclusive, so stop one second before the next week.
     inclusive_end = end - dt.timedelta(seconds=1)
     date_query = (
@@ -137,18 +136,17 @@ def fetch_week(start: dt.datetime, end: dt.datetime) -> list[dict]:
     return papers
 
 
-def make_week(start: dt.datetime, end: dt.datetime, papers: list[dict]) -> dict:
-    iso_year, iso_week, _ = start.date().isocalendar()
+def make_issue(issue_date: dt.date, papers: list[dict]) -> dict:
     topic_counts = Counter(
         topic for paper in papers for topic in paper["topics"] if topic != "Astrophysics"
     )
     return {
-        "id": f"{iso_year}-W{iso_week:02d}",
-        "label": f"{start:%-d %B}–{(end - dt.timedelta(days=1)):%-d %B %Y}",
-        "eyebrow": "Latest week",
+        "id": issue_date.isoformat(),
+        "label": f"{issue_date:%A, %-d %B %Y}",
+        "eyebrow": "Latest date",
         "total": len(papers),
         "status": "published",
-        "description": "Automatically imported from arXiv and preserved in the weekly archive.",
+        "description": "Automatically imported from arXiv and preserved in the daily archive.",
         "topics": dict(topic_counts.most_common()),
         "papers": papers,
     }
@@ -165,42 +163,42 @@ def main() -> None:
     parser.add_argument(
         "--date",
         type=dt.date.fromisoformat,
-        help="Pretend today is YYYY-MM-DD; useful for a manual backfill.",
+        help="Issue date YYYY-MM-DD; useful for a manual backfill.",
     )
     args = parser.parse_args()
 
-    today = args.date or dt.datetime.now(dt.timezone.utc).date()
-    start, end = previous_complete_week(today)
-    papers = fetch_week(start, end)
-    week = make_week(start, end, papers)
+    issue_date = args.date or dt.datetime.now(dt.timezone.utc).date()
+    start, end = daily_window(issue_date)
+    papers = fetch_period(start, end)
+    issue = make_issue(issue_date, papers)
 
     archive = load_archive()
-    WEEKS_DIR.mkdir(parents=True, exist_ok=True)
-    week_file = WEEKS_DIR / f"{week['id']}.json"
-    week_file.write_text(
-        json.dumps(week, ensure_ascii=False, indent=2) + "\n",
+    DATES_DIR.mkdir(parents=True, exist_ok=True)
+    issue_file = DATES_DIR / f"{issue['id']}.json"
+    issue_file.write_text(
+        json.dumps(issue, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
 
-    week_index = {key: value for key, value in week.items() if key != "papers"}
-    week_index["dataUrl"] = f"data/weeks/{week['id']}.json"
+    issue_index = {key: value for key, value in issue.items() if key != "papers"}
+    issue_index["dataUrl"] = f"data/dates/{issue['id']}.json"
     previous = [
         {key: value for key, value in item.items() if key != "papers"}
-        for item in archive.get("weeks", [])
-        if item.get("id") != week["id"]
+        for item in archive.get("dates", [])
+        if item.get("id") != issue["id"]
     ]
-    weeks = sorted([week_index, *previous], key=lambda item: item["id"], reverse=True)[:104]
-    for index, item in enumerate(weeks):
-        item["eyebrow"] = "Latest week" if index == 0 else "Past week"
+    dates = sorted([issue_index, *previous], key=lambda item: item["id"], reverse=True)[:730]
+    for index, item in enumerate(dates):
+        item["eyebrow"] = "Latest date" if index == 0 else "Past date"
 
     payload = {
         "generatedAt": dt.datetime.now(dt.timezone.utc).isoformat(),
         "source": "arXiv API",
-        "weeks": weeks,
+        "dates": dates,
     }
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Updated {week['id']} with {len(papers)} papers")
+    print(f"Updated {issue['id']} with {len(papers)} papers")
 
 
 if __name__ == "__main__":

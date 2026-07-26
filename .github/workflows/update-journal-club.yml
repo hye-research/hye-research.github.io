@@ -5,11 +5,11 @@ on:
     branches:
       - main
   schedule:
-    - cron: "17 6 * * 1"
+    - cron: "0 7 * * *"
   workflow_dispatch:
     inputs:
       date:
-        description: "Optional YYYY-MM-DD date for backfilling the previous complete week"
+        description: "Optional YYYY-MM-DD issue date for a daily backfill"
         required: false
         type: string
 
@@ -34,7 +34,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Import previous arXiv week
+      - name: Import daily arXiv papers
         if: github.event_name != 'push'
         env:
           BACKFILL_DATE: ${{ inputs.date }}
