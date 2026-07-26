@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-26T14:57:54.028286+00:00",
+  "generatedAt": "2026-07-26T15:05:25.877017+00:00",
   "source": "arXiv API",
   "dates": [
     {
@@ -20,6 +20,24 @@
       "description": "Automatically imported from arXiv and preserved in the daily archive.",
       "topics": {},
       "dataUrl": "data/dates/2026-07-26.json"
+    },
+    {
+      "id": "2026-07-24",
+      "label": "Friday, 24 July 2026",
+      "eyebrow": "Past date",
+      "total": 43,
+      "status": "published",
+      "description": "Automatically imported from arXiv and preserved in the daily archive.",
+      "topics": {
+        "Galaxies": 12,
+        "Radio": 11,
+        "Cosmology": 10,
+        "Stars": 10,
+        "High Energy": 9,
+        "Methods": 9,
+        "Exoplanets": 2
+      },
+      "dataUrl": "data/dates/2026-07-24.json"
     }
   ]
 }
