@@ -867,6 +867,7 @@ function renderShortlist() {
               <a class="shortlist-source-link" href="${paper.link}" target="_blank" rel="noreferrer">
                 Read original on arXiv ↗
               </a>
+              ${shortlistAiExplanation(paper)}
               <label>
                 My notes
                 <textarea
@@ -933,6 +934,48 @@ function renderShortlist() {
   `;
 }
 
+function shortlistAiExplanation(paper) {
+  const language = state.aiLanguage[paper.id] || "en";
+  const cacheKey = `${paper.id}:${language}`;
+  const ai = state.aiExplanations[cacheKey];
+  const loading = state.aiLoading === cacheKey;
+  const error = state.aiError?.cacheKey === cacheKey ? state.aiError.message : "";
+  return `
+    <section class="shortlist-ai">
+      <div class="shortlist-ai-heading">
+        <strong>Saved AI explanation</strong>
+        <div class="ai-language-picker" role="group" aria-label="AI explanation language">
+          <button
+            class="${language === "en" ? "active" : ""}"
+            data-generate-ai="${paper.id}"
+            data-ai-language="en"
+            ${loading ? "disabled" : ""}
+          >English</button>
+          <button
+            class="${language === "zh" ? "active" : ""}"
+            data-generate-ai="${paper.id}"
+            data-ai-language="zh"
+            ${loading ? "disabled" : ""}
+          >中文</button>
+        </div>
+      </div>
+      ${ai ? `
+        <dl class="shortlist-ai-grid">
+          <div><dt>Scientific question</dt><dd>${escapeHtml(ai.scientific_question)}</dd></div>
+          <div><dt>Method</dt><dd>${escapeHtml(ai.method)}</dd></div>
+          <div><dt>Main result</dt><dd>${escapeHtml(ai.main_result)}</dd></div>
+          <div><dt>Limitations</dt><dd>${escapeHtml(ai.limitations)}</dd></div>
+        </dl>
+      ` : `
+        <p class="shortlist-ai-empty">${loading
+          ? "Generating explanation…"
+          : `No saved ${language === "zh" ? "Chinese" : "English"} explanation yet. Click the language button to generate it.`}</p>
+        ${error ? `<p class="ai-error">${escapeHtml(error)}</p>` : ""}
+      `}
+    </section>
+  `;
+}
+
 function renderDeck() {
   if (!state.deck) {
     state.view = "shortlist";
@@ -960,16 +1003,26 @@ function renderDeck() {
           <p class="eyebrow">${escapeHtml(slide.eyebrow)}</p>
           <h2>${escapeHtml(slide.title)}</h2>
           <p class="deck-slide-subtitle">${escapeHtml(slide.subtitle)}</p>
-          <ul>${slide.bullets.map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join("")}</ul>
+          ${slide.figure_url ? `
+            <div class="deck-figure-layout">
+              <figure>
+                <img src="${escapeHtml(slide.figure_url)}" alt="${escapeHtml(slide.figure_caption)}">
+                <figcaption>${escapeHtml(slide.figure_caption)}</figcaption>
+              </figure>
+              <div>
+                <h3>How to read this figure</h3>
+                <p>${escapeHtml(slide.figure_explanation)}</p>
+                <ul>${slide.bullets.map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join("")}</ul>
+              </div>
+            </div>
+          ` : `
+            <ul>${slide.bullets.map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join("")}</ul>
+          `}
           ${slide.arxiv_url ? `
             <a href="${escapeHtml(slide.arxiv_url)}" target="_blank" rel="noreferrer">
               arXiv source ↗
             </a>
           ` : ""}
-          <details class="speaker-notes">
-            <summary>Speaker notes</summary>
-            <p>${escapeHtml(slide.speaker_notes)}</p>
-          </details>
         </article>
       `).join("")}
     </section>

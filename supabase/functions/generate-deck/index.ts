@@ -14,11 +14,13 @@ const slideSchema = {
     bullets: { type: "array", items: { type: "string" } },
     paper_id: { type: "string" },
     arxiv_url: { type: "string" },
-    speaker_notes: { type: "string" },
+    figure_url: { type: "string" },
+    figure_caption: { type: "string" },
+    figure_explanation: { type: "string" },
   },
   required: [
     "kind", "eyebrow", "title", "subtitle", "bullets",
-    "paper_id", "arxiv_url", "speaker_notes",
+    "paper_id", "arxiv_url", "figure_url", "figure_caption", "figure_explanation",
   ],
 };
 
@@ -54,6 +56,50 @@ function outputText(response: Record<string, unknown>) {
   return "";
 }
 
+function plainText(html: string) {
+  return html
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&#39;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+async function extractFigures(arxivUrl: string) {
+  const id = arxivUrl.match(/\/abs\/([^?#]+)/)?.[1];
+  if (!id) return [];
+  const htmlUrl = `https://arxiv.org/html/${id}`;
+  try {
+    const response = await fetch(htmlUrl, {
+      headers: { "User-Agent": "HYE-Journal-Club/1.0" },
+    });
+    if (!response.ok) return [];
+    const html = await response.text();
+    const figures = [];
+    const imageRegex = /<img\b[^>]*\bsrc="([^"]+)"[^>]*>/gi;
+    let match;
+    while ((match = imageRegex.exec(html)) && figures.length < 2) {
+      const src = match[1];
+      if (!src.includes(id) || /logo|icon|glyph/i.test(src)) continue;
+      const nearby = html.slice(match.index, Math.min(html.length, match.index + 7000));
+      const captionHtml = nearby.match(/<figcaption\b[^>]*>([\s\S]*?)<\/figcaption>/i)?.[1] || "";
+      const caption = plainText(captionHtml).slice(0, 1800);
+      if (!caption) continue;
+      figures.push({
+        url: new URL(src, htmlUrl).href,
+        caption,
+      });
+    }
+    return figures;
+  } catch {
+    return [];
+  }
+}
+
 Deno.serve(async (request) => {
   if (request.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (request.method !== "POST") return json({ error: "Method not allowed." }, 405);
@@ -80,6 +126,23 @@ Deno.serve(async (request) => {
   const language = body.language === "zh" ? "Chinese" : "English";
   const audience = String(body.audience || "General astrophysics").slice(0, 100);
   const slidesPerPaper = Math.min(4, Math.max(2, Number(body.slides_per_paper) || 2));
+  const enrichedPapers = await Promise.all(papers.map(async (paper) => ({
+    ...paper,
+    figures: await extractFigures(String(paper.arxiv_url || "")),
+  })));
+  const content: Array<Record<string, unknown>> = [{
+    type: "input_text",
+    text: JSON.stringify(enrichedPapers),
+  }];
+  for (const paper of enrichedPapers) {
+    for (const figure of paper.figures) {
+      content.push({
+        type: "input_text",
+        text: `Candidate figure for paper_id ${paper.id}. Caption: ${figure.caption}`,
+      });
+      content.push({ type: "input_image", image_url: figure.url, detail: "low" });
+    }
+  }
 
   const openaiResponse = await fetch("https://api.openai.com/v1/responses", {
     method: "POST",
@@ -92,12 +155,15 @@ Deno.serve(async (request) => {
       store: false,
       reasoning: { effort: "low" },
       instructions:
-        `Create an astrophysics Journal Club presentation in ${language} for ${audience}. ` +
+        `Create a figure-first astrophysics Journal Club presentation in ${language} for ${audience}. ` +
         `Create one title slide, exactly ${slidesPerPaper} slides per paper, and one final discussion slide. ` +
         "Use only the supplied paper metadata and abstracts. Do not invent results or methods. " +
         "Every paper slide must retain its paper_id and exact arxiv_url. Use concise, presentation-ready bullets. " +
-        "Speaker notes may add context but must state when information is not available from the abstract.",
-      input: JSON.stringify(papers),
+        "Prioritize explaining the supplied figures over repeating abstract text. For a figure slide, use the exact " +
+        "candidate figure URL and caption, then explain how to read its axes, encodings, trend, scientific meaning, " +
+        "and limitations. Never claim an axis or trend you cannot see. If a paper has no supplied figure, use empty " +
+        "figure fields and create a concise text fallback. Title and final discussion slides must use empty figure fields.",
+      input: [{ role: "user", content }],
       max_output_tokens: 6000,
       text: {
         verbosity: "medium",

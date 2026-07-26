@@ -1067,6 +1067,51 @@ a {
   text-underline-offset: 4px;
 }
 
+.shortlist-ai {
+  background: #e6efe8;
+  border: 1.5px solid var(--line);
+  margin: 18px 0;
+  padding: 16px;
+}
+
+.shortlist-ai-heading {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.shortlist-ai .ai-language-picker {
+  margin: 0;
+}
+
+.shortlist-ai-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 14px 0 0;
+}
+
+.shortlist-ai-grid > div {
+  background: rgba(255, 249, 236, 0.78);
+  border: 1px solid var(--line);
+  padding: 10px;
+}
+
+.shortlist-ai-grid dt {
+  font-size: 0.72rem;
+  font-weight: 900;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.shortlist-ai-grid dd,
+.shortlist-ai-empty {
+  line-height: 1.5;
+  margin: 0;
+}
+
 .shortlist-abstract {
   margin-bottom: 12px;
 }
@@ -1214,15 +1259,44 @@ a {
   margin-top: auto;
 }
 
-.speaker-notes {
-  background: #fff;
-  border: 1px solid var(--line);
-  margin-top: 18px;
-  padding: 10px 12px;
+.deck-figure-layout {
+  align-items: center;
+  display: grid;
+  gap: clamp(20px, 3vw, 44px);
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+  min-height: 0;
 }
 
-.speaker-notes p {
-  line-height: 1.55;
+.deck-figure-layout figure {
+  margin: 0;
+  min-width: 0;
+}
+
+.deck-figure-layout img {
+  background: white;
+  border: 1.5px solid var(--line);
+  display: block;
+  height: min(48vh, 430px);
+  object-fit: contain;
+  width: 100%;
+}
+
+.deck-figure-layout figcaption {
+  font-size: 0.72rem;
+  line-height: 1.35;
+  margin-top: 8px;
+  max-height: 5.4em;
+  overflow: hidden;
+}
+
+.deck-figure-layout h3 {
+  font-size: clamp(1.2rem, 2vw, 1.8rem);
+  margin: 0 0 10px;
+}
+
+.deck-figure-layout > div > p {
+  font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+  line-height: 1.5;
 }
 
 .deck-slide-title {
@@ -1274,9 +1348,6 @@ a {
     page-break-after: auto;
   }
 
-  .speaker-notes {
-    display: none;
-  }
 }
 
 .export-shortlist {
@@ -3248,6 +3319,11 @@ th {
 }
 
 @media (max-width: 900px) {
+  .deck-figure-layout,
+  .shortlist-ai-grid {
+    grid-template-columns: 1fr;
+  }
+
   .site-header {
     align-items: center;
     gap: 12px;
