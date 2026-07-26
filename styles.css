@@ -1216,6 +1216,29 @@ a {
   padding: 10px;
 }
 
+.login-message {
+  display: none;
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.login-message.success {
+  display: block;
+  color: #14532d;
+  background: #dcfce7;
+  border: 1px solid #86efac;
+}
+
+.login-message.error {
+  display: block;
+  color: #991b1b;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+}
+
 .visitor-header {
   padding-bottom: 6px;
   padding-top: 46px;

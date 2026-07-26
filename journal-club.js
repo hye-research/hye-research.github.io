@@ -132,7 +132,8 @@ const chinese = {
   "Open the local owner workspace on your Mac to sign in.": "请在你的 Mac 上打开本地管理员工作台进行登录。",
   "Enter your approved email and we will send you a secure one-time sign-in link.": "输入已获准的邮箱，我们会向你发送安全的一次性登录链接。",
   "Send magic link": "发送登录链接",
-  "Check your email for the sign-in link.": "请检查邮箱中的登录链接。",
+  "Magic link sent. Please check your inbox and spam folder.": "登录链接已发送。请检查你的收件箱和垃圾邮件文件夹。",
+  "Email sent ✓": "邮件已发送 ✓",
   "Sending…": "正在发送…",
   "Email": "邮箱",
   "Password": "密码",
@@ -496,7 +497,7 @@ function renderLogin() {
         <form class="login-form">
           <label>Email<input name="email" type="email" autocomplete="email" required></label>
           <button type="submit" class="button primary">Send magic link</button>
-          <p class="login-message" aria-live="polite"></p>
+          <p class="login-message" role="status" aria-live="polite"></p>
         </form>
       </div>
     </section>
@@ -946,6 +947,7 @@ app.addEventListener("submit", (event) => {
   submitButton.disabled = true;
   submitButton.textContent = t("Sending…");
   message.textContent = "";
+  message.className = "login-message";
 
   if (!supabaseClient) {
     message.textContent = "The secure sign-in service could not load. Please refresh and try again.";
@@ -963,12 +965,17 @@ app.addEventListener("submit", (event) => {
   }).then(({ error }) => {
     if (error) throw error;
     form.reset();
-    message.textContent = t("Check your email for the sign-in link.");
+    message.textContent = t("Magic link sent. Please check your inbox and spam folder.");
+    message.classList.add("success");
+    submitButton.textContent = t("Email sent ✓");
   }).catch((error) => {
     message.textContent = error.message;
+    message.classList.add("error");
   }).finally(() => {
     submitButton.disabled = false;
-    submitButton.textContent = t("Send magic link");
+    if (!message.classList.contains("success")) {
+      submitButton.textContent = t("Send magic link");
+    }
   });
 });
 
