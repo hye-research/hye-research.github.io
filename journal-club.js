@@ -437,7 +437,7 @@ function appNav(active) {
       <button class="language-toggle" data-language="${state.language === "en" ? "zh" : "en"}">
         ${state.language === "en" ? "中文" : "EN"}
       </button>
-      <button class="signout-button" data-signout="true" title="Sign out">↪</button>
+      <button class="signout-button" data-signout="true">Sign out</button>
     </nav>
   `;
 }
