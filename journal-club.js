@@ -115,7 +115,10 @@ const state = {
   aiExplanations: readJsonStorage(aiStorageKey, {}),
   aiLanguage: {},
   aiLoading: null,
-  aiError: null
+  aiError: null,
+  deck: null,
+  deckLoading: false,
+  deckError: null
 };
 
 const chinese = {
@@ -893,7 +896,7 @@ function renderShortlist() {
         </div>
         <label>
           Audience
-          <select>
+          <select name="deck-audience">
             <option>General astrophysics</option>
             <option>Expert audience</option>
             <option>Student-friendly</option>
@@ -901,26 +904,72 @@ function renderShortlist() {
         </label>
         <label>
           Detail
-          <select>
-            <option>2 slides per paper</option>
-            <option>3 slides per paper</option>
-            <option>4 slides per paper</option>
+          <select name="deck-detail">
+            <option value="2">2 slides per paper</option>
+            <option value="3">3 slides per paper</option>
+            <option value="4">4 slides per paper</option>
           </select>
         </label>
-        <label class="figure-option">
-          <input type="checkbox" checked>
-          Include one key figure per paper
+        <label>
+          Presentation language
+          <select name="deck-language">
+            <option value="en">English</option>
+            <option value="zh">中文</option>
+          </select>
         </label>
-        <button class="generate-deck" ${items.length ? "" : "disabled"}>Generate presentation</button>
+        <button class="generate-deck" ${items.length && !state.deckLoading ? "" : "disabled"}>
+          ${state.deckLoading ? "Generating presentation…" : "Generate presentation"}
+        </button>
+        ${state.deckError ? `<p class="deck-error">${escapeHtml(state.deckError)}</p>` : ""}
         <button class="export-shortlist" data-export-shortlist="true" ${items.length ? "" : "disabled"}>
           Export shortlist JSON
         </button>
         <small>Download a portable backup for another browser.</small>
-        <small>
-          In the production version, AI will read the PDFs, explain selected figures,
-          and create an editable PowerPoint with speaker notes.
-        </small>
+        <small>Generate a web presentation, then print or save it as a PDF. Automatic paper figures come next.</small>
       </aside>
+    </section>
+  `;
+}
+
+function renderDeck() {
+  if (!state.deck) {
+    state.view = "shortlist";
+    renderShortlist();
+    return;
+  }
+  const deck = state.deck;
+  app.innerHTML = `
+    <section class="deck-toolbar section-band">
+      <button class="back-button" data-view="shortlist">← Back to shortlist</button>
+      <div>
+        <p class="eyebrow">AI presentation preview</p>
+        <h1>${escapeHtml(deck.deck_title)}</h1>
+        <p>${escapeHtml(deck.deck_subtitle)}</p>
+      </div>
+      <div class="deck-toolbar-actions">
+        <button class="button primary" data-print-deck="true">Download / Save as PDF</button>
+        <button class="button" data-export-deck="true">Download outline JSON</button>
+      </div>
+    </section>
+    <section class="deck-preview">
+      ${deck.slides.map((slide, index) => `
+        <article class="deck-slide deck-slide-${escapeHtml(slide.kind)}">
+          <div class="deck-slide-number">${String(index + 1).padStart(2, "0")}</div>
+          <p class="eyebrow">${escapeHtml(slide.eyebrow)}</p>
+          <h2>${escapeHtml(slide.title)}</h2>
+          <p class="deck-slide-subtitle">${escapeHtml(slide.subtitle)}</p>
+          <ul>${slide.bullets.map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join("")}</ul>
+          ${slide.arxiv_url ? `
+            <a href="${escapeHtml(slide.arxiv_url)}" target="_blank" rel="noreferrer">
+              arXiv source ↗
+            </a>
+          ` : ""}
+          <details class="speaker-notes">
+            <summary>Speaker notes</summary>
+            <p>${escapeHtml(slide.speaker_notes)}</p>
+          </details>
+        </article>
+      `).join("")}
     </section>
   `;
 }
@@ -931,6 +980,7 @@ function render() {
   else if (state.view === "visitor") renderVisitor();
   else if (state.view === "week") renderWeek();
   else if (state.view === "shortlist") renderShortlist();
+  else if (state.view === "deck") renderDeck();
   else if (state.access === "member") renderHome();
   else renderGateway();
   applyTranslations();
@@ -949,8 +999,14 @@ app.addEventListener("click", (event) => {
   const exportButton = event.target.closest("[data-export-shortlist]");
   const generateButton = event.target.closest(".generate-deck");
   const generateAiButton = event.target.closest("[data-generate-ai]");
+  const printDeckButton = event.target.closest("[data-print-deck]");
+  const exportDeckButton = event.target.closest("[data-export-deck]");
 
-  if (generateAiButton && !generateAiButton.disabled) {
+  if (printDeckButton) {
+    window.print();
+  } else if (exportDeckButton && state.deck) {
+    downloadJson(state.deck, `journal-club-deck-${new Date().toISOString().slice(0, 10)}.json`);
+  } else if (generateAiButton && !generateAiButton.disabled) {
     generateAiExplanation(
       generateAiButton.dataset.generateAi,
       generateAiButton.dataset.aiLanguage
@@ -987,10 +1043,72 @@ app.addEventListener("click", (event) => {
   } else if (shortlistButton) {
     toggleShortlist(shortlistButton.dataset.shortlist);
   } else if (generateButton && !generateButton.disabled) {
-    generateButton.textContent = "AI + PowerPoint connection comes in phase 2";
-    generateButton.classList.add("demo-state");
+    generatePresentation();
   }
 });
+
+function downloadJson(payload, filename) {
+  const url = URL.createObjectURL(new Blob([`${JSON.stringify(payload, null, 2)}\n`], {
+    type: "application/json"
+  }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+async function generatePresentation() {
+  const items = state.shortlist.map(findPaper).filter(Boolean).slice(0, 8);
+  if (!items.length || !supabaseClient) return;
+  const audience = app.querySelector("[name='deck-audience']")?.value || "General astrophysics";
+  const slidesPerPaper = Number(app.querySelector("[name='deck-detail']")?.value || 2);
+  const language = app.querySelector("[name='deck-language']")?.value || "en";
+  const notes = new Map(
+    [...app.querySelectorAll("[data-note]")].map((element) => [
+      element.dataset.note,
+      element.value.trim()
+    ])
+  );
+
+  state.deckLoading = true;
+  state.deckError = null;
+  render();
+  const { data, error } = await supabaseClient.functions.invoke("generate-deck", {
+    body: {
+      audience,
+      slides_per_paper: slidesPerPaper,
+      language,
+      papers: items.map(({ paper }) => ({
+        id: paper.id,
+        title: paper.title,
+        authors: paper.authors,
+        category: paper.category,
+        abstract: paper.abstract,
+        arxiv_url: paper.link,
+        personal_note: notes.get(paper.id) || ""
+      }))
+    }
+  });
+  state.deckLoading = false;
+  if (error || !data?.deck) {
+    let message = data?.error || error?.message || "The presentation could not be generated.";
+    if (error?.context) {
+      try {
+        const details = await error.context.json();
+        message = details.error || message;
+      } catch {
+        // Keep the original invocation error.
+      }
+    }
+    state.deckError = message;
+    render();
+    return;
+  }
+  state.deck = data.deck;
+  state.view = "deck";
+  render();
+}
 
 async function generateAiExplanation(paperId, language) {
   const match = findPaper(paperId);

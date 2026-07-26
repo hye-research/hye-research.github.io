@@ -1108,6 +1108,147 @@ a {
   background: var(--teal);
 }
 
+.deck-error {
+  color: #991b1b;
+  font-weight: 700;
+}
+
+.deck-toolbar {
+  display: grid;
+  gap: 22px;
+}
+
+.deck-toolbar h1 {
+  font-size: clamp(2.7rem, 6vw, 5rem);
+  margin-bottom: 8px;
+}
+
+.deck-toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.deck-preview {
+  background: #dbe6e1;
+  display: grid;
+  gap: 28px;
+  padding: 40px max(24px, calc((100vw - 1180px) / 2));
+}
+
+.deck-slide {
+  aspect-ratio: 16 / 9;
+  background: var(--paper);
+  border: 2px solid var(--line);
+  box-shadow: 9px 9px 0 rgba(23, 50, 43, 0.18);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 520px;
+  padding: clamp(32px, 6vw, 72px);
+  position: relative;
+}
+
+.deck-slide-number {
+  font-size: 0.8rem;
+  font-weight: 900;
+  position: absolute;
+  right: 28px;
+  top: 24px;
+}
+
+.deck-slide h2 {
+  font-size: clamp(2rem, 4.4vw, 4.4rem);
+  line-height: 1.03;
+  margin: 8px 0 14px;
+  max-width: 1000px;
+}
+
+.deck-slide-subtitle {
+  color: var(--muted);
+  font-size: clamp(1rem, 1.8vw, 1.45rem);
+  margin: 0 0 22px;
+}
+
+.deck-slide ul {
+  display: grid;
+  font-size: clamp(1rem, 1.7vw, 1.35rem);
+  gap: 12px;
+  line-height: 1.45;
+  margin: 0 0 20px;
+  max-width: 980px;
+}
+
+.deck-slide a {
+  font-weight: 900;
+  margin-top: auto;
+}
+
+.speaker-notes {
+  background: #fff;
+  border: 1px solid var(--line);
+  margin-top: 18px;
+  padding: 10px 12px;
+}
+
+.speaker-notes p {
+  line-height: 1.55;
+}
+
+.deck-slide-title {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.deck-slide-title .deck-slide-subtitle {
+  color: #dbe6e1;
+}
+
+.deck-slide-discussion {
+  background: var(--amber);
+}
+
+@media print {
+  @page {
+    margin: 0;
+    size: 13.333in 7.5in;
+  }
+
+  body {
+    background: white;
+  }
+
+  .site-header,
+  .site-footer,
+  .deck-toolbar {
+    display: none !important;
+  }
+
+  .deck-preview {
+    display: block;
+    padding: 0;
+  }
+
+  .deck-slide {
+    aspect-ratio: auto;
+    border: 0;
+    box-shadow: none;
+    height: 7.5in;
+    min-height: 0;
+    page-break-after: always;
+    break-after: page;
+    width: 13.333in;
+  }
+
+  .deck-slide:last-child {
+    page-break-after: auto;
+  }
+
+  .speaker-notes {
+    display: none;
+  }
+}
+
 .export-shortlist {
   background: var(--panel);
   border: 2px solid var(--line);
