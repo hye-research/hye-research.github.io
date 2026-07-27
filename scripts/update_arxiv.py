@@ -7,6 +7,7 @@ import argparse
 import datetime as dt
 import json
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -20,6 +21,10 @@ ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "data" / "journal-dates.json"
 DATES_DIR = ROOT / "data" / "dates"
 ATOM = {"atom": "http://www.w3.org/2005/Atom"}
+OAI = {
+    "oai": "http://www.openarchives.org/OAI/2.0/",
+    "arxiv": "http://arxiv.org/OAI/arXiv/",
+}
 
 CATEGORY_NAMES = {
     "astro-ph.CO": "Cosmology",
@@ -68,8 +73,111 @@ def fetch_page(search_query: str, start: int, max_results: int) -> ET.Element:
         }
     )
     request = urllib.request.Request(f"{API_URL}?{params}", headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(request, timeout=90) as response:
-        return ET.fromstring(response.read())
+    for attempt, delay in enumerate((0, 8, 24), start=1):
+        if delay:
+            time.sleep(delay)
+        try:
+            with urllib.request.urlopen(request, timeout=90) as response:
+                return ET.fromstring(response.read())
+        except urllib.error.HTTPError as error:
+            if error.code not in {429, 500, 502, 503, 504} or attempt == 3:
+                raise
+            print(
+                f"arXiv API returned {error.code}; "
+                f"retrying in {(8, 24)[attempt - 1]}s"
+            )
+    raise RuntimeError("arXiv API retry loop ended unexpectedly")
+
+
+def fetch_period_oai(start: dt.datetime, end: dt.datetime) -> list[dict]:
+    """Use arXiv's official OAI feed when the query API is rate-limited."""
+    base_params = {
+        "verb": "ListRecords",
+        "from": start.date().isoformat(),
+        "until": end.date().isoformat(),
+        "set": "physics:astro-ph",
+        "metadataPrefix": "arXiv",
+    }
+    papers: list[dict] = []
+    token = ""
+
+    while True:
+        params = {"verb": "ListRecords", "resumptionToken": token} if token else base_params
+        url = f"https://export.arxiv.org/oai2?{urllib.parse.urlencode(params)}"
+        request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+        for attempt, delay in enumerate((0, 10, 30), start=1):
+            if delay:
+                time.sleep(delay)
+            try:
+                with urllib.request.urlopen(request, timeout=120) as response:
+                    root = ET.fromstring(response.read())
+                break
+            except urllib.error.HTTPError as error:
+                if error.code not in {429, 500, 502, 503, 504} or attempt == 3:
+                    raise
+                print(f"arXiv OAI returned {error.code}; retrying")
+
+        for record in root.findall(".//oai:record", OAI):
+            metadata = record.find("oai:metadata/arxiv:arXiv", OAI)
+            if metadata is None:
+                continue
+            created_text = clean_text(metadata.findtext("arxiv:created", namespaces=OAI))
+            try:
+                created = dt.date.fromisoformat(created_text)
+            except ValueError:
+                continue
+            if not (start.date() <= created <= end.date()):
+                continue
+
+            arxiv_id = clean_text(metadata.findtext("arxiv:id", namespaces=OAI))
+            title = clean_text(metadata.findtext("arxiv:title", namespaces=OAI))
+            abstract = clean_text(metadata.findtext("arxiv:abstract", namespaces=OAI))
+            all_categories = clean_text(
+                metadata.findtext("arxiv:categories", namespaces=OAI)
+            ).split()
+            categories = [item for item in all_categories if item.startswith("astro-ph")]
+            if not categories:
+                continue
+            authors = []
+            for author in metadata.findall("arxiv:authors/arxiv:author", OAI):
+                forenames = clean_text(author.findtext("arxiv:forenames", namespaces=OAI))
+                keyname = clean_text(author.findtext("arxiv:keyname", namespaces=OAI))
+                authors.append(" ".join(part for part in (forenames, keyname) if part))
+
+            papers.append(
+                {
+                    "id": arxiv_id,
+                    "arxivId": arxiv_id,
+                    "title": title,
+                    "authors": ", ".join(authors),
+                    "category": categories[0],
+                    "categories": categories,
+                    "topics": topic_labels(categories, title, abstract),
+                    "submitted": f"{created_text}T00:00:00Z",
+                    "updated": clean_text(
+                        metadata.findtext("arxiv:updated", namespaces=OAI)
+                    ) or created_text,
+                    "abstract": abstract,
+                    "question": "",
+                    "why": "",
+                    "method": "",
+                    "data": "",
+                    "result": "",
+                    "limitations": "",
+                    "discuss": "",
+                    "analysisStatus": "pending",
+                    "link": f"https://arxiv.org/abs/{arxiv_id}",
+                    "pdf": f"https://arxiv.org/pdf/{arxiv_id}",
+                }
+            )
+
+        token = clean_text(root.findtext(".//oai:resumptionToken", namespaces=OAI))
+        if not token:
+            break
+        time.sleep(3)
+
+    unique = {paper["id"]: paper for paper in papers}
+    return sorted(unique.values(), key=lambda paper: paper["submitted"], reverse=True)
 
 
 def fetch_period(start: dt.datetime, end: dt.datetime) -> list[dict]:
@@ -173,7 +281,16 @@ def main() -> None:
         print(f"Skipped {issue_date}: weekend issues are not created")
         return
     start, end = daily_window(issue_date)
-    papers = fetch_period(start, end)
+    try:
+        papers = fetch_period(start, end)
+    except urllib.error.HTTPError as error:
+        if error.code not in {429, 500, 502, 503, 504}:
+            raise
+        print(
+            f"arXiv query API remained unavailable ({error.code}); "
+            "switching to official OAI feed"
+        )
+        papers = fetch_period_oai(start, end)
     issue = make_issue(issue_date, papers)
 
     archive = load_archive()
