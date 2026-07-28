@@ -291,6 +291,20 @@ def main() -> None:
             "switching to official OAI feed"
         )
         papers = fetch_period_oai(start, end)
+
+    issue_file = DATES_DIR / f"{issue_date.isoformat()}.json"
+    if issue_file.exists():
+        existing_issue = json.loads(issue_file.read_text(encoding="utf-8"))
+        existing_papers = existing_issue.get("papers", [])
+        if len(papers) <= len(existing_papers):
+            print(
+                f"Archive is already current for {issue_date}: "
+                f"{len(existing_papers)} papers stored, {len(papers)} fetched"
+            )
+            return
+    if not papers:
+        raise RuntimeError(f"arXiv returned no papers for {issue_date}; archive not modified")
+
     issue = make_issue(issue_date, papers)
 
     archive = load_archive()

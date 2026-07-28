@@ -6,9 +6,9 @@ on:
       - main
   schedule:
     # Avoid the top-of-hour GitHub Actions congestion window.
-    - cron: "17 7 * * 1-5"
-    # Idempotent recovery run in case the first scheduled event is delayed or dropped.
-    - cron: "47 7 * * 1-5"
+    - cron: "17,32,47 7 * * 1-5"
+    # Additional recovery opportunities if GitHub drops or delays the first group.
+    - cron: "2,17 8 * * 1-5"
   workflow_dispatch:
     inputs:
       date:
