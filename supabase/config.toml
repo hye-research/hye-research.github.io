@@ -5,3 +5,6 @@ verify_jwt = true
 
 [functions.generate-deck]
 verify_jwt = true
+
+[functions.trigger-journal-sync]
+verify_jwt = false
