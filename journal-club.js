@@ -99,7 +99,7 @@ let journalWeeks = [
 const app = document.querySelector("#journal-app");
 const storageKey = "hy-journal-shortlist";
 const languageKey = "hy-journal-language";
-const aiStorageKey = "hy-journal-ai-explanations-v2";
+const aiStorageKey = "hy-journal-ai-explanations-v3";
 const supabaseUrl = "https://zwbyvbygswhdlpruofht.supabase.co";
 const supabasePublishableKey = "sb_publishable_Rqy1myWykBBkRTG9opvVhw_o-PiDe8T";
 const supabaseClient = window.supabase?.createClient(supabaseUrl, supabasePublishableKey);
@@ -729,7 +729,7 @@ function paperCard(paper) {
           <section class="ai-explanation">
             <div class="ai-explanation-heading">
               <span class="ai-spark">AI</span>
-              <div><strong>Paper explained</strong><small>AI analysis based on the abstract · verify against the paper</small></div>
+              <div><strong>Paper explained</strong><small>Background knowledge + abstract-grounded paper analysis · verify against the paper</small></div>
             </div>
             <div class="ai-language-picker" role="group" aria-label="AI explanation language">
               <button
@@ -747,11 +747,13 @@ function paperCard(paper) {
             </div>
             ${ai ? `
               <dl class="explanation-grid">
-                <div><dt>Scientific question</dt><dd>${escapeHtml(ai.scientific_question)}</dd></div>
-                <div><dt>Why it matters</dt><dd>${escapeHtml(ai.why_it_matters)}</dd></div>
-                <div><dt>Method</dt><dd>${escapeHtml(ai.method)}</dd></div>
-                <div><dt>Data / instrument</dt><dd>${escapeHtml(ai.data_instruments)}</dd></div>
-                <div><dt>Main result</dt><dd>${escapeHtml(ai.main_result)}</dd></div>
+                <div><dt>Topic background</dt><dd>${escapeHtml(ai.topic_background)}</dd></div>
+                <div><dt>Jargon explained</dt><dd>${escapeHtml(ai.jargon_explained)}</dd></div>
+                <div><dt>Why this is worth studying</dt><dd>${escapeHtml(ai.why_worth_studying)}</dd></div>
+                <div><dt>What this paper asks</dt><dd>${escapeHtml(ai.paper_goal)}</dd></div>
+                <div><dt>What the researchers did</dt><dd>${escapeHtml(ai.approach_and_data)}</dd></div>
+                <div><dt>What is innovative</dt><dd>${escapeHtml(ai.innovation)}</dd></div>
+                <div><dt>Key findings</dt><dd>${escapeHtml(ai.key_findings)}</dd></div>
                 <div><dt>Limitations</dt><dd>${escapeHtml(ai.limitations)}</dd></div>
                 <div class="discussion-cell"><dt>Question for the room</dt><dd>${escapeHtml(ai.discussion_question)}</dd></div>
               </dl>
@@ -961,9 +963,13 @@ function shortlistAiExplanation(paper) {
       </div>
       ${ai ? `
         <dl class="shortlist-ai-grid">
-          <div><dt>Scientific question</dt><dd>${escapeHtml(ai.scientific_question)}</dd></div>
-          <div><dt>Method</dt><dd>${escapeHtml(ai.method)}</dd></div>
-          <div><dt>Main result</dt><dd>${escapeHtml(ai.main_result)}</dd></div>
+          <div><dt>Topic background</dt><dd>${escapeHtml(ai.topic_background)}</dd></div>
+          <div><dt>Jargon explained</dt><dd>${escapeHtml(ai.jargon_explained)}</dd></div>
+          <div><dt>Why this is worth studying</dt><dd>${escapeHtml(ai.why_worth_studying)}</dd></div>
+          <div><dt>What this paper asks</dt><dd>${escapeHtml(ai.paper_goal)}</dd></div>
+          <div><dt>What the researchers did</dt><dd>${escapeHtml(ai.approach_and_data)}</dd></div>
+          <div><dt>What is innovative</dt><dd>${escapeHtml(ai.innovation)}</dd></div>
+          <div><dt>Key findings</dt><dd>${escapeHtml(ai.key_findings)}</dd></div>
           <div><dt>Limitations</dt><dd>${escapeHtml(ai.limitations)}</dd></div>
         </dl>
       ` : `
@@ -1183,6 +1189,7 @@ async function generateAiExplanation(paperId, language) {
     body: {
       title: match.paper.title,
       abstract: match.paper.abstract,
+      category: match.paper.category,
       language
     }
   });
