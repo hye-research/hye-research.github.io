@@ -56,6 +56,20 @@ function outputText(response: Record<string, unknown>) {
   return "";
 }
 
+function refusalText(response: Record<string, unknown>) {
+  const output = Array.isArray(response.output) ? response.output : [];
+  for (const item of output) {
+    if (!item || typeof item !== "object" || !Array.isArray(item.content)) continue;
+    for (const content of item.content) {
+      if (
+        content && typeof content === "object" &&
+        content.type === "refusal" && typeof content.refusal === "string"
+      ) return content.refusal;
+    }
+  }
+  return "";
+}
+
 function plainText(html: string) {
   return html
     .replace(/<[^>]+>/g, " ")
@@ -126,6 +140,11 @@ Deno.serve(async (request) => {
   const language = body.language === "zh" ? "Chinese" : "English";
   const audience = String(body.audience || "General astrophysics").slice(0, 100);
   const slidesPerPaper = Math.min(4, Math.max(2, Number(body.slides_per_paper) || 2));
+  const expectedSlideCount = 2 + papers.length * slidesPerPaper;
+  const maxOutputTokens = Math.min(
+    16000,
+    Math.max(6000, 2000 + papers.length * slidesPerPaper * 500),
+  );
   const enrichedPapers = await Promise.all(papers.map(async (paper) => ({
     ...paper,
     figures: await extractFigures(String(paper.arxiv_url || "")),
@@ -157,16 +176,18 @@ Deno.serve(async (request) => {
       instructions:
         `Create a figure-first astrophysics Journal Club presentation in ${language} for ${audience}. ` +
         `Create one title slide, exactly ${slidesPerPaper} slides per paper, and one final discussion slide. ` +
+        `Return exactly ${expectedSlideCount} slides in total. ` +
         "Use only the supplied paper metadata and abstracts. Do not invent results or methods. " +
-        "Every paper slide must retain its paper_id and exact arxiv_url. Use concise, presentation-ready bullets. " +
+        "Every paper slide must retain its paper_id and exact arxiv_url. Use 2–4 concise bullets per slide; " +
+        "each bullet should express one idea and normally stay under 22 words. Do not create speaker notes. " +
         "Prioritize explaining the supplied figures over repeating abstract text. For a figure slide, use the exact " +
         "candidate figure URL and caption, then explain how to read its axes, encodings, trend, scientific meaning, " +
         "and limitations. Never claim an axis or trend you cannot see. If a paper has no supplied figure, use empty " +
         "figure fields and create a concise text fallback. Title and final discussion slides must use empty figure fields.",
       input: [{ role: "user", content }],
-      max_output_tokens: 6000,
+      max_output_tokens: maxOutputTokens,
       text: {
-        verbosity: "medium",
+        verbosity: "low",
         format: {
           type: "json_schema",
           name: "journal_club_deck",
@@ -182,9 +203,48 @@ Deno.serve(async (request) => {
     return json({ error: responseBody?.error?.message || "OpenAI request failed." }, 502);
   }
 
+  const refusal = refusalText(responseBody);
+  if (refusal) {
+    return json({ error: `The presentation request was refused: ${refusal}` }, 422);
+  }
+
+  if (responseBody.status !== "completed") {
+    const reason = responseBody?.incomplete_details?.reason || "unknown";
+    console.error("generate-deck incomplete response", JSON.stringify({
+      reason,
+      maxOutputTokens,
+      paperCount: papers.length,
+      slidesPerPaper,
+      expectedSlideCount,
+    }));
+    if (reason === "max_output_tokens") {
+      return json({
+        error:
+          "The presentation became too long to finish. Try fewer slides per paper or generate from a smaller shortlist.",
+      }, 422);
+    }
+    return json({ error: `The presentation generation stopped early (${reason}). Please try again.` }, 502);
+  }
+
   try {
-    return json({ deck: JSON.parse(outputText(responseBody)), model: responseBody.model });
-  } catch {
-    return json({ error: "The generated presentation could not be parsed." }, 502);
+    const deck = JSON.parse(outputText(responseBody));
+    if (!deck || !Array.isArray(deck.slides) || deck.slides.length !== expectedSlideCount) {
+      console.error("generate-deck unexpected slide count", JSON.stringify({
+        expectedSlideCount,
+        actualSlideCount: Array.isArray(deck?.slides) ? deck.slides.length : null,
+      }));
+      return json({ error: "The presentation returned an incomplete set of slides. Please try again." }, 502);
+    }
+    return json({ deck, model: responseBody.model });
+  } catch (error) {
+    console.error("generate-deck parse failure", JSON.stringify({
+      status: responseBody.status,
+      outputTypes: Array.isArray(responseBody.output)
+        ? responseBody.output.map((item: Record<string, unknown>) => item?.type)
+        : [],
+      outputTextLength: outputText(responseBody).length,
+      message: error instanceof Error ? error.message : String(error),
+    }));
+    return json({ error: "The presentation response was malformed. Please try again." }, 502);
   }
 });
