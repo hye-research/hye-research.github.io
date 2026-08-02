@@ -1009,21 +1009,23 @@ function renderDeck() {
           <p class="eyebrow">${escapeHtml(slide.eyebrow)}</p>
           <h2>${escapeHtml(slide.title)}</h2>
           <p class="deck-slide-subtitle">${escapeHtml(slide.subtitle)}</p>
-          ${slide.figure_url ? `
-            <div class="deck-figure-layout">
-              <figure>
-                <img src="${escapeHtml(slide.figure_url)}" alt="${escapeHtml(slide.figure_caption)}">
-                <figcaption>${escapeHtml(slide.figure_caption)}</figcaption>
-              </figure>
-              <div>
-                <h3>How to read this figure</h3>
-                <p>${escapeHtml(slide.figure_explanation)}</p>
-                <ul>${slide.bullets.map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join("")}</ul>
+          <div class="deck-slide-body">
+            ${slide.figure_url ? `
+              <div class="deck-figure-layout">
+                <figure>
+                  <img src="${escapeHtml(slide.figure_url)}" alt="${escapeHtml(slide.figure_caption)}">
+                  <figcaption>${escapeHtml(slide.figure_caption)}</figcaption>
+                </figure>
+                <div class="deck-figure-copy">
+                  <h3>How to read this figure</h3>
+                  <p>${escapeHtml(slide.figure_explanation)}</p>
+                  <ul>${slide.bullets.map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join("")}</ul>
+                </div>
               </div>
-            </div>
-          ` : `
-            <ul>${slide.bullets.map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join("")}</ul>
-          `}
+            ` : `
+              <ul>${slide.bullets.map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join("")}</ul>
+            `}
+          </div>
           ${slide.arxiv_url ? `
             <a href="${escapeHtml(slide.arxiv_url)}" target="_blank" rel="noreferrer">
               arXiv source ↗
@@ -1033,7 +1035,39 @@ function renderDeck() {
       `).join("")}
     </section>
   `;
+  requestAnimationFrame(() => {
+    fitDeckSlides();
+    app.querySelectorAll(".deck-slide img").forEach((image) => {
+      image.addEventListener("load", fitDeckSlides, { once: true });
+    });
+  });
 }
+
+function fitDeckSlides() {
+  app.querySelectorAll(".deck-slide").forEach((slide) => {
+    slide.classList.remove("deck-slide-compact", "deck-slide-dense", "deck-slide-minimal");
+    if (deckSlideOverflows(slide)) slide.classList.add("deck-slide-compact");
+    if (deckSlideOverflows(slide)) slide.classList.add("deck-slide-dense");
+    if (deckSlideOverflows(slide)) slide.classList.add("deck-slide-minimal");
+  });
+}
+
+function deckSlideOverflows(slide) {
+  const regions = [
+    slide,
+    ...slide.querySelectorAll(".deck-slide-body, .deck-figure-layout, .deck-figure-copy, figure")
+  ];
+  return regions.some((region) =>
+    region.clientHeight > 0 && (
+      region.scrollHeight > region.clientHeight + 1 ||
+      region.scrollWidth > region.clientWidth + 1
+    )
+  );
+}
+
+window.addEventListener("beforeprint", fitDeckSlides);
+window.addEventListener("afterprint", fitDeckSlides);
+window.addEventListener("resize", fitDeckSlides);
 
 function render() {
   if (state.view === "gateway") renderGateway();

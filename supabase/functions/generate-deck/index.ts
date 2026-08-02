@@ -180,8 +180,10 @@ Deno.serve(async (request) => {
         "Use only the supplied paper metadata and abstracts. Do not invent results or methods. " +
         "Every paper slide must retain its paper_id and exact arxiv_url. Use 2–4 concise bullets per slide; " +
         "each bullet should express one idea and normally stay under 22 words. Do not create speaker notes. " +
+        "Keep slide titles under 10 words and subtitles under 20 words. Keep each figure explanation under 70 words. " +
         "Prioritize explaining the supplied figures over repeating abstract text. For a figure slide, use the exact " +
-        "candidate figure URL and caption, then explain how to read its axes, encodings, trend, scientific meaning, " +
+        "candidate figure URL, condense its caption to no more than 35 words without changing its meaning, then " +
+        "explain how to read its axes, encodings, trend, scientific meaning, " +
         "and limitations. Never claim an axis or trend you cannot see. If a paper has no supplied figure, use empty " +
         "figure fields and create a concise text fallback. Title and final discussion slides must use empty figure fields.",
       input: [{ role: "user", content }],
