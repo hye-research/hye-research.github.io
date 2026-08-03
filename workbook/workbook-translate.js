@@ -16,6 +16,11 @@
     "Your self-appreciation notes save in this browser on this device. They are not uploaded.": "你的自我欣赏笔记只会保存在这台设备的浏览器里，不会上传。",
     "To nudge these workbooks forward, contact me.": "如果你想推动这些工作本继续完善，可以 contact me。",
     "In development": "开发中",
+    "New workbook": "新工作本",
+    "My Activity Portfolio": "我的行动全景图",
+    "Bring every activity into one view and see the time it really takes—including preparation, recovery, and weekly frequency.": "把所有行动放在同一个视图中，看见它们真正需要的时间——包括准备、恢复和每周频率。",
+    "List what you want to do and what is already in motion, compare importance and joy, then decide what to keep, delay, delegate, or delete.": "列出想做和正在做的行动，比较重要程度与快乐程度，再决定哪些保留、延后、委托或删除。",
+    "Open workbook →": "打开工作本 →",
 
     "Energy Map": "能量地图",
     "Track daily energy, attention, load, and recovery patterns.": "记录每天的能量、注意力、负荷和恢复模式。",
@@ -886,6 +891,30 @@
     });
   }
 
+  function ensureActivityPortfolioCard() {
+    const home = document.querySelector(".workbook-home");
+    if (!home || document.getElementById("activity-portfolio-entry")) return;
+
+    const section = document.createElement("section");
+    section.id = "activity-portfolio-entry";
+    section.className = "development-section";
+    section.setAttribute("aria-labelledby", "activity-portfolio-title");
+    section.innerHTML = `
+      <div class="development-note">
+        <p class="eyebrow">New workbook</p>
+        <h2 id="activity-portfolio-title">My Activity Portfolio</h2>
+        <p>Bring every activity into one view and see the time it really takes—including preparation, recovery, and weekly frequency.</p>
+      </div>
+      <div class="workbook-library">
+        <a href="/workbook/workbook/activity_portfolio/">
+          <span>My Activity Portfolio</span>
+          <p>List what you want to do and what is already in motion, compare importance and joy, then decide what to keep, delay, delegate, or delete.</p>
+          <strong>Open workbook →</strong>
+        </a>
+      </div>`;
+    home.appendChild(section);
+  }
+
   function observeChanges() {
     let queued = false;
     const observer = new MutationObserver(() => {
@@ -900,6 +929,7 @@
   }
 
   function init() {
+    ensureActivityPortfolioCard();
     bindLanguageSwitches();
     applyLanguage(localStorage.getItem(LANGUAGE_KEY) === "zh" ? "zh" : "en");
     observeChanges();
