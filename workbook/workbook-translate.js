@@ -893,7 +893,7 @@
 
   function ensureActivityPortfolioCard() {
     const home = document.querySelector(".workbook-home");
-    if (!home || document.getElementById("activity-portfolio-entry")) return;
+    if (!home || document.querySelector('a[href="/workbook/workbook/activity_portfolio/"]')) return;
 
     const section = document.createElement("section");
     section.id = "activity-portfolio-entry";
