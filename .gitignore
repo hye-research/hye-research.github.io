@@ -5,4 +5,6 @@ node_modules/
 __pycache__/
 *.pyc
 .journal-club-owner.json
+intranet.html
+Start HY Intranet.command
 supabase/.temp/

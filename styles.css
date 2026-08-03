@@ -169,6 +169,157 @@ a {
   color: var(--ink);
 }
 
+.site-header nav a.intranet-link {
+  background: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  color: var(--panel);
+  padding: 7px 11px;
+}
+
+/* Local intranet */
+.intranet-hero {
+  padding-bottom: 54px;
+  padding-top: 72px;
+}
+
+.intranet-hero h1 {
+  font-size: clamp(4.5rem, 12vw, 9rem);
+  line-height: 0.88;
+  margin: 10px 0 28px;
+}
+
+.intranet-hero .lead {
+  max-width: 720px;
+}
+
+.local-status {
+  align-items: center;
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 0.88rem;
+  font-weight: 800;
+  gap: 9px;
+  margin-top: 22px;
+  padding: 8px 13px;
+}
+
+.local-status span {
+  background: var(--green);
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  height: 12px;
+  width: 12px;
+}
+
+.intranet-tools {
+  border-top: 2px solid var(--line);
+  padding-bottom: 70px;
+  padding-top: 48px;
+}
+
+.intranet-grid {
+  display: grid;
+  gap: 28px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 26px;
+}
+
+.intranet-card {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  min-height: 390px;
+  padding: 28px;
+}
+
+.litnest-card {
+  border-top: 13px solid var(--tomato);
+}
+
+.journal-tool-card {
+  border-top: 13px solid var(--teal);
+}
+
+.tool-monogram {
+  align-items: center;
+  background: var(--amber);
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  display: flex;
+  font-size: 1.1rem;
+  font-weight: 900;
+  height: 58px;
+  justify-content: center;
+  width: 58px;
+}
+
+.journal-tool-card .tool-monogram {
+  background: #a8d9cf;
+}
+
+.tool-kicker,
+.eyebrow {
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  margin: 0;
+}
+
+.intranet-card h3 {
+  font-size: clamp(1.7rem, 3vw, 2.35rem);
+  line-height: 1.05;
+  margin: 7px 0 14px;
+}
+
+.tool-storage {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.intranet-card .button {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+.intranet-card .button.primary {
+  background: var(--tomato);
+}
+
+.intranet-card .button.secondary {
+  background: #a8d9cf;
+}
+
+.intranet-note {
+  padding-bottom: 42px;
+  padding-top: 0;
+}
+
+.intranet-note strong {
+  font-size: 1.1rem;
+}
+
+.intranet-note p {
+  color: var(--muted);
+  margin: 6px 0 0;
+  max-width: 760px;
+}
+
+@media (max-width: 760px) {
+  .intranet-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .intranet-card {
+    min-height: 0;
+  }
+}
+
 /* Journal Club */
 .journal-hero {
   align-items: end;
