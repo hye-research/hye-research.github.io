@@ -2532,7 +2532,14 @@ h3 {
   gap: 14px;
 }
 
-.scholar-profile-link {
+.research-profile-links {
+  display: grid;
+  gap: 9px;
+  margin-top: 13px;
+  width: fit-content;
+}
+
+.research-profile-link {
   align-items: center;
   background: #fff;
   border: 2px solid var(--line);
@@ -2542,20 +2549,25 @@ h3 {
   font-size: 0.88rem;
   font-weight: 850;
   gap: 8px;
-  margin-top: 13px;
   padding: 8px 11px 8px 9px;
   text-decoration: none;
   width: fit-content;
 }
 
-.scholar-profile-link .scholar-mark {
+.research-profile-link .scholar-mark {
   fill: #4285f4;
   flex: none;
   height: 24px;
   width: 24px;
 }
 
-.scholar-profile-link:hover {
+.orcid-profile-link img {
+  flex: none;
+  height: 24px;
+  width: 24px;
+}
+
+.research-profile-link:hover {
   transform: translateY(-1px);
 }
 
