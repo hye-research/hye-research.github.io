@@ -2532,6 +2532,49 @@ h3 {
   gap: 14px;
 }
 
+.publication-heading-row {
+  align-items: end;
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.publication-heading-row .section-heading h2 {
+  margin-bottom: 0;
+}
+
+.scholar-profile-link {
+  align-items: center;
+  background: var(--amber);
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 3px 3px 0 var(--line);
+  display: inline-flex;
+  flex: none;
+  font-size: 0.88rem;
+  font-weight: 850;
+  gap: 8px;
+  max-width: 250px;
+  padding: 10px 12px;
+  text-decoration: none;
+}
+
+.scholar-profile-link svg {
+  fill: none;
+  flex: none;
+  height: 22px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+  width: 22px;
+}
+
+.scholar-profile-link:hover {
+  transform: translateY(-1px);
+}
+
 .publication-panel,
 .talk-panel {
   background: #fff;
@@ -3553,6 +3596,15 @@ th {
     align-items: center;
     gap: 12px;
     padding: 9px 16px;
+  }
+
+  .publication-heading-row {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .scholar-profile-link {
+    max-width: none;
   }
 
   .hero,
