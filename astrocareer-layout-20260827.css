@@ -1,0 +1,22 @@
+/* Cache-independent layout corrections for the AstroCareer series details. */
+.astro-about-notes article {
+  grid-template-columns: max-content minmax(0, 1fr);
+}
+
+.astro-about-notes .astro-detail-label {
+  min-width: 0;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+@media (max-width: 620px) {
+  .astro-about-notes article {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    padding: 16px;
+  }
+
+  .astro-about-notes .astro-detail-label {
+    justify-self: start;
+  }
+}
