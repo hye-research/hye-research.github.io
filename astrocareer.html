@@ -15,6 +15,30 @@
     <meta name="twitter:card" content="summary">
     <link rel="stylesheet" href="styles.css?v=20260827-01">
     <link rel="stylesheet" href="astrocareer-layout-20260827.css">
+    <style>
+      /* Keep these labels readable even if a browser restores an older global stylesheet. */
+      .astro-about-notes > article {
+        grid-template-columns: max-content minmax(0, 1fr) !important;
+      }
+
+      .astro-about-notes > article > .astro-detail-label {
+        min-width: 0 !important;
+        text-transform: none !important;
+        white-space: nowrap !important;
+      }
+
+      @media (max-width: 620px) {
+        .astro-about-notes > article {
+          grid-template-columns: 1fr !important;
+          min-height: 0 !important;
+          padding: 16px !important;
+        }
+
+        .astro-about-notes > article > .astro-detail-label {
+          justify-self: start !important;
+        }
+      }
+    </style>
   </head>
   <body>
     <header class="site-header" id="top">
