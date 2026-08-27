@@ -2321,7 +2321,7 @@ h3 {
   border-radius: 8px;
   display: grid;
   gap: 14px;
-  grid-template-columns: 92px minmax(0, 1fr);
+  grid-template-columns: max-content minmax(0, 1fr);
   min-height: 136px;
   padding: 20px;
   text-align: left;
@@ -2337,9 +2337,9 @@ h3 {
   font-weight: 800;
   justify-content: center;
   line-height: 1;
-  min-width: 92px;
+  min-width: 0;
   padding: 8px 10px;
-  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .astro-about-notes article:nth-child(2) span {
@@ -3768,6 +3768,16 @@ th {
 
   .intro-grid {
     grid-template-columns: 1fr;
+  }
+
+  .astro-about-notes article {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    padding: 16px;
+  }
+
+  .astro-about-notes span {
+    justify-self: start;
   }
 
   .page-nav-band {
