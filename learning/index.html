@@ -102,12 +102,20 @@
               <div class="word-reveal" hidden>
                 <small class="word-result-label">正确读法</small>
                 <strong class="word-romanization">hangugeo</strong>
+                <div class="word-meaning-block">
+                  <small>中文意思</small>
+                  <strong class="word-meaning">韩国语，韩语</strong>
+                </div>
                 <div class="word-actions">
                   <button class="word-audio-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Zm12.5 3a4.5 4.5 0 0 0-2-3.74v7.48a4.5 4.5 0 0 0 2-3.74Zm-2-8.65v2.08a7 7 0 0 1 0 13.14v2.08a9 9 0 0 0 0-17.3Z"/></svg>听读音</button>
                   <button class="next-word-button" type="button">下一个 <span>→</span></button>
                 </div>
               </div>
-              <a class="word-source" href="https://www.korean.go.kr/front/etcData/etcDataView.do?etc_seq=71&amp;mn_id=46" target="_blank" rel="noreferrer">词表来源：韩国国立国语院</a>
+              <div class="word-sources">
+                <a href="https://www.korean.go.kr/front/etcData/etcDataView.do?etc_seq=71&amp;mn_id=46" target="_blank" rel="noreferrer">词表来源</a>
+                <span>·</span>
+                <a class="word-meaning-source" href="https://krdict.korean.go.kr/chn/mainAction" target="_blank" rel="noreferrer">释义参考：韩国国立国语院</a>
+              </div>
             </section>
           </div>
 
@@ -169,6 +177,7 @@
     <!-- KOROMAN v1.0.16, MIT License: https://github.com/gerosyab/koroman -->
     <script src="https://cdn.jsdelivr.net/gh/gerosyab/koroman@js-v1.0.16/js/dist/koroman.browser.js"></script>
     <script src="vocabulary.js"></script>
+    <script src="meanings.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

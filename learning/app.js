@@ -412,6 +412,8 @@ function nextWord() {
   input.value = "";
   $(".word-prompt").textContent = game.currentWord;
   $(".word-progress").textContent = `${((game.wordSeen - 1) % KOREAN_VOCABULARY.length) + 1} / ${KOREAN_VOCABULARY.length}`;
+  $(".word-meaning").textContent = KOREAN_MEANINGS[game.currentWord] || "释义整理中";
+  $(".word-meaning-source").href = `https://krdict.korean.go.kr/chn/dicMarinerSearch/search?mainSearchWord=${encodeURIComponent(game.currentWord)}`;
   $(".word-reveal").hidden = true;
   $(".word-result-label").className = "word-result-label";
   input.focus({ preventScroll: true });
@@ -627,9 +629,11 @@ function renderRecap() {
       word.textContent = error.word;
       const expected = document.createElement("span");
       expected.textContent = error.expected;
+      const meaning = document.createElement("em");
+      meaning.textContent = KOREAN_MEANINGS[error.word] || "";
       const given = document.createElement("small");
       given.textContent = `输入：${error.given || "—"}`;
-      row.append(word, expected, given);
+      row.append(word, expected, meaning, given);
       list.appendChild(row);
     }
     return;

@@ -170,16 +170,20 @@ label input[type="radio"] { position:absolute; opacity:0; pointer-events:none; }
 .word-mode-heading small { color:var(--muted); font:500 9px "DM Mono",monospace; }
 .word-prompt { font-family:"Noto Sans KR",sans-serif; font-size:clamp(31px,9vw,39px); line-height:1.25; font-weight:500; letter-spacing:-.02em; }
 .word-instruction { margin:7px 0 0; color:var(--muted); font-size:11px; }
-.word-reveal { width:min(100%,300px); margin-top:13px; padding-top:11px; border-top:1px solid var(--line); }
+.word-reveal { width:min(100%,320px); margin-top:10px; padding-top:9px; border-top:1px solid var(--line); }
 .word-result-label { display:block; color:var(--muted); font-size:9px; }
 .word-result-label.correct { color:#247863; }
 .word-result-label.wrong { color:var(--coral); }
-.word-romanization { display:block; margin:1px 0 9px; color:var(--blue); font:500 20px "DM Mono",monospace; letter-spacing:-.03em; }
+.word-romanization { display:block; margin:1px 0 7px; color:var(--blue); font:500 19px "DM Mono",monospace; letter-spacing:-.03em; }
+.word-meaning-block { margin:0 0 9px; padding:7px 10px; border-radius:9px; background:rgba(255,255,255,.72); }
+.word-meaning-block small { display:block; margin-bottom:2px; color:var(--muted); font-size:8px; }
+.word-meaning { display:block; color:var(--ink); font-size:12px; font-weight:600; line-height:1.45; }
 .word-actions { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
 .word-actions button { min-height:36px; border:1px solid var(--line); border-radius:10px; background:#fff; font-size:10px; font-weight:600; cursor:pointer; }
 .word-actions svg { width:15px; height:15px; margin-right:5px; fill:var(--blue); vertical-align:-3px; }
 .next-word-button { background:var(--sun)!important; border-color:rgba(32,37,31,.3)!important; }
-.word-source { position:absolute; bottom:10px; color:var(--muted); font-size:8px; text-underline-offset:2px; }
+.word-sources { position:absolute; bottom:8px; display:flex; align-items:center; gap:4px; color:var(--muted); font-size:8px; }
+.word-sources a { color:inherit; text-underline-offset:2px; }
 
 .overlay { position:absolute; z-index:50; inset:0; display:grid; place-items:center; padding:24px; background:rgba(23,23,18,.55); opacity:0; visibility:hidden; transition:.2s; }
 .overlay.open { opacity:1; visibility:visible; }
@@ -203,6 +207,11 @@ label input[type="radio"] { position:absolute; opacity:0; pointer-events:none; }
 .recap-item > strong { font:700 18px "Noto Sans KR",sans-serif; }
 .recap-item > span { font:500 12px "DM Mono",monospace; color:var(--blue); }
 .recap-item > small { color:#777168; font-size:9px; }
+.word-recap-item { grid-template-columns:54px 1fr auto; align-items:start; }
+.word-recap-item > strong { grid-column:1; grid-row:1 / span 2; }
+.word-recap-item > span { grid-column:2; grid-row:1; }
+.word-recap-item > small { grid-column:3; grid-row:1; }
+.word-recap-item > em { grid-column:2 / 4; grid-row:2; margin-top:2px; color:var(--muted); font-size:10px; font-style:normal; line-height:1.35; }
 .recap-empty { margin:0; padding:11px; border-radius:8px; background:#e4f6ef; color:#287866; font-size:11px; text-align:center; }
 .lesson-answer { display:flex; align-items:center; justify-content:center; gap:17px; margin:20px 0 14px; }
 .lesson-answer span,.lesson-answer strong { display:grid; place-items:center; width:72px; height:72px; border:2px solid var(--ink); border-radius:18px; font-family:"Noto Sans KR","DM Mono",sans-serif; font-size:26px; font-style:normal; }
