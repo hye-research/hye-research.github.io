@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#fff8ee" />
+    <meta name="description" content="用打字接住落下的韩文字母。" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <title>Hangul Rain · 韩语字母雨</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+KR:wght@500;700;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="game-card" aria-label="Hangul Rain 游戏">
+        <header class="topbar">
+          <a class="brand" href="#" aria-label="Hangul Rain 首页">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span><b>HANGUL</b><em>RAIN</em></span>
+          </a>
+          <button class="icon-button sound-toggle" type="button" aria-label="关闭声音" aria-pressed="true">
+            <svg class="sound-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Zm12.5 3a4.5 4.5 0 0 0-2-3.74v7.48a4.5 4.5 0 0 0 2-3.74Zm-2-8.65v2.08a7 7 0 0 1 0 13.14v2.08a9 9 0 0 0 0-17.3Z"/></svg>
+            <svg class="sound-off" viewBox="0 0 24 24" aria-hidden="true"><path d="m4.27 3 16.46 16.46-1.27 1.27-3.23-3.23c-.53.46-1.1.83-1.73 1.08V16.5c.11-.06.21-.12.31-.19L13 14.5V19l-5-4H4V9h1.73L3 6.27 4.27 3ZM13 5v4.73L9.51 6.24 13 3.5V5Zm3.5 7c0 .26-.02.52-.07.77l-1.75-1.75-.18-2.76a4.5 4.5 0 0 1 2 3.74Zm-2-8.65v2.08a7 7 0 0 1 4.05 8.47l1.61 1.61A9 9 0 0 0 14.5 3.35Z"/></svg>
+          </button>
+        </header>
+
+        <section class="start-screen screen active" aria-label="Hangul Rain 游戏设置">
+          <div class="hero-art" aria-hidden="true">
+            <span class="cloud cloud-a"></span>
+            <span class="cloud cloud-b"></span>
+            <span class="drop d1">ㅏ</span>
+            <span class="drop d2">ㄱ</span>
+            <span class="drop d3">ㅓ</span>
+            <span class="drop d4">eo</span>
+            <span class="drop d5">ㅁ</span>
+          </div>
+
+          <div class="intro">
+            <p class="eyebrow">HANGUL RAIN · 한글 비</p>
+            <h1>学韩语，接韩雨。</h1>
+            <p class="intro-copy">从韩文字母到日常高频词，选择适合自己的方式和节奏练习。</p>
+          </div>
+
+          <div class="setup-panel">
+            <fieldset>
+              <legend>练习方式</legend>
+              <div class="segmented direction-options">
+                <label><input type="radio" name="direction" value="hangul" checked /><span><b>ㅏ → a</b><small>读出韩文</small></span></label>
+                <label><input type="radio" name="direction" value="roman" /><span><b>a → ㅏ</b><small>写出韩文</small></span></label>
+                <label><input type="radio" name="direction" value="mixed" /><span><b>ㅏ ⇄ a</b><small>双向挑战</small></span></label>
+                <label><input type="radio" name="direction" value="learning" /><span><b>분류 학습</b><small>分类学习</small></span></label>
+                <label class="word-mode-option"><input type="radio" name="direction" value="words" /><span><b>한국어 → hangugeo</b><small>高频千词</small></span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="learning-groups" hidden>
+              <legend>选择学习单元</legend>
+              <div class="group-options">
+                <label><input type="radio" name="learning-group" value="simpleVowels" checked /><span><b>单元音</b><small>10 个</small></span></label>
+                <label><input type="radio" name="learning-group" value="compoundVowels" /><span><b>双元音</b><small>11 个</small></span></label>
+                <label><input type="radio" name="learning-group" value="lenis" /><span><b>松音</b><small>5 个</small></span></label>
+                <label><input type="radio" name="learning-group" value="tense" /><span><b>紧音</b><small>5 个</small></span></label>
+                <label><input type="radio" name="learning-group" value="aspirated" /><span><b>送气音</b><small>4 个</small></span></label>
+                <label><input type="radio" name="learning-group" value="sonorants" /><span><b>鼻音·流音</b><small>4 个</small></span></label>
+                <label><input type="radio" name="learning-group" value="glottal" /><span><b>喉音 ㅎ</b><small>1 个</small></span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="difficulty-fieldset">
+              <legend>游戏难度</legend>
+              <div class="speed-options">
+                <label><input type="radio" name="speed" value="easy" /><span><i>01</i><b>简单</b><small>每次一个</small></span></label>
+                <label><input type="radio" name="speed" value="mid" checked /><span><i>02</i><b>适中</b><small>最多两个</small></span></label>
+                <label><input type="radio" name="speed" value="hard" /><span><i>03</i><b>困难</b><small>连续落下</small></span></label>
+              </div>
+            </fieldset>
+
+            <button class="primary-button start-button" type="button"><span>开始游戏</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+            <p class="tiny-note">40 个字母 · 1000 个高频词</p>
+          </div>
+        </section>
+
+        <section class="play-screen screen" aria-label="游戏进行中">
+          <div class="hud">
+            <button class="icon-button pause-button" type="button" aria-label="暂停游戏"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zm6 0h4v14h-4z"/></svg></button>
+            <div class="hud-stat"><small>得分</small><strong class="score-value">0000</strong></div>
+            <div class="hud-stat"><small>连击</small><strong><span class="streak-value">0</span><i>×</i></strong></div>
+            <div class="mistakes" aria-label="错误 0 次，共可错误 10 次"><small>错误</small><strong><span class="mistake-value">0</span>/10</strong></div>
+            <button class="finish-learning-button" type="button">结束</button>
+          </div>
+
+          <div class="rain-field" aria-live="off">
+            <div class="rain-lines" aria-hidden="true"></div>
+            <div class="danger-zone"><span>别让韩雨落地</span></div>
+            <div class="feedback" aria-live="polite"></div>
+            <section class="word-mode-panel" aria-label="高频千词练习" hidden>
+              <div class="word-mode-heading"><span>高频千词</span><small class="word-progress">1 / 1000</small></div>
+              <strong class="word-prompt">한국어</strong>
+              <p class="word-instruction">写下这个词的罗马音</p>
+              <div class="word-reveal" hidden>
+                <small class="word-result-label">正确读法</small>
+                <strong class="word-romanization">hangugeo</strong>
+                <div class="word-actions">
+                  <button class="word-audio-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Zm12.5 3a4.5 4.5 0 0 0-2-3.74v7.48a4.5 4.5 0 0 0 2-3.74Zm-2-8.65v2.08a7 7 0 0 1 0 13.14v2.08a9 9 0 0 0 0-17.3Z"/></svg>听读音</button>
+                  <button class="next-word-button" type="button">下一个 <span>→</span></button>
+                </div>
+              </div>
+              <a class="word-source" href="https://www.korean.go.kr/front/etcData/etcDataView.do?etc_seq=71&amp;mn_id=46" target="_blank" rel="noreferrer">词表来源：韩国国立国语院</a>
+            </section>
+          </div>
+
+          <form class="answer-dock" autocomplete="off">
+            <label for="answer-input">你的答案 <span class="answer-hint">ROMANIZATION</span></label>
+            <div class="input-wrap">
+              <input id="answer-input" name="answer" type="text" inputmode="none" enterkeyhint="done" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="输入答案…" aria-label="输入答案" readonly />
+              <button type="submit" aria-label="提交答案"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+            </div>
+            <p class="dock-note">答对就会接住它 · 按 Enter 也可以</p>
+            <div class="game-keyboard" aria-label="英文屏幕键盘"></div>
+          </form>
+        </section>
+
+        <section class="overlay pause-overlay" aria-hidden="true">
+          <div class="modal">
+            <p class="modal-icon">雨</p>
+            <h2>韩雨暂停中</h2>
+            <p>休息一下，准备好再继续。</p>
+            <button class="primary-button resume-button" type="button">继续接雨</button>
+            <button class="text-button quit-button" type="button">换个练习方式</button>
+          </div>
+        </section>
+
+        <section class="overlay result-overlay" aria-hidden="true">
+          <div class="modal result-modal">
+            <p class="eyebrow">韩雨过后 · 又会一点</p>
+            <h2>雨停了，进步留下了</h2>
+              <div class="result-score"><small>本局得分</small><strong>0000</strong></div>
+            <div class="result-grid">
+              <div><strong class="result-cleared">0</strong><small>消除</small></div>
+              <div><strong class="result-best">0×</strong><small>最高连击</small></div>
+              <div><strong class="result-accuracy">0%</strong><small>准确率</small></div>
+            </div>
+            <div class="recap">
+              <h3>这次错过的字母</h3>
+              <div class="recap-list"></div>
+            </div>
+            <button class="primary-button again-button" type="button">再接一场</button>
+            <button class="text-button home-button" type="button">换个练习方式</button>
+          </div>
+        </section>
+
+        <section class="overlay lesson-overlay" aria-hidden="true">
+          <div class="modal lesson-modal">
+            <p class="eyebrow">这滴韩雨，记一下</p>
+            <div class="lesson-answer"><span class="lesson-seen">ㅓ</span><i>→</i><strong class="lesson-expected">eo</strong></div>
+            <p class="lesson-copy">看到 ㅓ 时，输入 eo</p>
+            <button class="pronunciation-button" type="button" aria-label="再次播放标准发音">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Zm12.5 3a4.5 4.5 0 0 0-2-3.74v7.48a4.5 4.5 0 0 0 2-3.74Zm-2-8.65v2.08a7 7 0 0 1 0 13.14v2.08a9 9 0 0 0 0-17.3Z"/></svg>
+              <span><strong class="pronunciation-name">어</strong><small>播放标准发音</small></span>
+            </button>
+            <a class="pronunciation-source" href="https://krdict.korean.go.kr/kor/mainAction" target="_blank" rel="noreferrer">发音来源：韩国国立国语院《韩国语基础词典》</a>
+            <button class="primary-button lesson-continue-button" type="button">记住了，继续</button>
+          </div>
+        </section>
+      </section>
+    </main>
+    <!-- KOROMAN v1.0.16, MIT License: https://github.com/gerosyab/koroman -->
+    <script src="https://cdn.jsdelivr.net/gh/gerosyab/koroman@js-v1.0.16/js/dist/koroman.browser.js"></script>
+    <script src="vocabulary.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
