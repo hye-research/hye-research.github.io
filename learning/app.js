@@ -28,6 +28,27 @@ const LEARNING_GROUPS = {
   sonorants: { label: "鼻音·流音", chars: [..."ㄴㅁㅇㄹ"] },
   glottal: { label: "喉音", chars: ["ㅎ"] }
 };
+const SINO_DIGITS = ["", "일", "이", "삼", "사", "오", "육", "칠", "팔", "구"];
+const NUMBER_WORDS = Array.from({ length: 100 }, (_, index) => {
+  const number = index + 1;
+  if (number === 100) return "백";
+  const tens = Math.floor(number / 10);
+  const ones = number % 10;
+  return `${tens ? `${tens === 1 ? "" : SINO_DIGITS[tens]}십` : ""}${ones ? SINO_DIGITS[ones] : ""}`;
+});
+const TOPIC_PACKS = {
+  numbers: { label: "数字 1–100", words: NUMBER_WORDS },
+  weekdays: { label: "星期", words: ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"] },
+  months: { label: "月份", words: ["일월", "이월", "삼월", "사월", "오월", "유월", "칠월", "팔월", "구월", "시월", "십일월", "십이월"] },
+  times: { label: "一天里的时间", words: ["새벽", "아침", "오전", "정오", "낮", "점심", "오후", "저녁", "밤", "자정"] }
+};
+const TOPIC_MEANINGS = Object.fromEntries(NUMBER_WORDS.map((word, index) => [word, String(index + 1)]));
+Object.assign(TOPIC_MEANINGS, {
+  월요일: "星期一", 화요일: "星期二", 수요일: "星期三", 목요일: "星期四", 금요일: "星期五", 토요일: "星期六", 일요일: "星期日",
+  일월: "一月", 이월: "二月", 삼월: "三月", 사월: "四月", 오월: "五月", 유월: "六月", 칠월: "七月", 팔월: "八月", 구월: "九月", 시월: "十月", 십일월: "十一月", 십이월: "十二月",
+  새벽: "凌晨，拂晓", 아침: "早晨；早餐", 오전: "上午", 정오: "正午，中午十二点", 낮: "白天", 점심: "中午；午饭", 오후: "下午", 저녁: "傍晚；晚饭", 밤: "夜晚；栗子", 자정: "午夜"
+});
+const WORD_STORAGE_KEY = "hangul-rain-word-study-v1";
 const COLORS = ["#ffffff", "#ffc928", "#73d7c0", "#ff8b7a"];
 
 const $ = (selector) => document.querySelector(selector);
@@ -46,6 +67,10 @@ let audioContext = null;
 let pronunciationPlayer = new Audio();
 let keyboardLanguage = "en";
 let keyboardShifted = false;
+let selectedWordPack = "frequency";
+let selectedWordRange = 0;
+let libraryWordPack = "frequency";
+let wordStudy = loadWordStudy();
 
 const ENGLISH_KEYS = [
   [..."qwertyuiop"],
@@ -122,6 +147,139 @@ function shuffle(items) {
     [items[index], items[swapIndex]] = [items[swapIndex], items[index]];
   }
   return items;
+}
+
+function loadWordStudy() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(WORD_STORAGE_KEY) || "{}");
+    return {
+      favorites: Array.isArray(saved.favorites) ? [...new Set(saved.favorites.filter(word => typeof word === "string"))] : [],
+      mistakes: saved.mistakes && typeof saved.mistakes === "object" ? saved.mistakes : {}
+    };
+  } catch (_) {
+    return { favorites: [], mistakes: {} };
+  }
+}
+
+function saveWordStudy() {
+  try { localStorage.setItem(WORD_STORAGE_KEY, JSON.stringify(wordStudy)); } catch (_) { /* Storage is optional. */ }
+  updateWordSetup();
+}
+
+function getWordMeaning(word) {
+  return TOPIC_MEANINGS[word] || KOREAN_MEANINGS[word] || "释义整理中";
+}
+
+function getWordPackWords(pack = selectedWordPack, range = selectedWordRange) {
+  if (pack === "frequency") return KOREAN_VOCABULARY.slice(range * 10, range * 10 + 10);
+  if (pack === "favorites") return [...wordStudy.favorites];
+  if (pack === "mistakes") return Object.keys(wordStudy.mistakes).sort((a, b) => (wordStudy.mistakes[b]?.lastWrong || 0) - (wordStudy.mistakes[a]?.lastWrong || 0));
+  return [...(TOPIC_PACKS[pack]?.words || [])];
+}
+
+function getWordPackLabel(pack = selectedWordPack, range = selectedWordRange) {
+  if (pack === "frequency") return `第 ${range + 1} 组 · ${range * 10 + 1}–${range * 10 + 10}`;
+  if (pack === "favorites") return "收藏夹";
+  if (pack === "mistakes") return "错词本";
+  return TOPIC_PACKS[pack]?.label || "高频千词";
+}
+
+function updateWordSetup() {
+  const words = getWordPackWords();
+  $$(".word-pack-button").forEach(button => button.classList.toggle("active", button.dataset.wordPack === selectedWordPack));
+  $(".word-range-picker").hidden = selectedWordPack !== "frequency";
+  $("#word-range-select").value = String(selectedWordRange);
+  $(".favorite-count").textContent = wordStudy.favorites.length;
+  $(".mistake-count").textContent = Object.keys(wordStudy.mistakes).length;
+  $(".word-setup-note").textContent = words.length ? `${getWordPackLabel()} · ${words.length} 个词` : selectedWordPack === "favorites" ? "还没有收藏词，练习时点星星就会留在这里" : "还没有错词，答错的词会自动来到这里";
+  $(".view-word-list").disabled = !words.length;
+  if (selected("direction") === "words") $(".start-button").disabled = !words.length;
+}
+
+function selectWordPack(pack) {
+  selectedWordPack = pack;
+  updateWordSetup();
+}
+
+function rememberWordMistake(word) {
+  const previous = wordStudy.mistakes[word] || { count: 0 };
+  wordStudy.mistakes[word] = { count: previous.count + 1, lastWrong: Date.now() };
+  saveWordStudy();
+}
+
+function syncFavoriteButton() {
+  if (!game?.currentWord) return;
+  const active = wordStudy.favorites.includes(game.currentWord);
+  const button = $(".word-favorite-button");
+  button.classList.toggle("active", active);
+  button.setAttribute("aria-pressed", String(active));
+  button.setAttribute("aria-label", `${active ? "取消收藏" : "收藏"} ${game.currentWord}`);
+  button.querySelector("span").textContent = active ? "★" : "☆";
+  button.querySelector("small").textContent = active ? "已收藏" : "收藏";
+}
+
+function toggleCurrentFavorite() {
+  if (!game?.currentWord) return;
+  const index = wordStudy.favorites.indexOf(game.currentWord);
+  if (index >= 0) wordStudy.favorites.splice(index, 1);
+  else wordStudy.favorites.unshift(game.currentWord);
+  saveWordStudy();
+  syncFavoriteButton();
+}
+
+function renderWordLibrary() {
+  const words = getWordPackWords(libraryWordPack, libraryWordPack === "frequency" ? selectedWordRange : 0);
+  $(".word-library-title").textContent = getWordPackLabel(libraryWordPack, selectedWordRange);
+  const canRemove = libraryWordPack === "favorites" || libraryWordPack === "mistakes";
+  $(".word-library-summary").textContent = words.length ? `${words.length} 个词${canRemove ? " · 可以随时移出词单" : " · 先看一遍，再开始练习"}` : "这里还没有词。";
+  const list = $(".word-library-list");
+  list.replaceChildren();
+  for (const word of words) {
+    const row = document.createElement("div");
+    row.className = "word-library-item";
+    const hangul = document.createElement("strong");
+    hangul.textContent = word;
+    const details = document.createElement("span");
+    const roman = document.createElement("b");
+    roman.textContent = romanizeWord(word);
+    const meaning = document.createElement("small");
+    meaning.textContent = getWordMeaning(word);
+    details.append(roman, meaning);
+    row.append(hangul, details);
+    if (canRemove) {
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.dataset.removeWord = word;
+      remove.setAttribute("aria-label", `从${libraryWordPack === "favorites" ? "收藏夹" : "错词本"}移除 ${word}`);
+      remove.textContent = "移除";
+      row.append(remove);
+    }
+    list.append(row);
+  }
+  $(".practice-word-list").disabled = !words.length;
+}
+
+function openWordLibrary() {
+  libraryWordPack = selectedWordPack;
+  renderWordLibrary();
+  $(".word-library-overlay").classList.add("open");
+  $(".word-library-overlay").setAttribute("aria-hidden", "false");
+}
+
+function closeWordLibrary() {
+  $(".word-library-overlay").classList.remove("open");
+  $(".word-library-overlay").setAttribute("aria-hidden", "true");
+}
+
+function setupWordGroups() {
+  const selectElement = $("#word-range-select");
+  for (let index = 0; index < KOREAN_VOCABULARY.length / 10; index += 1) {
+    const option = document.createElement("option");
+    option.value = String(index);
+    option.textContent = `${index * 10 + 1}–${index * 10 + 10}`;
+    selectElement.append(option);
+  }
+  updateWordSetup();
 }
 
 function basicRomanize(word) {
@@ -405,15 +563,17 @@ function missDrop(drop) {
 
 function nextWord() {
   if (!game || game.over) return;
-  if (!game.wordQueue.length) game.wordQueue = shuffle([...KOREAN_VOCABULARY]);
+  if (!game.wordQueue.length) game.wordQueue = shuffle([...game.wordPool]);
   game.currentWord = game.wordQueue.pop();
   game.wordSeen += 1;
   game.wordResolved = false;
   input.value = "";
   $(".word-prompt").textContent = game.currentWord;
-  $(".word-progress").textContent = `${((game.wordSeen - 1) % KOREAN_VOCABULARY.length) + 1} / ${KOREAN_VOCABULARY.length}`;
-  $(".word-meaning").textContent = KOREAN_MEANINGS[game.currentWord] || "释义整理中";
+  $(".word-mode-heading span").textContent = game.wordPackLabel;
+  $(".word-progress").textContent = `${((game.wordSeen - 1) % game.wordPool.length) + 1} / ${game.wordPool.length}`;
+  $(".word-meaning").textContent = getWordMeaning(game.currentWord);
   $(".word-meaning-source").href = `https://krdict.korean.go.kr/chn/dicMarinerSearch/search?mainSearchWord=${encodeURIComponent(game.currentWord)}`;
+  syncFavoriteButton();
   $(".word-reveal").hidden = true;
   $(".word-result-label").className = "word-result-label";
   input.focus({ preventScroll: true });
@@ -437,6 +597,7 @@ function tryWordAnswer(raw) {
   } else {
     game.streak = 0;
     game.errors.push({ word: game.currentWord, expected, given: raw.trim(), kind: "wrong" });
+    rememberWordMistake(game.currentWord);
     $(".word-result-label").textContent = "正确读法";
     $(".word-result-label").classList.add("wrong");
     beep("bad");
@@ -493,11 +654,18 @@ function tryAnswer(raw) {
 
 function startGame() {
   $$(".falling-card").forEach(n => n.remove());
+  const direction = selected("direction");
+  const chosenWordPool = direction === "words" ? getWordPackWords() : [];
+  if (direction === "words" && !chosenWordPool.length) {
+    updateWordSetup();
+    return;
+  }
   game = {
-    direction: selected("direction"), speed: selected("speed"), score: 0, streak: 0,
+    direction, speed: selected("speed"), score: 0, streak: 0,
     best: 0, cleared: 0, attempts: 0, correct: 0, errors: [], drops: [], paused: false,
     over: false, spawnTimer: null, raf: null, pauseStarted: 0, pauseOffset: 0,
     letters: LETTERS, learningGroup: null, endAfterLesson: false, currentCorrection: null,
+    wordPool: chosenWordPool, wordPack: selectedWordPack, wordPackLabel: getWordPackLabel(),
     wordQueue: [], currentWord: "", wordSeen: 0, wordResolved: false
   };
   if (game.direction === "learning") {
@@ -521,7 +689,7 @@ function startGame() {
   updateHud();
   input.value = "";
   if (game.direction === "words") {
-    game.wordQueue = shuffle([...KOREAN_VOCABULARY]);
+    game.wordQueue = shuffle([...game.wordPool]);
     nextWord();
     return;
   }
@@ -549,7 +717,7 @@ function resumeGame() {
   game.paused = false;
   $(".pause-overlay").classList.remove("open");
   $(".pause-overlay").setAttribute("aria-hidden", "true");
-  game.spawnTimer = window.setTimeout(spawn, 450);
+  if (game.direction !== "words") game.spawnTimer = window.setTimeout(spawn, 450);
   input.focus({ preventScroll: true });
 }
 
@@ -598,7 +766,7 @@ function cleanupGame() {
 function endGame() {
   if (!game || game.over) return;
   cleanupGame();
-  $(".result-modal > .eyebrow").textContent = game.direction === "learning" ? "今天的韩雨 · 先接到这里" : game.direction === "words" ? "高频千词 · 今日进度" : "韩雨过后 · 又会一点";
+  $(".result-modal > .eyebrow").textContent = game.direction === "learning" ? "今天的韩雨 · 先接到这里" : game.direction === "words" ? `${game.wordPackLabel} · 今日进度` : "韩雨过后 · 又会一点";
   $(".result-modal > h2").textContent = game.direction === "learning" ? `${game.learningGroup.label}，正在记住` : game.direction === "words" ? `今天练了 ${game.attempts} 个词` : "雨停了，进步留下了";
   $(".recap h3").textContent = game.direction === "words" ? "这次读错的词" : "这次错过的字母";
   $(".result-score strong").textContent = padScore(game.score);
@@ -630,7 +798,7 @@ function renderRecap() {
       const expected = document.createElement("span");
       expected.textContent = error.expected;
       const meaning = document.createElement("em");
-      meaning.textContent = KOREAN_MEANINGS[error.word] || "";
+      meaning.textContent = getWordMeaning(error.word);
       const given = document.createElement("small");
       given.textContent = `输入：${error.given || "—"}`;
       row.append(word, expected, meaning, given);
@@ -671,6 +839,7 @@ function goHome() {
   $(".pause-overlay").classList.remove("open");
   $(".result-overlay").classList.remove("open");
   $(".lesson-overlay").classList.remove("open");
+  $(".word-library-overlay").classList.remove("open");
   $$(".overlay").forEach(o => o.setAttribute("aria-hidden", "true"));
   playScreen.classList.remove("active");
   $(".game-card").classList.remove("playing");
@@ -682,9 +851,12 @@ function syncLearningSetup() {
   const learning = mode === "learning";
   const words = mode === "words";
   $(".learning-groups").hidden = !learning;
+  $(".word-groups").hidden = !words;
   $(".difficulty-fieldset").hidden = words;
   startScreen.classList.toggle("learning-setup", learning);
   startScreen.classList.toggle("word-setup", words);
+  $(".start-button").disabled = false;
+  if (words) updateWordSetup();
 }
 
 $(".start-button").addEventListener("click", startGame);
@@ -704,6 +876,39 @@ $(".pronunciation-button").addEventListener("click", () => {
 });
 $(".word-audio-button").addEventListener("click", () => { if (game?.currentWord) speakWord(game.currentWord); });
 $(".next-word-button").addEventListener("click", nextWord);
+$(".word-favorite-button").addEventListener("click", toggleCurrentFavorite);
+$$('.word-pack-button').forEach(button => button.addEventListener("click", () => selectWordPack(button.dataset.wordPack)));
+$("#word-range-select").addEventListener("change", event => {
+  selectedWordRange = Number(event.target.value);
+  selectWordPack("frequency");
+});
+$(".word-range-prev").addEventListener("click", () => {
+  selectedWordRange = (selectedWordRange + 99) % 100;
+  selectWordPack("frequency");
+});
+$(".word-range-next").addEventListener("click", () => {
+  selectedWordRange = (selectedWordRange + 1) % 100;
+  selectWordPack("frequency");
+});
+$(".view-word-list").addEventListener("click", openWordLibrary);
+$(".close-word-library").addEventListener("click", closeWordLibrary);
+$(".practice-word-list").addEventListener("click", () => {
+  selectWordPack(libraryWordPack);
+  closeWordLibrary();
+  startGame();
+});
+$(".word-library-list").addEventListener("click", event => {
+  const button = event.target.closest("[data-remove-word]");
+  if (!button) return;
+  const word = button.dataset.removeWord;
+  if (libraryWordPack === "favorites") wordStudy.favorites = wordStudy.favorites.filter(saved => saved !== word);
+  if (libraryWordPack === "mistakes") delete wordStudy.mistakes[word];
+  saveWordStudy();
+  renderWordLibrary();
+});
+$(".word-library-overlay").addEventListener("click", event => {
+  if (event.target === event.currentTarget) closeWordLibrary();
+});
 $$('input[name="direction"]').forEach(option => option.addEventListener("change", syncLearningSetup));
 $(".sound-toggle").addEventListener("click", event => {
   const button = event.currentTarget;
@@ -744,5 +949,6 @@ document.addEventListener("keydown", event => {
 });
 document.addEventListener("visibilitychange", () => { if (document.hidden && game && !game.paused && !game.over) pauseGame(); });
 
+setupWordGroups();
 renderKeyboard();
 syncLearningSetup();

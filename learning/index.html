@@ -68,6 +68,28 @@
               </div>
             </fieldset>
 
+            <fieldset class="word-groups" hidden>
+              <legend>选择词组</legend>
+              <div class="word-pack-options" role="group" aria-label="高频词练习词组">
+                <button class="word-pack-button active" type="button" data-word-pack="frequency"><b>十词一组</b><small>高频千词</small></button>
+                <button class="word-pack-button" type="button" data-word-pack="numbers"><b>数字</b><small>1–100</small></button>
+                <button class="word-pack-button" type="button" data-word-pack="weekdays"><b>星期</b><small>7 个</small></button>
+                <button class="word-pack-button" type="button" data-word-pack="months"><b>月份</b><small>12 个</small></button>
+                <button class="word-pack-button" type="button" data-word-pack="times"><b>一天时间</b><small>10 个</small></button>
+                <button class="word-pack-button saved" type="button" data-word-pack="favorites"><b>★ 收藏夹</b><small><span class="favorite-count">0</span> 个</small></button>
+                <button class="word-pack-button saved" type="button" data-word-pack="mistakes"><b>↺ 错词本</b><small><span class="mistake-count">0</span> 个</small></button>
+              </div>
+              <div class="word-range-picker">
+                <button class="word-range-prev" type="button" aria-label="上一组">←</button>
+                <label for="word-range-select"><small>高频词小组</small><select id="word-range-select" aria-label="选择高频词小组"></select></label>
+                <button class="word-range-next" type="button" aria-label="下一组">→</button>
+              </div>
+              <div class="word-group-footer">
+                <p class="word-setup-note">第 1 组 · 1–10</p>
+                <button class="view-word-list" type="button">查看这组词</button>
+              </div>
+            </fieldset>
+
             <fieldset class="difficulty-fieldset">
               <legend>游戏难度</legend>
               <div class="speed-options">
@@ -97,7 +119,10 @@
             <div class="feedback" aria-live="polite"></div>
             <section class="word-mode-panel" aria-label="高频千词练习" hidden>
               <div class="word-mode-heading"><span>高频千词</span><small class="word-progress">1 / 1000</small></div>
-              <strong class="word-prompt">한국어</strong>
+              <div class="word-prompt-row">
+                <strong class="word-prompt">한국어</strong>
+                <button class="word-favorite-button" type="button" aria-label="收藏 한국어" aria-pressed="false"><span aria-hidden="true">☆</span><small>收藏</small></button>
+              </div>
               <p class="word-instruction">写下这个词的罗马音</p>
               <div class="word-reveal" hidden>
                 <small class="word-result-label">正确读法</small>
@@ -170,6 +195,17 @@
             </button>
             <a class="pronunciation-source" href="https://krdict.korean.go.kr/kor/mainAction" target="_blank" rel="noreferrer">发音来源：韩国国立国语院《韩国语基础词典》</a>
             <button class="primary-button lesson-continue-button" type="button">记住了，继续</button>
+          </div>
+        </section>
+
+        <section class="overlay word-library-overlay" aria-hidden="true">
+          <div class="modal word-library-modal">
+            <p class="eyebrow">我的韩语词单</p>
+            <h2 class="word-library-title">第 1 组 · 1–10</h2>
+            <p class="word-library-summary">先看一遍，再开始练习。</p>
+            <div class="word-library-list"></div>
+            <button class="primary-button practice-word-list" type="button">练习这组词</button>
+            <button class="text-button close-word-library" type="button">关闭</button>
           </div>
         </section>
       </section>
