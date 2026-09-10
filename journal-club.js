@@ -1293,7 +1293,10 @@ app.addEventListener("submit", (event) => {
 
 async function loadJournalData() {
   try {
-    const response = await fetch("data/journal-dates.json", { cache: "no-store" });
+    const response = await fetch(`data/journal-dates.json?v=${Date.now()}`, {
+      cache: "no-store",
+      headers: { "Cache-Control": "no-cache" }
+    });
     if (!response.ok) return;
     const payload = await response.json();
     if (Array.isArray(payload.dates) && payload.dates.length) {
@@ -1307,18 +1310,26 @@ async function loadJournalData() {
 
 async function initialiseJournalClub() {
   await loadJournalData();
+  // Show the current public archive immediately. Authentication is an optional
+  // enhancement and must never block the daily paper list from rendering.
+  render();
   if (supabaseClient) {
-    const { data } = await supabaseClient.auth.getSession();
-    if (data.session) {
-      state.access = "member";
-      state.view = "home";
+    try {
+      const { data, error } = await supabaseClient.auth.getSession();
+      if (error) throw error;
+      if (data.session) {
+        state.access = "member";
+        state.view = "home";
+      }
+      supabaseClient.auth.onAuthStateChange((_event, session) => {
+        const wasMember = state.access === "member";
+        state.access = session ? "member" : null;
+        if (session && !wasMember) state.view = "home";
+        render();
+      });
+    } catch (error) {
+      console.warn("Journal Club authentication was unavailable; public archive remains active.", error);
     }
-    supabaseClient.auth.onAuthStateChange((_event, session) => {
-      const wasMember = state.access === "member";
-      state.access = session ? "member" : null;
-      if (session && !wasMember) state.view = "home";
-      render();
-    });
   }
   render();
 }

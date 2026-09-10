@@ -39,6 +39,7 @@ jobs:
 
       - name: Import daily arXiv papers
         if: github.event_name != 'push'
+        continue-on-error: true
         env:
           BACKFILL_DATE: ${{ inputs.date }}
         run: |
@@ -47,6 +48,20 @@ jobs:
           else
             python scripts/update_arxiv.py
           fi
+
+      - name: Repair recently missed weekdays
+        if: github.event_name != 'push' && inputs.date == ''
+        run: |
+          for days_ago in 1 2 3 4 5 6 7; do
+            issue_date="$(date -u -d "$days_ago days ago" +%F)"
+            weekday="$(date -u -d "$issue_date" +%u)"
+            if [ "$weekday" -le 5 ] && [ ! -f "data/dates/$issue_date.json" ]; then
+              echo "Repairing missing Journal Club issue $issue_date"
+              if ! python scripts/update_arxiv.py --date "$issue_date"; then
+                echo "::warning::Could not repair $issue_date yet; a later run will retry."
+              fi
+            fi
+          done
 
       - name: Commit updated archive
         if: github.event_name != 'push'
