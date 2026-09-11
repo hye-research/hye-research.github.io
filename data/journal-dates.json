@@ -1,11 +1,29 @@
 {
-  "generatedAt": "2026-09-10T11:26:26.226707+00:00",
+  "generatedAt": "2026-09-11T07:20:12.964846+00:00",
   "source": "arXiv API",
   "dates": [
     {
+      "id": "2026-09-11",
+      "label": "Friday, 11 September 2026",
+      "eyebrow": "Latest date",
+      "total": 44,
+      "status": "published",
+      "description": "Automatically imported from arXiv and preserved in the daily archive.",
+      "topics": {
+        "High Energy": 11,
+        "Galaxies": 11,
+        "Stars": 10,
+        "Cosmology": 9,
+        "Methods": 9,
+        "Radio": 6,
+        "Exoplanets": 5
+      },
+      "dataUrl": "data/dates/2026-09-11.json"
+    },
+    {
       "id": "2026-09-10",
       "label": "Thursday, 10 September 2026",
-      "eyebrow": "Latest date",
+      "eyebrow": "Past date",
       "total": 52,
       "status": "published",
       "description": "Automatically imported from arXiv and preserved in the daily archive.",
