@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Five interactive astronomy games about reading sky images, radio telescopes, multiwavelength astronomy, black-hole jets and interferometry.">
+  <title>Radio Universe Lab · Interactive astronomy games</title>
+  <link rel="stylesheet" href="styles.css?v=20260915-3">
+</head>
+<body>
+  <header class="site-header">
+    <button class="brand" data-go="home" aria-label="Radio Universe Lab home"><span class="brand-mark">RU</span><span>Radio Universe Lab</span></button>
+    <nav aria-label="Game navigation">
+      <button data-go="home" class="active">All games</button>
+      <button data-go="game0">00</button><button data-go="game1">01</button><button data-go="game2">02</button><button data-go="game3">03</button><button data-go="game4">04</button>
+      <button data-go="summary">Summary</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="home" class="screen active home-screen">
+      <div class="hero section-band">
+        <div>
+          <p class="eyebrow">LEARN BY BUILDING · AGES 14–18</p>
+          <h1>The invisible Universe,<br><span>made playable.</span></h1>
+          <p class="lead">Five short experiments about how astronomers read the sky, see radio light and build a telescope as wide as a planet.</p>
+          <button class="fullscreen-button home-fullscreen" type="button" data-fullscreen="home"><span>⛶</span><strong>Full screen</strong><small>Overview view</small></button>
+        </div>
+        <div class="hero-orbit" aria-hidden="true"><i></i><i></i><strong>λ</strong><span>↗</span></div>
+      </div>
+      <div class="game-grid section-band">
+        <button class="game-card intro" data-go="game0"><span class="game-number">00</span><div class="card-doodle angle-doodle" aria-hidden="true"><b>°</b><b>′</b><b>″</b><b>μas</b></div><p class="eyebrow">START HERE · SKY IMAGES</p><h2>How to read the sky image</h2><p>Learn degrees, arcminutes, arcseconds and scale bars before choosing a telescope.</p><strong>Learn to read an image <span>→</span></strong></button>
+        <button class="game-card amber" data-go="game1"><span class="game-number">01</span><div class="card-doodle spectrum-doodle" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><p class="eyebrow">MULTIWAVELENGTH</p><h2>One object. Five kinds of light.</h2><p>Explore real images of the Crab Nebula from radio to X-ray.</p><strong>Explore <span>→</span></strong></button>
+        <button class="game-card teal" data-go="game2"><span class="game-number">02</span><div class="card-doodle jet-doodle" aria-hidden="true">●<i></i><i></i></div><p class="eyebrow">BLACK-HOLE PHYSICS</p><h2>How do jets build giant radio lobes?</h2><p>Follow one simple story from gas near a black hole to two enormous glowing bubbles.</p><strong>Build it <span>→</span></strong></button>
+        <button class="game-card tomato" data-go="game3"><span class="game-number">03</span><div class="card-doodle dish-doodle" aria-hidden="true">◡<i></i></div><p class="eyebrow">RESOLUTION</p><h2>How big must our telescope be?</h2><p>Grow a virtual aperture from one dish to the size of Earth.</p><strong>Play <span>→</span></strong></button>
+        <button class="game-card grape" data-go="game4"><span class="game-number">04</span><div class="card-doodle array-doodle" aria-hidden="true"><i></i><i></i><i></i><i></i></div><p class="eyebrow">INTERFEROMETRY</p><h2>Many small dishes, one giant telescope.</h2><p>Place antennas and see how their pairs sample the u–v measurement space.</p><strong>Start array <span>→</span></strong></button>
+      </div>
+      <div class="home-summary-link section-band"><span>Finished exploring? Revisit the main ideas on one page.</span><button class="secondary-button" data-go="summary">View summary →</button></div>
+    </section>
+
+    <section id="game0" class="screen game-screen game0-screen">
+      <div class="g0-top section-band">
+        <div><button class="back-button" data-go="home">← All games</button><p class="eyebrow">GAME 00 · HOW TO READ THE SKY IMAGE</p><h1>The sky has a <em>ruler.</em></h1></div>
+        <div class="unit-equation" aria-label="One degree equals sixty arcminutes; one arcminute equals sixty arcseconds"><span>THE ANGLE LADDER</span><strong>1° = 60′ = 3,600″</strong><small>1 arcsecond = 1,000,000 microarcseconds</small></div>
+        <button id="g0Fullscreen" class="fullscreen-button" type="button" data-fullscreen="game0"><span>⛶</span><strong>Full screen</strong><small>Best for projection</small></button>
+      </div>
+      <div class="g0-stage section-band">
+        <aside class="g0-lesson-list">
+          <div class="mission-heading"><p class="eyebrow">FOUR QUESTIONS</p><strong id="g0Score">0 / 4 correct</strong></div>
+          <button class="active" data-g0-step="0"><i>01</i><span><strong>From sky to image</strong><small>3D directions → 2D distance</small></span></button>
+          <button data-g0-step="1"><i>02</i><span><strong>Decode the symbols</strong><small>° · ′ · ″ · μas</small></span></button>
+          <button data-g0-step="2"><i>03</i><span><strong>Use the scale bar</strong><small>Turn a line into an angle</small></span></button>
+          <button data-g0-step="3"><i>04</i><span><strong>Find the finest detail</strong><small>Smaller angle = sharper view</small></span></button>
+          <div class="g0-eye-note"><b>Think like an observer</b><span>An angle describes how much of your view an object occupies. It tells us how large the object looks in the sky.</span></div>
+        </aside>
+        <article class="g0-visual-card">
+          <div class="panel-heading"><span>READ THE IMAGE</span><strong id="g0VisualLabel">SKY → IMAGE</strong><mark id="g0StepBadge">QUESTION 1 OF 4</mark></div>
+          <div id="g0Visual" class="g0-visual" aria-live="polite"></div>
+          <div class="g0-caption"><p class="eyebrow" id="g0Kicker">FROM DIRECTIONS TO PIXELS</p><h2 id="g0Title">An astronomy image maps directions in the sky onto positions in a picture.</h2><p id="g0Copy">Each pixel covers a known angle on the sky. Across a small part of the image, astronomers use that angle per pixel to measure angular separation.</p></div>
+        </article>
+        <aside class="g0-quiz-panel">
+          <p class="eyebrow">YOUR TURN</p>
+          <h2 id="g0Question">What does θ measure?</h2>
+          <div id="g0Choices" class="g0-choices"></div>
+          <div id="g0Feedback" class="answer-feedback" aria-live="polite" hidden></div>
+          <button id="g0Next" class="primary-button tomato-bg" hidden>Next question <span>→</span></button>
+        </aside>
+      </div>
+      <div class="g0-bottom section-band"><strong>θ ≈ NUMBER OF PIXELS × ANGLE PER PIXEL</strong><span id="g0Takeaway">The angle covered by one pixel connects distances in a 2D image to directions in the sky. A scale bar shows this information in an easy form.</span><a href="https://fits.gsfc.nasa.gov/wcs/" target="_blank" rel="noreferrer">Science reference ↗</a></div>
+    </section>
+
+    <section id="game3" class="screen game-screen game1-screen">
+      <div class="g1-top section-band">
+        <div><button class="back-button" data-go="home">← All games</button><p class="eyebrow">GAME 03 · ANGULAR RESOLUTION</p><h1>How <em>big</em> must our telescope be?</h1></div>
+        <div class="formula-hero" aria-label="Angular resolution theta is approximately wavelength divided by telescope diameter"><span>ANGULAR RESOLUTION</span><strong>θ ≈ <i>λ</i> / <i>D</i></strong><small>θ = angular scale, not radius · use radians</small><small>1″ = 4.848 × 10⁻⁶ rad</small></div>
+        <button id="g1Fullscreen" class="fullscreen-button" type="button" data-fullscreen="game3"><span>⛶</span><strong>Full screen</strong><small>Best for projection</small></button>
+      </div>
+      <div class="g1-stage section-band">
+        <aside class="mission-board">
+          <div class="mission-heading"><p class="eyebrow">CHOOSE A MISSION</p><strong id="g1Score">0 / 3 correct</strong></div>
+          <ol id="g1MissionList">
+            <li class="active" data-g1-mission="0" tabindex="0"><i>01</i><div><strong>Separate the lobes</strong><span>Cygnus A · powerful radio galaxy</span><p>About 750 million light-years away. Its jets inflate two vast, radio-bright bubbles called lobes.</p><small>LOBES ≈ 1.5′ APART</small></div></li>
+            <li data-g1-mission="1" tabindex="0"><i>02</i><div><strong>Distinguish a hotspot</strong><span>Cygnus A · where jets crash</span><p>The hotspots are a few arcseconds wide; 0.5″ is the resolution of this detailed image. The 5″ target is an illustrative feature size.</p><small>TARGET DETAIL · ≈ 5″</small></div></li>
+            <li data-g1-mission="2" tabindex="0"><i>03</i><div><strong>See a black-hole shadow</strong><span>M87* · 6.5 billion Suns</span><p>About 55 million light-years away. Its glowing ring looks unbelievably tiny from Earth.</p><small>TARGET DETAIL · 20 μas</small></div></li>
+          </ol>
+          <div class="single-dish-note"><b>What does θ mean here?</b><span>It is the angular scale the telescope must resolve: a separation in Mission 01, a feature width in Mission 02, and an image-resolution width in Mission 03. It is not a radius.</span></div>
+        </aside>
+        <article class="visual-card target-card">
+          <div class="panel-heading"><span>THE TARGET VIEW</span><strong id="g1Target">Cygnus A</strong><mark id="g1Badge">MISSION 01</mark></div>
+          <div class="g1-image-wrap"><img id="g1Image" src="assets/cygnus-a-nrao.jpg" alt="VLA radio image of Cygnus A"><svg class="g1-calibrated-view g1-hotspot-view" viewBox="0 0 1024 476" role="img" aria-label="Cygnus A with approximate scale bars and two terminal hotspots circled"><image href="assets/cygnus-a-nrao.jpg" width="1024" height="476"/><g class="g1-hotspot-markers"><circle class="g1-hotspot-ring" cx="51" cy="431" r="19"/><path class="g1-annotation-line" d="M68 416 L142 368"/><text class="g1-annotation-text" x="150" y="365">HOTSPOT</text><circle class="g1-hotspot-ring" cx="973" cy="89" r="19"/><path class="g1-annotation-line" d="M956 75 L882 45"/><text class="g1-annotation-text" x="870" y="42" text-anchor="end">HOTSPOT</text></g><g class="g1-ten-arcsec-marker"><path class="g1-image-scale" d="M472 435 V451 M472 443 H548 M548 435 V451"/><text class="g1-scale-text" x="510" y="426" text-anchor="middle">≈10″</text></g><g class="g1-one-arcmin-marker"><path class="g1-image-scale" d="M100 435 V451 M100 443 H554 M554 435 V451"/><text class="g1-scale-text" x="327" y="426" text-anchor="middle">≈1′</text></g></svg><svg class="g1-calibrated-view g1-m87-view" viewBox="0 0 4000 2330" role="img" aria-label="M87 star black-hole image with the approximately 42 microarcsecond bright-ring diameter marked"><image href="assets/m87-eht.jpg" width="4000" height="2330"/><path class="g1-ring-diameter" d="M1420 1080 V1240 M1420 1160 H2580 M2580 1080 V1240"/><text class="g1-ring-text" x="2000" y="1010" text-anchor="middle">BRIGHT RING ≈ 42 μas ACROSS</text></svg><a id="g1ImageCredit" href="https://www.aoc.nrao.edu/~ccarilli/cyga.shtml" target="_blank" rel="noreferrer">VLA/NRAO · C. Carilli ↗</a><span id="g1ScaleBar" class="g1-scale-bar"><i></i>1 arcmin</span></div>
+          <div class="target-description"><p class="eyebrow" id="g1ObjectType">POWERFUL RADIO GALAXY</p><h2 id="g1MissionTitle">Can your dish separate its two radio lobes?</h2><p id="g1Caption">Cygnus A is about <strong>750 million light-years away</strong>. Its two radio lobes are giant magnetised bubbles, together stretching several hundred thousand light-years across.</p></div>
+        </article>
+        <aside class="control-panel quiz-panel">
+          <p class="eyebrow">DISH PARAMETERS</p>
+          <div class="single-dish-art" aria-hidden="true"><div class="dish-bowl"></div><i></i><span>D</span></div>
+          <div class="fact-pair"><div><span>Observing wavelength · λ</span><strong id="g1Wave">6 cm</strong></div><div><span>Angular scale to resolve · θ</span><strong id="g1Resolution">≈ 1.5 arcmin</strong><small id="g1ResolutionRad">≈ 4.4 × 10⁻⁴ rad</small></div></div>
+          <h2>What is the smallest dish diameter that works?</h2>
+          <div id="g1Choices" class="answer-grid" aria-label="Dish diameter choices"></div>
+          <div id="g1Feedback" class="answer-feedback" aria-live="polite" hidden></div>
+          <button id="g1Next" class="primary-button tomato-bg" hidden>Next mission <span>→</span></button>
+        </aside>
+      </div>
+      <div class="g1-bottom section-band"><strong>θ ≈ λ / D</strong><span id="g1Reality">Cygnus A scale bars are approximate: inferred from the published ≈130″ hotspot-to-hotspot separation, not calibrated from FITS/WCS.</span><a href="https://academic.oup.com/mnras/article/506/4/4855/6315336" target="_blank" rel="noreferrer">Scale source ↗</a></div>
+    </section>
+
+    <section id="game1" class="screen game-screen">
+      <div class="game-title-row section-band"><div><button class="back-button" data-go="home">← All games</button><p class="eyebrow">GAME 01 · MULTIWAVELENGTH ASTRONOMY</p><h1>One nebula. <em>Five stories.</em></h1><p class="lead">Every panel shows the same Crab Nebula, but not the same information. Each wavelength traces different particles, materials and physical processes; astronomers combine them to build a fuller picture.</p></div><div class="game-title-actions"><button class="fullscreen-button" type="button" data-fullscreen="game1"><span>⛶</span><strong>Full screen</strong><small>Best for projection</small></button><div class="score-stamp amber-bg"><span>BANDS SEEN</span><strong id="g2Score">1/5</strong></div></div></div>
+      <div class="wave-tabs section-band" role="tablist" aria-label="Wavelength"><button data-band="radio" class="active">Radio<small>VLA</small></button><button data-band="infrared">Infrared<small>Spitzer</small></button><button data-band="visible">Visible<small>Hubble</small></button><button data-band="ultraviolet">Ultraviolet<small>XMM</small></button><button data-band="xray">X-ray<small>Chandra</small></button></div>
+      <div class="game-layout section-band">
+        <article class="visual-card image-well"><div class="panel-heading"><span>REAL OBSERVATIONAL DATA · FALSE COLOUR</span><strong id="g2BandTitle">Radio</strong><mark id="g2Energy">LOWER-ENERGY PHOTONS</mark></div><div class="astro-image-wrap"><img id="crabImage" src="assets/crab-radio.png" alt="Radio image of the Crab Nebula"><div id="g2Lens" class="image-lens"></div></div><div class="image-controls"><button id="g2Compare" class="secondary-button">Hold to compare with visible</button><label><input id="g2Labels" type="checkbox" checked> Show clue</label></div></article>
+        <aside class="control-panel band-panel"><p class="eyebrow" id="g2Telescope">KARL G. JANSKY VERY LARGE ARRAY</p><h2 id="g2Question">What information does radio add?</h2><div id="g2Clue" class="big-clue tomato-bg"><span>THIS BAND TRACES</span><strong>Long-lived, lower-energy relativistic electrons across the broad nebula</strong></div><p id="g2Explanation">The pulsar wind supplies relativistic electrons. As they spiral in magnetic fields they emit synchrotron radiation. Electrons radiating strongly at radio wavelengths lose energy more slowly and travel farther, so radio maps the nebula’s broad outer extent.</p><div class="band-meter"><span>Long wavelength</span><i id="g2Meter"></i><span>Short wavelength</span></div><a id="g2Source" class="source-button" href="https://svs.gsfc.nasa.gov/30944" target="_blank" rel="noreferrer">View NASA source &amp; full credits ↗</a></aside>
+      </div>
+      <div class="multiwave-takeaway section-band"><strong>One object does not mean one story.</strong><span>No single band gives the complete picture: radio follows the broad, long-lived particle population; infrared adds dust, lines and synchrotron emission; visible light resolves ejecta filaments; ultraviolet maps higher-energy synchrotron structure; and X-rays reveal freshly accelerated particles near the pulsar.</span></div>
+      <div id="g2Quiz" class="quiz-strip section-band"><strong>Quick check:</strong><span>Which band best traces the freshly accelerated, highest-energy electrons closest to the pulsar?</span><button data-answer="radio">Radio</button><button data-answer="infrared">Infrared</button><button data-answer="xray">X-ray</button><em id="g2Feedback"></em></div>
+      <p class="credit-line section-band">Images: Radio — VLA/NRAO/AUI/NSF · Infrared — NASA/Spitzer/JPL-Caltech · Visible — NASA, ESA &amp; Hubble/STScI · UV — XMM-Newton/ESA · X-ray — NASA/Chandra/CXC. Via <a href="https://svs.gsfc.nasa.gov/30944" target="_blank" rel="noreferrer">NASA SVS 30944</a>.</p>
+    </section>
+
+    <section id="game2" class="screen game-screen">
+      <div class="game-title-row section-band"><div><button class="back-button" data-go="home">← All games</button><p class="eyebrow">GAME 02 · FROM GAS TO RADIO LOBES</p><h1>How do jets build<br><em>two giant lobes?</em></h1><p class="lead">The black hole does not blow out the lobes itself. Gas and magnetic fields outside it help make two jets. The jets carry energy far away and inflate two enormous radio-bright bubbles.</p></div><div class="game-title-actions"><button class="fullscreen-button" type="button" data-fullscreen="game2"><span>⛶</span><strong>Full screen</strong><small>Best for projection</small></button><div class="score-stamp teal-bg"><span>ENERGY PATH</span><strong id="g3Score">0/5</strong></div></div></div>
+      <div class="step-track section-band" id="g3Steps"><button data-step="0" class="active"><i>1</i><span>Gas</span></button><button data-step="1"><i>2</i><span>Flow</span></button><button data-step="2"><i>3</i><span>Fields</span></button><button data-step="3"><i>4</i><span>Jets</span></button><button data-step="4"><i>5</i><span>Lobes</span></button></div>
+      <div class="game-layout section-band">
+        <article class="visual-card agn-card"><div id="agnScene" class="agn-scene step-0" aria-label="Animated teaching diagram of an active galactic nucleus"><div class="galaxy-haze"></div><div class="lobe lobe-left"></div><div class="lobe lobe-right"></div><div class="hotspot hotspot-left"></div><div class="hotspot hotspot-right"></div><div class="jet jet-left"><i></i></div><div class="jet jet-right"><i></i></div><div class="magnetic-field" aria-hidden="true"><svg viewBox="0 0 600 300" preserveAspectRatio="none"><path class="field-line outer" d="M300 62 C256 64 260 112 218 133 C160 161 88 151 20 150 M300 238 C256 236 260 188 218 167 C160 139 88 149 20 150 M300 62 C344 64 340 112 382 133 C440 161 512 151 580 150 M300 238 C344 236 340 188 382 167 C440 139 512 149 580 150"/><path class="field-line inner" d="M300 96 C272 98 270 124 235 140 C176 165 96 151 20 150 M300 204 C272 202 270 176 235 160 C176 135 96 149 20 150 M300 96 C328 98 330 124 365 140 C424 165 504 151 580 150 M300 204 C328 202 330 176 365 160 C424 135 504 149 580 150"/></svg></div><div class="accretion-disk"><i></i></div><div class="black-hole"></div><div class="gas-clouds"><i></i><i></i><i></i><i></i><i></i></div><span class="scene-label label-hole">black hole</span><span class="scene-label label-disk">accretion disk</span><span class="scene-label label-field">magnetic-field funnel</span><span class="scene-label label-jet">jet</span><span class="scene-label label-lobe">radio lobe</span><span class="scene-label label-hotspot">hotspot</span></div><div class="visual-note"><strong id="g3SceneCaption">Start with gas near a supermassive black hole.</strong><span>Conceptual diagram · sizes and times are not to scale</span></div></article>
+        <aside class="control-panel story-panel"><p class="eyebrow" id="g3Kicker">STEP 1 · GAS MOVES IN</p><h2 id="g3Title">Gas circles the black hole</h2><p id="g3Copy">Gravity pulls nearby gas towards the black hole and bends its path. Because the gas is also moving around the galaxy’s centre, it goes into orbit instead of dropping straight in.</p><div class="analogy-card"><span>THINK OF IT LIKE…</span><strong id="g3Analogy">The Moon keeps moving forward while Earth’s gravity bends its path into an orbit.</strong></div><div class="honesty-note"><b>Important</b><p id="g3Honesty">The black hole is not blowing material out from inside. The story begins with gas outside it.</p></div><button id="g3Next" class="primary-button teal-bg">Form the flow <span>→</span></button></aside>
+      </div>
+      <div class="energy-chain section-band"><span>GAS MOVES IN</span><i>→</i><span>A HOT FLOW FORMS</span><i>→</i><span>FIELD LINES TWIST</span><i>→</i><span>JETS CARRY ENERGY OUT</span><i>→</i><span>LOBES GROW</span></div>
+      <p class="credit-line section-band">Science references: <a href="https://science.nasa.gov/mission/webb/science-overview/science-explainers/what-are-active-galactic-nuclei/" target="_blank" rel="noreferrer">NASA: Active Galactic Nuclei</a> · <a href="https://www.aoc.nrao.edu/intro/galaxies.html" target="_blank" rel="noreferrer">NRAO: Radio Galaxies</a>.</p>
+    </section>
+
+    <section id="game4" class="screen game-screen">
+      <div class="game-title-row section-band"><div><button class="back-button" data-go="home">← All games</button><p class="eyebrow">GAME 04 · RADIO INTERFEROMETRY</p><h1>Where does an array<br><em>take measurements?</em></h1><p class="lead">Each pair of antennas measures one complex visibility at a location in u–v space. Add antennas to make more pairs, then let Earth rotate to sample new locations.</p></div><div class="game-title-actions"><button class="fullscreen-button" type="button" data-fullscreen="game4"><span>⛶</span><strong>Full screen</strong><small>Best for projection</small></button><div class="score-stamp grape-bg"><span>MEASUREMENTS</span><strong id="g4Total">1</strong></div></div></div>
+      <div class="g4-pipeline section-band" aria-label="How the antenna array samples measurement space"><span><b>01</b>ANTENNA PAIR</span><strong>→</strong><span><b>02</b>PROJECTED BASELINE</span><strong>→</strong><span class="g4-algorithm"><b>03</b>ONE u–v MEASUREMENT</span></div>
+      <div class="interferometer-grid section-band">
+        <article class="array-panel"><div class="panel-heading"><span>YOUR ARRAY</span><strong id="g4Count">2 antennas · 1 pair</strong></div><svg id="arraySvg" viewBox="0 0 600 430" role="img" aria-label="Interactive radio interferometer array"><defs><pattern id="groundGrid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#2a2521" stroke-opacity=".1"/></pattern></defs><rect width="600" height="430" fill="url(#groundGrid)"/><circle cx="300" cy="215" r="150" fill="none" stroke="#2a2521" stroke-dasharray="5 8" opacity=".22"/><g id="baselineGroup"></g><g id="antennaGroup"></g><text x="18" y="408">Click empty ground to add an antenna</text></svg><div class="array-actions"><button id="g4Add" class="primary-button grape-bg">+ Add antenna</button><button id="g4Rotate" class="secondary-button">↻ Let Earth rotate</button><button id="g4Reset" class="text-button">Reset</button></div></article>
+        <article class="sampling-panel"><div class="panel-heading"><span>u–v MEASUREMENT SPACE</span><strong id="g4Samples">1 measurement</strong></div><canvas id="uvCanvas" width="520" height="430" role="img" aria-label="Schematic u–v plane showing measured visibilities and their conjugate mirror locations"></canvas><div class="g4-uv-legend"><span><i class="g4-dot measured"></i> measured visibility</span><span><i class="g4-dot mirror"></i> conjugate mirror, not another measurement</span></div><p id="g4Caption">One antenna pair makes one visibility measurement at this moment.</p><small class="simulation-note">This is a schematic u–v plane, not a map of positions on the sky. Each location describes a spatial pattern the array can measure. The plotted positions and Earth-rotation steps are illustrative; real coordinates depend on wavelength, source direction and projected antenna separation.</small></article>
+      </div>
+      <div class="interferometer-lesson section-band"><div><span>01</span><p><strong>Make pairs.</strong> N antennas form N(N−1)/2 distinct pairs; each pair can measure a visibility.</p></div><div><span>02</span><p><strong>Choose scales.</strong> Short projected baselines sample lower spatial frequencies; long ones sample higher frequencies.</p></div><div><span>03</span><p><strong>Observe over time.</strong> As Earth rotates, projected baselines change and the same pairs sample more u–v locations.</p></div></div>
+      <p class="credit-line section-band">Science references: <a href="https://almascience.nrao.edu/proposing/about-alma/alma-basics" target="_blank" rel="noreferrer">ALMA/NRAO: interferometry basics</a> · <a href="https://science.nrao.edu/facilities/alma/naasc-workshops/nrao-cd-uf17/InterfBasics_UFL.pdf" target="_blank" rel="noreferrer">NRAO: u–v sampling</a>.</p>
+      <div class="summary-next section-band"><span>Ready to connect all five ideas?</span><button class="secondary-button" data-go="summary">View summary →</button></div>
+    </section>
+
+    <section id="summary" class="screen summary-screen" aria-labelledby="summaryTitle">
+      <div class="game-title-row section-band"><div><button class="back-button" data-go="home">← All games</button><p class="eyebrow">THE BIG PICTURE · FIVE GAMES</p><h1 id="summaryTitle">How to read<br><em>the sky image.</em></h1><p class="lead">Each game adds one piece of the same story: a sky angle, a wavelength, a physical source, a resolution limit and an imaging method.</p></div><div class="game-title-actions"><button class="fullscreen-button" type="button" data-fullscreen="summary"><span>⛶</span><strong>Full screen</strong><small>Best for projection</small></button></div></div>
+      <div class="summary-grid section-band">
+        <article><span>00 · ANGLES</span><h2>Read the ruler.</h2><p>A scale bar turns distances in a picture into angles on the sky. Degrees, arcminutes and arcseconds are angle units.</p><button data-go="game0">Review Game 00 →</button></article>
+        <article><span>01 · WAVELENGTHS</span><h2>Ask what each band reveals.</h2><p>Radio, infrared, visible, ultraviolet and X-ray images trace different particles, materials and processes. No single band tells the whole story.</p><button data-go="game1">Review Game 01 →</button></article>
+        <article><span>02 · JETS</span><h2>Follow the energy.</h2><p>Gas and magnetic fields outside a black hole help launch opposite jets. The jets make terminal hotspots and inflate radio lobes.</p><button data-go="game2">Review Game 02 →</button></article>
+        <article><span>03 · RESOLUTION</span><h2>Choose a usable angle.</h2><p>Angular resolution is approximately θ ≈ λ/D, with θ in radians. Shorter wavelength or larger aperture can distinguish finer detail.</p><button data-go="game3">Review Game 03 →</button></article>
+        <article><span>04 · SAMPLING</span><h2>Map the measurements.</h2><p>Antenna pairs sample the u–v plane at locations set by their projected separations. More pairs and Earth rotation give more measured locations.</p><button data-go="game4">Review Game 04 →</button></article>
+      </div>
+      <div class="summary-bottom section-band"><strong>ANGLE → WAVELENGTH → SOURCE → RESOLUTION → SAMPLES → IMAGE</strong><span>Use this chain when you encounter a new astronomy image.</span></div>
+    </section>
+  </main>
+
+  <footer class="site-outreach-footer"><span>Radio Universe Lab · Outreach resources</span><a href="../../supervising-students.html#outreach-resources">← Back to Dr Haoyang Ye’s website</a></footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js?v=20260915-3"></script>
+</body>
+</html>
