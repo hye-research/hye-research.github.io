@@ -16,6 +16,8 @@ from pathlib import Path
 
 
 API_URL = "https://export.arxiv.org/api/query"
+OAI_URL = "https://oaipmh.arxiv.org/oai"
+FALLBACK_HTTP_CODES = {406, 429, 500, 502, 503, 504}
 USER_AGENT = "HaoyangYeJournalClub/1.0 (+https://hye-research.github.io/journal-club.html)"
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "data" / "journal-dates.json"
@@ -103,7 +105,7 @@ def fetch_period_oai(start: dt.datetime, end: dt.datetime) -> list[dict]:
 
     while True:
         params = {"verb": "ListRecords", "resumptionToken": token} if token else base_params
-        url = f"https://export.arxiv.org/oai2?{urllib.parse.urlencode(params)}"
+        url = f"{OAI_URL}?{urllib.parse.urlencode(params)}"
         request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
         for attempt, delay in enumerate((0, 10, 30), start=1):
             if delay:
@@ -284,7 +286,7 @@ def main() -> None:
     try:
         papers = fetch_period(start, end)
     except urllib.error.HTTPError as error:
-        if error.code not in {429, 500, 502, 503, 504}:
+        if error.code not in FALLBACK_HTTP_CODES:
             raise
         print(
             f"arXiv query API remained unavailable ({error.code}); "

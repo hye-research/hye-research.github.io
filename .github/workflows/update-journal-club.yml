@@ -52,7 +52,7 @@ jobs:
       - name: Repair recently missed weekdays
         if: github.event_name != 'push' && inputs.date == ''
         run: |
-          for days_ago in 1 2 3 4 5 6 7; do
+          for days_ago in 0 1 2 3 4 5 6 7; do
             issue_date="$(date -u -d "$days_ago days ago" +%F)"
             weekday="$(date -u -d "$issue_date" +%u)"
             if [ "$weekday" -le 5 ] && [ ! -f "data/dates/$issue_date.json" ]; then
@@ -62,6 +62,16 @@ jobs:
               fi
             fi
           done
+
+      - name: Verify today's weekday issue exists
+        if: github.event_name != 'push' && inputs.date == ''
+        run: |
+          issue_date="$(date -u +%F)"
+          weekday="$(date -u +%u)"
+          if [ "$weekday" -le 5 ] && [ ! -f "data/dates/$issue_date.json" ]; then
+            echo "::error::Journal Club issue $issue_date was not created."
+            exit 1
+          fi
 
       - name: Commit updated archive
         if: github.event_name != 'push'
