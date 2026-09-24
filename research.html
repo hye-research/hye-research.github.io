@@ -137,9 +137,6 @@
               <button class="interest-node node-pink node-sm" type="button" data-node="simulation" style="--x: 66%; --y: 82%; --float: 9.2s;">
                 <span>Data simulation</span>
               </button>
-              <button class="interest-node node-grape node-sm" type="button" data-node="culture" style="--x: 91%; --y: 24%; --float: 7.6s;">
-                <span>Research culture</span>
-              </button>
             </div>
           </section>
 
@@ -274,9 +271,14 @@
           ["interferometry", "imaging"],
           ["imaging", "catalogue"],
           ["imaging", "simulation"],
+          ["imaging", "galaxy"],
+          ["imaging", "ml"],
+          ["imaging", "classification"],
           ["radio", "multiwavelength"],
+          ["radio", "galaxy"],
           ["multiwavelength", "crossid"],
           ["multiwavelength", "galaxy"],
+          ["multiwavelength", "classification"],
           ["galaxy", "classification"],
           ["galaxy", "catalogue"],
           ["crossid", "classification"],
@@ -285,10 +287,7 @@
           ["ml", "classification"],
           ["ml", "crossid"],
           ["ai", "catalogue"],
-          ["simulation", "ml"],
-          ["culture", "ai"],
-          ["culture", "catalogue"],
-          ["culture", "radio"]
+          ["simulation", "ml"]
         ];
 
         const lineFor = (from, to) => {
