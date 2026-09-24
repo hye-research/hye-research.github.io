@@ -5123,6 +5123,10 @@ h3 {
   background: #d3c3ec;
 }
 
+.pink-card {
+  background: #f7cfda;
+}
+
 .section-heading {
   margin-bottom: 28px;
   max-width: 840px;
@@ -6230,6 +6234,22 @@ th {
 .student-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
+
+.supervision-category-grid .student-path-card {
+  min-height: 340px;
+}
+
+.supervision-category-grid .student-path-card h2 {
+  font-size: clamp(1.8rem, 3vw, 2.7rem);
+  line-height: 1;
+  margin: 0 0 16px;
+}
+
+.supervision-category-grid .student-path-card p {
+  color: var(--muted);
+  margin: 0 0 20px;
+}
+
 
 .student-path-grid {
   display: grid;
