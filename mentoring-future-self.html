@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Meet Your Future Self | Haoyang Ye</title>
+    <meta name="description" content="An interactive mentoring guide for visualising a future self through energy, shape, colour, feelings and personally meaningful actions.">
+    <link rel="canonical" href="https://hye-research.github.io/mentoring-future-self.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Haoyang Ye">
+    <meta property="og:title" content="Meet Your Future Self | Haoyang Ye">
+    <meta property="og:description" content="Visualise a future self through energy, shape, colour, feelings and personally meaningful actions.">
+    <meta property="og:url" content="https://hye-research.github.io/mentoring-future-self.html">
+    <meta property="og:image" content="https://hye-research.github.io/assets/hero-avatar2.png">
+    <meta name="twitter:card" content="summary">
+    <link rel="stylesheet" href="styles.css?v=20260924-21">
+    <script src="mentoring-future-self.js?v=20260924-10" defer></script>
+  </head>
+  <body>
+    <header class="site-header" id="top">
+      <a class="brand" href="index.html" aria-label="Dr Haoyang Ye home">
+        <span class="brand-mark">HY</span>
+        <span>Dr Haoyang Ye</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a href="research.html">Research</a>
+        <a href="astrocareer.html">AstroCareer</a>
+        <a href="journal-club.html">Journal Club</a>
+        <a href="workbook.html">Workbook</a>
+        <a href="outreach.html">Outreach</a>
+        <a class="active" href="students.html">Students</a>
+        <a class="intranet-link" href="http://127.0.0.1:8765/intranet.html" target="_blank" rel="noopener" referrerpolicy="no-referrer" title="Private local workspace">Intranet</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="page-hero section-band mentoring-guide-hero future-self-hero">
+        <p class="eyebrow">Mentoring guide · Future self</p>
+        <h1>Meet the person you are becoming.</h1>
+        <p class="lead">
+          Give your present energy a shape. Create an image for your future self. Then stay with
+          that future long enough to notice its feelings, qualities and everyday actions.
+        </p>
+        <a class="button" href="mentoring-students.html">Back to mentoring guides</a>
+      </section>
+
+      <div class="research-page-shell section-band mentoring-guide-shell">
+        <aside class="astro-side-nav research-side-nav" aria-label="Article sections">
+          <p class="eyebrow">In this guide</p>
+          <nav>
+            <a href="#begin">Begin without comparison</a>
+            <a href="#present-energy">Show your energy</a>
+            <a href="#future-shape">Shape your future self</a>
+            <a href="#future-words">Give the future words</a>
+            <a href="#future-actions">Add future actions</a>
+            <a href="#future-focus">Stay with the feeling</a>
+            <a href="#future-card">Build your vision card</a>
+            <a href="#saved-visions">Saved visions</a>
+          </nav>
+        </aside>
+
+        <article class="mentoring-article future-self-article">
+          <section id="begin">
+            <p class="eyebrow">01 · Begin without comparison</p>
+            <h2>This is a direction, not a verdict.</h2>
+            <p>
+              Your present self is not an unfinished version that needs to earn the future. Start
+              by noticing what is here. Then let the future image show you something you care about.
+            </p>
+            <div class="article-callout">
+              <strong>Use this guide your way</strong>
+              <p>
+                Choose any section. Skip any prompt. “I do not know yet” is a complete answer.
+                Colour, size and shape have no fixed meaning here. You decide what they mean.
+              </p>
+            </div>
+            <p>
+              The present and future images will appear one at a time. There is no need to compare
+              them. The invitation is to spend some time inside the future image.
+            </p>
+          </section>
+
+          <section id="present-energy">
+            <p class="eyebrow">02 · Show your energy</p>
+            <h2>Let today’s energy become a ball.</h2>
+            <p>
+              Use diameter as a metaphor. A small ball can mean quiet, contained or low energy. A
+              large ball can mean expansive, activated or simply “a lot”. Your meaning can differ.
+            </p>
+
+            <div class="energy-visualiser-card">
+              <div class="energy-orb-stage" aria-label="Current energy visualisation">
+                <div class="energy-orb" id="presentEnergyOrb"><span id="presentEnergyInside">50</span></div>
+              </div>
+              <div class="visual-controls">
+                <label class="future-range" for="presentEnergy">
+                  <span>What diameter fits your energy right now?</span>
+                  <input id="presentEnergy" type="range" min="1" max="100" value="50">
+                  <span class="range-labels"><small>1 · Small</small><small>100 · Large</small></span>
+                  <output id="presentEnergyValue">50 / 100</output>
+                </label>
+                <fieldset class="colour-picker" id="presentColourPicker">
+                  <legend>Which colour fits this energy?</legend>
+                  <label style="--swatch:#ee5a3a"><input type="radio" name="presentColour" value="#ee5a3a" checked><span>Coral</span></label>
+                  <label style="--swatch:#f4a82c"><input type="radio" name="presentColour" value="#f4a82c"><span>Amber</span></label>
+                  <label style="--swatch:#166e66"><input type="radio" name="presentColour" value="#166e66"><span>Teal</span></label>
+                  <label style="--swatch:#6b4a9e"><input type="radio" name="presentColour" value="#6b4a9e"><span>Violet</span></label>
+                  <label style="--swatch:#5a78a8"><input type="radio" name="presentColour" value="#5a78a8"><span>Blue</span></label>
+                  <label style="--swatch:#ff8fb1"><input type="radio" name="presentColour" value="#ff8fb1"><span>Pink</span></label>
+                  <label style="--swatch:#8a857c"><input type="radio" name="presentColour" value="#8a857c"><span>Grey</span></label>
+                  <label style="--swatch:#ffffff"><input type="radio" name="presentColour" value="#ffffff"><span>White</span></label>
+                  <label style="--swatch:#111111"><input type="radio" name="presentColour" value="#111111"><span>Black</span></label>
+                </fieldset>
+                <label class="future-range" for="presentColourDepth">
+                  <span>Choose colour depth</span>
+                  <input id="presentColourDepth" type="range" min="10" max="100" value="100">
+                  <span class="range-labels"><small>10% · Pale</small><small>100% · Deep</small></span>
+                  <output id="presentColourDepthValue">100% colour depth</output>
+                </label>
+                <label class="visual-note" for="presentEnergyNote"><span>What do you notice about this energy?</span><textarea id="presentEnergyNote" rows="3" placeholder="It feels compact, warm and easier to hold than I expected."></textarea></label>
+              </div>
+              <div class="section-save-row">
+                <button class="button reset-section-button" id="resetPresentEnergy" type="button">Reset</button>
+                <button class="button primary" id="savePresentEnergy" type="button">Save this energy</button>
+                <span id="presentEnergyStatus" role="status"></span>
+              </div>
+            </div>
+          </section>
+
+          <section id="future-shape">
+            <p class="eyebrow">03 · Shape your future self</p>
+            <h2>Choose the form that holds the future.</h2>
+            <p>
+              Pick a shape, colour and size. Follow what feels interesting. The shape does not need
+              to be impressive. It only needs to help you stay with the future for a moment.
+            </p>
+
+            <div class="future-shape-card">
+              <div class="future-shape-stage" aria-label="Future self visualisation">
+                <div class="future-shape shape-circle" id="futureShapePreview"><span>Future me</span></div>
+              </div>
+              <div class="visual-controls">
+                <fieldset class="shape-picker" id="futureShapePicker">
+                  <legend>Choose a shape</legend>
+                  <label><input type="radio" name="futureShape" value="circle" checked><span class="mini-shape mini-circle" aria-hidden="true"></span><strong>Circle</strong></label>
+                  <label><input type="radio" name="futureShape" value="square"><span class="mini-shape mini-square" aria-hidden="true"></span><strong>Square</strong></label>
+                  <label><input type="radio" name="futureShape" value="diamond"><span class="mini-shape mini-diamond" aria-hidden="true"></span><strong>Diamond</strong></label>
+                  <label><input type="radio" name="futureShape" value="triangle"><span class="mini-shape mini-triangle" aria-hidden="true"></span><strong>Triangle</strong></label>
+                  <label><input type="radio" name="futureShape" value="star"><span class="mini-shape mini-star" aria-hidden="true"></span><strong>Star</strong></label>
+                  <label><input type="radio" name="futureShape" value="trapezoid"><span class="mini-shape mini-trapezoid" aria-hidden="true"></span><strong>Trapezoid</strong></label>
+                  <label><input type="radio" name="futureShape" value="heart"><span class="mini-shape mini-heart" aria-hidden="true"></span><strong>Heart</strong></label>
+                  <label><input type="radio" name="futureShape" value="rectangle"><span class="mini-shape mini-rectangle" aria-hidden="true"></span><strong>Rectangle</strong></label>
+                  <label><input type="radio" name="futureShape" value="tree"><span class="mini-shape mini-tree" aria-hidden="true"></span><strong>Tree</strong></label>
+                  <label><input type="radio" name="futureShape" value="flower"><span class="mini-shape mini-flower" aria-hidden="true"></span><strong>Tulip</strong></label>
+                </fieldset>
+                <fieldset class="colour-picker" id="futureColourPicker">
+                  <legend>Choose a colour</legend>
+                  <label style="--swatch:#ee5a3a"><input type="radio" name="futureColour" value="#ee5a3a"><span>Coral</span></label>
+                  <label style="--swatch:#f4a82c"><input type="radio" name="futureColour" value="#f4a82c" checked><span>Amber</span></label>
+                  <label style="--swatch:#166e66"><input type="radio" name="futureColour" value="#166e66"><span>Teal</span></label>
+                  <label style="--swatch:#6b4a9e"><input type="radio" name="futureColour" value="#6b4a9e"><span>Violet</span></label>
+                  <label style="--swatch:#5a78a8"><input type="radio" name="futureColour" value="#5a78a8"><span>Blue</span></label>
+                  <label style="--swatch:#ff8fb1"><input type="radio" name="futureColour" value="#ff8fb1"><span>Pink</span></label>
+                  <label style="--swatch:#8a857c"><input type="radio" name="futureColour" value="#8a857c"><span>Grey</span></label>
+                  <label style="--swatch:#ffffff"><input type="radio" name="futureColour" value="#ffffff"><span>White</span></label>
+                  <label style="--swatch:#111111"><input type="radio" name="futureColour" value="#111111"><span>Black</span></label>
+                </fieldset>
+                <label class="future-range" for="futureColourDepth">
+                  <span>Choose colour depth</span>
+                  <input id="futureColourDepth" type="range" min="10" max="100" value="100">
+                  <span class="range-labels"><small>10% · Pale</small><small>100% · Deep</small></span>
+                  <output id="futureColourDepthValue">100% colour depth</output>
+                </label>
+                <label class="future-range" for="futureSize">
+                  <span>What energy fits your future self?</span>
+                  <input id="futureSize" type="range" min="1" max="100" value="68">
+                  <span class="range-labels"><small>1 · Quiet and small</small><small>100 · Expansive and large</small></span>
+                  <output id="futureSizeValue">68 / 100</output>
+                </label>
+              </div>
+              <div class="section-save-row">
+                <button class="button reset-section-button" id="resetFutureShape" type="button">Reset</button>
+                <button class="button primary" id="saveFutureShape" type="button">Save this shape</button>
+                <span id="futureShapeStatus" role="status"></span>
+              </div>
+            </div>
+          </section>
+
+          <section id="future-words">
+            <p class="eyebrow">04 · Give the future words</p>
+            <h2>Write from inside the future.</h2>
+            <p>
+              Stay with the image you made. Write in the present tense if that helps the future
+              feel close. You can use direct words, fragments or a few concrete details.
+            </p>
+            <div class="future-writing-card">
+              <label for="futureDescription"><span>Who are you in this future?</span><textarea id="futureDescription" rows="5" placeholder="I am someone who can use Japanese easily in everyday conversations. I trust myself to keep learning."></textarea></label>
+              <label for="futureFeeling"><span>How does it feel to be this person?</span><textarea id="futureFeeling" rows="4" placeholder="Calm, alive, spacious, proud, curious, connected, or something else entirely."></textarea></label>
+              <fieldset class="feeling-menu" id="futureFeelingMenu">
+                <legend>Optional feeling words</legend>
+                <label><input type="checkbox" value="calm"><span>Calm</span></label>
+                <label><input type="checkbox" value="capable"><span>Capable</span></label>
+                <label><input type="checkbox" value="curious"><span>Curious</span></label>
+                <label><input type="checkbox" value="connected"><span>Connected</span></label>
+                <label><input type="checkbox" value="free"><span>Free</span></label>
+                <label><input type="checkbox" value="energised"><span>Energised</span></label>
+                <label><input type="checkbox" value="uncertain"><span>Uncertain</span></label>
+                <label><input type="checkbox" value="mixed"><span>Mixed</span></label>
+              </fieldset>
+              <div class="section-save-row">
+                <button class="button reset-section-button" id="resetFutureWords" type="button">Reset</button>
+                <button class="button primary" id="saveFutureWords" type="button">Save these words</button>
+                <span id="futureWordsStatus" role="status"></span>
+              </div>
+            </div>
+          </section>
+
+          <section id="future-actions">
+            <p class="eyebrow">05 · Add future actions</p>
+            <h2>What does future me do?</h2>
+            <p>
+              Add abilities, habits, choices or ordinary moments. They can be ambitious or very
+              small. “Speaks Japanese fluently” can sit beside “cares for a tiny plant”.
+            </p>
+            <div class="future-action-builder">
+              <label for="futureActionInput"><span>Add one thing your future self does</span><input id="futureActionInput" placeholder="For example: runs a half marathon"></label>
+              <button class="button primary" id="addFutureAction" type="button">Add this action</button>
+              <span id="futureActionAddStatus" role="status"></span>
+              <div class="future-action-list" id="futureActionList"></div>
+              <div class="future-action-empty" id="futureActionEmpty">Your future actions will appear here.</div>
+              <div class="section-save-row">
+                <button class="button reset-section-button" id="resetFutureActions" type="button">Reset</button>
+                <button class="button primary" id="saveFutureActions" type="button">Save these actions</button>
+                <span id="futureActionsStatus" role="status"></span>
+              </div>
+            </div>
+          </section>
+
+          <section id="future-focus">
+            <p class="eyebrow">06 · Stay with the feeling</p>
+            <h2>Spend ninety seconds in the future.</h2>
+            <p>
+              Let the image stay on screen. You do not need to plan the route from here to there.
+              Notice the future person’s pace, posture, surroundings and way of meeting the day.
+            </p>
+            <div class="future-focus-panel" id="futureFocusPanel">
+              <div class="future-focus-shape shape-circle" id="futureFocusShape" aria-hidden="true"></div>
+              <div>
+                <span>Optional future focus</span>
+                <strong id="futureFocusPrompt">Look at the future shape</strong>
+                <small id="futureFocusTime">01:30</small>
+              </div>
+              <button id="futureFocusStart" type="button">Start</button>
+            </div>
+            <label class="visual-note" for="futureFocusNote"><span>What became noticeable?</span><textarea id="futureFocusNote" rows="4" placeholder="A feeling, image, body sensation, phrase or detail. “Nothing yet” is also valid."></textarea></label>
+            <div class="section-save-row">
+              <button class="button reset-section-button" id="resetFutureFocus" type="button">Reset</button>
+              <button class="button primary" id="saveFutureFocus" type="button">Save this reflection</button>
+              <span id="futureFocusStatus" role="status"></span>
+            </div>
+          </section>
+
+          <section id="future-card">
+            <p class="eyebrow">07 · Your future self card</p>
+            <h2>Keep the future somewhere visible.</h2>
+            <p>
+              Anything saved in sections 02–06 can appear here if you build a card. The card is a
+              place to revisit the future feeling, not a contract or a measure of progress.
+            </p>
+            <div class="future-card-builder">
+              <button class="button primary" id="buildFutureCard" type="button">Build my future self card</button>
+              <span id="futureCardBuilderStatus" role="status"></span>
+            </div>
+            <article class="future-card-result" id="futureCardResult" aria-live="polite" hidden>
+              <div class="future-card-copy">
+                <p class="eyebrow">A future I can feel</p>
+                <h3>My future self</h3>
+                <div id="futureCardContent"></div>
+                <div class="workbook-actions">
+                  <button class="button primary" id="saveFutureCard" type="button">Save this vision</button>
+                  <button class="button" id="printFutureCard" type="button">Print or save as PDF</button>
+                  <span id="futureCardSaveStatus" role="status"></span>
+                </div>
+              </div>
+            </article>
+          </section>
+
+          <section id="saved-visions">
+            <p class="eyebrow">Saved in this browser</p>
+            <h2>Your future self visions.</h2>
+            <p>
+              Saved visions stay on this device and in this browser. Each one keeps the complete
+              picture you created, so you can return to the details and the feeling.
+            </p>
+            <div class="saved-future-list" id="savedFutureList"></div>
+            <div class="saved-reflection-empty" id="savedFutureEmpty">
+              <span aria-hidden="true">◎</span>
+              <p>Your saved future self cards will appear here.</p>
+            </div>
+            <button class="button clear-reflections" id="clearFutureVisions" type="button" hidden>Clear saved visions</button>
+          </section>
+        </article>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <p>Dr Haoyang Ye · Mentoring guide</p>
+      <a href="#top">Back to top</a>
+    </footer>
+  </body>
+</html>
