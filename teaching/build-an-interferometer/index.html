@@ -1,0 +1,1213 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Build an Interferometer · Dr Haoyang Ye</title>
+  <meta name="description" content="A seven-level game: build a radio interferometer step by step, from geometric delay and correlation to fringes, the uv plane and Earth-rotation synthesis.">
+</head>
+<body>
+<style>
+/* Layout: a lab notebook. Level strip on top, one level card (brief + lab bench), checkpoint card below. */
+:root {
+  --ink: #2a2521;
+  --paper: #f3e8d2;
+  --panel: #fff9ec;
+  --muted: #6b6457;
+  --tomato: #ee5a3a;
+  --amber: #f4a82c;
+  --teal: #166e66;
+  --grape: #6b4a9e;
+  --mint: #dff1eb;
+  --sand: #f8d888;
+  --shadow: 7px 7px 0 #2a2521;
+  --shadow-sm: 4px 4px 0 #2a2521;
+  --font-body: Arial, Helvetica, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+[hidden] { display: none !important; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  background: radial-gradient(circle at 18px 18px, rgba(42,37,33,0.055) 1px, transparent 1.5px), var(--paper);
+  background-size: 28px 28px;
+}
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-block: 20px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid;
+  gap: 26px;
+}
+header.top { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; justify-content: flex-end; }
+header.top .back { margin-right: auto; font-weight: 800; color: var(--ink); }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; }
+.brand-mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px; border-radius: 999px; background: var(--tomato);
+  border: 2px solid var(--ink); font-size: 0.85rem;
+}
+.hero h1 { font-size: clamp(2.2rem, 6vw, 4.2rem); line-height: 1; margin: 6px 0 12px; font-weight: 900; text-wrap: balance; }
+.eyebrow { font-size: 0.8rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; margin: 0; }
+.lead { font-size: 1.08rem; max-width: 62ch; margin: 0; }
+.hero .rule { width: 72px; height: 4px; background: var(--tomato); margin-top: 14px; }
+
+.levels { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip {
+  font: inherit; font-weight: 800; font-size: 0.86rem;
+  border: 2px solid var(--ink); border-radius: 8px; background: var(--panel);
+  padding: 7px 11px; cursor: pointer; color: var(--ink);
+  display: inline-flex; gap: 7px; align-items: center;
+}
+.chip .n { font-family: var(--font-mono); font-size: 0.78rem; }
+.chip[data-state="done"] { background: var(--mint); }
+.chip[data-state="current"] { background: var(--amber); box-shadow: var(--shadow-sm); }
+.chip[disabled] { border-style: dashed; color: var(--muted); cursor: not-allowed; background: transparent; }
+.chip:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid #0047ff; outline-offset: 2px; }
+
+.card {
+  background: var(--panel); border: 3px solid var(--ink); border-radius: 10px;
+  box-shadow: var(--shadow); padding: clamp(16px, 3vw, 28px);
+  min-width: 0;
+}
+.level-head h2 { font-size: clamp(1.6rem, 3.4vw, 2.5rem); line-height: 1.05; margin: 6px 0 0; font-weight: 900; text-wrap: balance; }
+.level-grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr); gap: 26px; margin-top: 18px; }
+@media (max-width: 820px) { .level-grid { grid-template-columns: 1fr; } }
+.brief { display: grid; gap: 14px; align-content: start; min-width: 0; }
+.brief p { margin: 0; max-width: 62ch; }
+.formula {
+  font-family: var(--font-mono); font-size: 0.95rem; background: var(--mint);
+  border: 2px solid var(--ink); border-radius: 8px; padding: 10px 12px; overflow-x: auto;
+}
+.goal {
+  border: 2px solid var(--ink); border-radius: 8px; padding: 10px 12px; background: var(--sand);
+  display: grid; gap: 4px;
+}
+.goal strong { font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.goal[data-done="true"] { background: var(--teal); color: var(--panel); }
+.lab { display: grid; gap: 14px; min-width: 0; align-content: start; }
+canvas.stage {
+  width: 100%; display: block; border: 2px solid var(--ink); border-radius: 8px; background: #fffdf6;
+  touch-action: none;
+}
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pair figure { margin: 0; display: grid; gap: 4px; min-width: 0; }
+.pair figcaption, .caption { font-size: 0.78rem; color: var(--muted); font-weight: 700; }
+.controls { display: grid; gap: 10px; }
+.ctrl { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: center; }
+.ctrl label { font-weight: 800; font-size: 0.9rem; }
+.ctrl output { font-family: var(--font-mono); font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+.ctrl input[type=range] { grid-column: 1 / -1; width: 100%; accent-color: var(--tomato); }
+.readouts { display: flex; flex-wrap: wrap; gap: 8px; }
+.readout {
+  font-family: var(--font-mono); font-size: 0.86rem; border: 2px solid var(--ink); border-radius: 7px;
+  padding: 5px 9px; background: #fffdf6; font-variant-numeric: tabular-nums;
+}
+.readout b { font-family: var(--font-body); font-weight: 800; margin-right: 4px; }
+.meter { height: 16px; border: 2px solid var(--ink); border-radius: 999px; background: #fffdf6; overflow: hidden; }
+.meter > i { display: block; height: 100%; background: var(--teal); width: 0; transition: width 120ms linear; }
+.btns { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn {
+  font: inherit; font-weight: 800; border: 2px solid var(--ink); border-radius: 8px; background: var(--panel);
+  min-height: 42px; padding: 8px 14px; cursor: pointer; color: var(--ink);
+}
+.btn:hover { transform: translateY(-1px); }
+.btn.primary { background: var(--amber); box-shadow: var(--shadow-sm); }
+.btn.on { background: var(--teal); color: var(--panel); }
+.btn[disabled] { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+.note { font-size: 0.9rem; border-left: 4px solid var(--tomato); padding-left: 10px; margin: 0; }
+
+.checkpoint h3 { margin: 4px 0 14px; font-size: 1.5rem; font-weight: 900; }
+.qs { display: grid; gap: 22px; }
+.q { display: grid; gap: 10px; }
+.q > p { margin: 0; font-weight: 800; font-size: 1.05rem; max-width: 70ch; }
+.opts { display: grid; gap: 8px; }
+.opt {
+  text-align: left; font: inherit; border: 2px solid var(--ink); border-radius: 8px; background: #fffdf6;
+  padding: 9px 12px; cursor: pointer; color: var(--ink);
+}
+.opt[data-mark="wrong"] { background: #fbd3c8; }
+.opt[data-mark="right"] { background: var(--mint); font-weight: 800; }
+.why { background: var(--mint); border: 2px solid var(--ink); border-radius: 8px; padding: 12px 14px; display: grid; gap: 8px; }
+.why p { margin: 0; max-width: 72ch; }
+.hint { margin: 0; font-size: 0.92rem; color: var(--tomato); font-weight: 800; }
+
+.pager { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.finale { display: grid; gap: 14px; }
+.finale ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+footer { font-size: 0.85rem; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { .btn:hover { transform: none; } .meter > i { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <a class="back" href="../../teaching.html">← Teaching</a>
+    <button class="btn" id="reset" type="button">Start over</button>
+  </header>
+
+  <section class="hero">
+    <p class="eyebrow">A game in seven levels</p>
+    <h1>Build an Interferometer</h1>
+    <p class="lead">Start with two antennas and one radio wave. Level by level, turn them into a telescope as big as your array: delays, correlation, visibilities, fringes, the uv plane and Earth rotation. Pass each lab, then answer the checkpoint to unlock the next level.</p>
+    <div class="rule"></div>
+  </section>
+
+  <nav class="levels" id="levels" aria-label="Levels"></nav>
+
+  <section class="card" id="level"></section>
+  <section class="card checkpoint" id="checkpoint" hidden></section>
+
+  <div class="pager">
+    <button class="btn" id="prev" type="button">Previous level</button>
+    <button class="btn primary" id="next" type="button" disabled>Next level</button>
+  </div>
+
+  <footer>Made from the "Two antennas" slides of the talk <em>Radio Interferometry in the Age of AI</em>. Numbers are illustrative; formulas follow Thompson, Moran &amp; Swenson.</footer>
+</div>
+
+<script>
+(() => {
+const COL = { ink:'#2a2521', paper:'#f3e8d2', panel:'#fff9ec', muted:'#6b6457', tomato:'#ee5a3a', amber:'#f4a82c', teal:'#166e66', grape:'#6b4a9e', bench:'#fffdf6', faint:'rgba(42,37,33,0.14)' };
+const C_LIGHT = 0.299792458; // m per ns
+const KEY = 'build-interferometer-v1';
+const DEFAULT_ANTS = [[-30,-10],[25,-20],[5,30],[-10,5]];
+
+let state = { unlocked: 0, goals: {}, solved: {}, current: 0, ants: DEFAULT_ANTS.map(a => a.slice()) };
+try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && typeof s === 'object') state = Object.assign(state, s); } catch (e) {}
+const hot = window.claude && window.claude.hot;
+if (hot && hot.data && hot.data.state) state = hot.data.state;
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+if (hot && hot.snapshot) hot.snapshot(() => ({ state }));
+
+// ---------- helpers ----------
+const $ = (s, r = document) => r.querySelector(s);
+function el(tag, attrs = {}, html) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) { if (k === 'class') e.className = v; else e.setAttribute(k, v); }
+  if (html !== undefined) e.innerHTML = html;
+  return e;
+}
+function fit(c, aspect) {
+  const dpr = window.devicePixelRatio || 1;
+  const w = Math.max(200, c.clientWidth || c.parentElement.clientWidth);
+  const h = Math.round(w * aspect);
+  c.style.height = h + 'px';
+  c.width = Math.round(w * dpr); c.height = Math.round(h * dpr);
+  const ctx = c.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, w, h };
+}
+function slider(parent, { id, label, min, max, step, value, fmt }) {
+  const box = el('div', { class: 'ctrl' });
+  const lab = el('label', { for: id }, label);
+  const out = el('output', { for: id });
+  const inp = el('input', { type: 'range', id, min, max, step, value });
+  box.append(lab, out, inp); parent.append(box);
+  const upd = () => { out.textContent = fmt(+inp.value); };
+  inp.addEventListener('input', upd); upd();
+  return inp;
+}
+function readout(parent, label) {
+  const r = el('span', { class: 'readout' }, `<b>${label}</b><span></span>`);
+  parent.append(r); return r.lastChild;
+}
+function arrow(ctx, x0, y0, x1, y1, color, w = 2) {
+  ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w;
+  ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+  const a = Math.atan2(y1 - y0, x1 - x0), L = 8;
+  ctx.beginPath(); ctx.moveTo(x1, y1);
+  ctx.lineTo(x1 - L * Math.cos(a - 0.4), y1 - L * Math.sin(a - 0.4));
+  ctx.lineTo(x1 - L * Math.cos(a + 0.4), y1 - L * Math.sin(a + 0.4)); ctx.closePath(); ctx.fill();
+}
+function dish(ctx, x, y, r, color = COL.ink) {
+  ctx.strokeStyle = color; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(x - r, y - r * 0.8); ctx.quadraticCurveTo(x, y + r * 0.5, x + r, y - r * 0.8); ctx.stroke();
+  ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y + r * 0.7); ctx.stroke();
+}
+function text(ctx, s, x, y, { color = COL.ink, size = 12, align = 'left', weight = 700, mono = false } = {}) {
+  ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = 'middle';
+  ctx.font = `${weight} ${size}px ${mono ? 'ui-monospace, Menlo, monospace' : 'Arial, Helvetica, sans-serif'}`;
+  ctx.fillText(s, x, y);
+}
+const sinc = x => (Math.abs(x) < 1e-9 ? 1 : Math.sin(Math.PI * x) / (Math.PI * x));
+function gauss() { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+function axes(ctx, w, h, cx, cy, lu, lv) {
+  ctx.strokeStyle = COL.faint; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(10, cy); ctx.lineTo(w - 10, cy); ctx.moveTo(cx, 10); ctx.lineTo(cx, h - 10); ctx.stroke();
+  text(ctx, lu, w - 14, cy - 10, { color: COL.muted, align: 'right', size: 12 });
+  text(ctx, lv, cx + 8, 16, { color: COL.muted, size: 12 });
+}
+
+// ---------- levels ----------
+const LEVELS = [];
+
+// L1: geometric delay
+LEVELS.push({
+  title: 'Two antennas, one wave',
+  brief: `<p>A radio source is so far away that its waves arrive as flat wavefronts. Tilt the source away from overhead and one antenna is hit first. The other has to wait while the wave travels an extra distance <b>b sin θ</b>.</p>
+  <div class="formula">τ<sub>g</sub> = b sin θ / c</div>
+  <p class="note">This geometric delay is the whole reason an interferometer can tell where a source is.</p>`,
+  goal: 'Tune the angle θ and the baseline b until the geometric delay τ<sub>g</sub> is 100 ns (within 3 ns).',
+  mount(lab, api) {
+    const cv = el('canvas', { class: 'stage', 'aria-label': 'Two antennas and an incoming plane wave' }); lab.append(cv);
+    const ctr = el('div', { class: 'controls' }); lab.append(ctr);
+    const th = slider(ctr, { id: 'l1-th', label: 'Source angle θ from overhead', min: -60, max: 60, step: 0.5, value: 20, fmt: v => v.toFixed(1) + '°' });
+    const bb = slider(ctr, { id: 'l1-b', label: 'Baseline b', min: 10, max: 100, step: 1, value: 40, fmt: v => v + ' m' });
+    const ro = el('div', { class: 'readouts' }); lab.append(ro);
+    const rTau = readout(ro, 'τ_g'), rPath = readout(ro, 'extra path');
+    let t0 = performance.now(), raf;
+    function frame(now) {
+      const { ctx, w, h } = fit(cv, 0.56);
+      const theta = +th.value * Math.PI / 180, b = +bb.value;
+      const s = (w * 0.62) / 100, gy = h * 0.8, cx = w / 2;
+      const sx = Math.sin(theta), sy = Math.cos(theta);
+      const toS = (x, y) => [cx + x, gy - y];
+      ctx.clearRect(0, 0, w, h);
+      // wavefronts
+      ctx.save(); ctx.beginPath(); ctx.rect(0, 0, w, gy); ctx.clip();
+      const spacing = 34, phase = ((now - t0) / 30) % spacing;
+      ctx.strokeStyle = 'rgba(22,110,102,0.55)'; ctx.lineWidth = 2; ctx.setLineDash([6, 5]);
+      for (let k = -2; k < 16; k++) {
+        const d = k * spacing - phase;
+        const px = d * sx, py = d * sy, L = w;
+        const [x0, y0] = toS(px - L * sy, py + L * sx), [x1, y1] = toS(px + L * sy, py - L * sx);
+        ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+      }
+      ctx.setLineDash([]); ctx.restore();
+      // ground
+      ctx.strokeStyle = COL.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(14, gy + 14); ctx.lineTo(w - 14, gy + 14); ctx.stroke();
+      const a1 = -b / 2 * s, a2 = b / 2 * s;
+      // rays
+      for (const ax of [a1, a2]) { const [x0, y0] = toS(ax + 150 * sx, 150 * sy); const [x1, y1] = toS(ax + 18 * sx, 18 * sy); arrow(ctx, x0, y0, x1, y1, COL.muted, 1.5); }
+      // angle theta, measured from overhead, at the antenna the wave reaches first
+      {
+        const ax = cx + (theta >= 0 ? a2 : a1), r = 46;
+        ctx.strokeStyle = COL.ink; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]);
+        ctx.beginPath(); ctx.moveTo(ax, gy - 8); ctx.lineTo(ax, gy - 8 - r * 1.7); ctx.stroke(); ctx.setLineDash([]);
+        text(ctx, 'overhead', ax, gy - 16 - r * 1.7, { align: 'center', size: 11, color: COL.muted });
+        const a0 = -Math.PI / 2, a1g = Math.atan2(-sy, sx);
+        if (Math.abs(theta) > 0.01) {
+          ctx.strokeStyle = COL.grape; ctx.lineWidth = 2.5;
+          ctx.beginPath(); ctx.arc(ax, gy - 8, r, a0, a1g, a1g < a0); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(ax, gy - 8); ctx.lineTo(ax + (r + 10) * Math.cos(a1g), gy - 8 + (r + 10) * Math.sin(a1g)); ctx.stroke();
+        }
+        const am = (a0 + a1g) / 2;
+        text(ctx, 'θ = ' + (+th.value).toFixed(1) + '°', ax + (r + 22) * Math.cos(am) + (theta >= 0 ? 8 : -8), gy - 8 + (r + 22) * Math.sin(am), { align: theta >= 0 ? 'left' : 'right', size: 13, weight: 900, color: COL.grape });
+      }
+      // extra path
+      const extra = b * s * sx;
+      const from = extra >= 0 ? a1 : a2;
+      const [ex0, ey0] = toS(from, 0), [ex1, ey1] = toS(from + Math.abs(extra) * sx, Math.abs(extra) * sy);
+      ctx.strokeStyle = COL.tomato; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(ex0, ey0); ctx.lineTo(ex1, ey1); ctx.stroke();
+      if (Math.abs(extra) > 12) text(ctx, 'c·τ_g', (ex0 + ex1) / 2 + (extra >= 0 ? -12 : 12), (ey0 + ey1) / 2, { color: COL.tomato, align: extra >= 0 ? 'right' : 'left', size: 13, weight: 800 });
+      dish(ctx, cx + a1, gy, 18); dish(ctx, cx + a2, gy, 18);
+      text(ctx, 'antenna 1', cx + a1, gy + 30, { align: 'center', size: 12 });
+      text(ctx, 'antenna 2', cx + a2, gy + 30, { align: 'center', size: 12 });
+      text(ctx, 'b = ' + b + ' m', cx, gy + 30, { align: 'center', color: COL.teal, size: 12, weight: 800 });
+      const tau = b * sx / C_LIGHT;
+      rTau.textContent = tau.toFixed(1) + ' ns'; rPath.textContent = (b * sx).toFixed(2) + ' m';
+      api.goal(Math.abs(tau - 100) <= 3, `τ_g = ${tau.toFixed(1)} ns`);
+      raf = requestAnimationFrame(frame);
+    }
+    raf = requestAnimationFrame(frame);
+    return () => cancelAnimationFrame(raf);
+  },
+  questions: [{
+    q: 'A source sits directly overhead (θ = 0). What is the geometric delay?',
+    opts: [
+      { t: 'Zero: the wavefront reaches both antennas at the same moment.', ok: true },
+      { t: 'b / c, the light travel time along the baseline.', hint: 'b / c is the largest delay you can get, for a source on the horizon (θ = 90°).' },
+      { t: 'It depends on the observing frequency.', hint: 'Look at the formula: τ_g = b sin θ / c has no frequency in it.' }
+    ],
+    why: `<p>τ<sub>g</sub> = b sin θ / c, and sin 0 = 0. The delay grows with the baseline and with the angle, not with frequency.</p><p>For the 100 ns goal you needed b sin θ ≈ 30 m. LOFAR baselines reach hundreds of kilometres, so its delays reach milliseconds.</p>`
+  }]
+});
+
+// L2: line up with tau_i
+LEVELS.push({
+  title: 'Line the signals up',
+  brief: `<p>Each antenna feeds a <b>receiver</b> that amplifies and digitises a whole band of frequencies, here Δν = 20 MHz. The wave reaches antenna 1 later by τ<sub>g</sub> = 137 ns.</p>
+  <p>Real signals are noise-like. Two copies only look alike if they are lined up to within about 1/Δν = 50 ns. Add an instrumental delay τ<sub>i</sub> to antenna 2 to line them up.</p>
+  <div class="formula">R ∝ cos(2πν₀Δτ) · sinc(Δν Δτ),&nbsp; Δτ = τ<sub>g</sub> − τ<sub>i</sub></div>`,
+  goal: 'Slide τ<sub>i</sub> until the coherence meter |sinc(Δν Δτ)| reads at least 0.90.',
+  mount(lab, api) {
+    const TG = 137, BW = 0.020; // ns, GHz
+    const comps = Array.from({ length: 36 }, () => ({ f: 0.010 + BW * Math.random(), p: 2 * Math.PI * Math.random(), a: 0.6 + 0.4 * Math.random() }));
+    const sig = t => comps.reduce((s, c) => s + c.a * Math.cos(2 * Math.PI * c.f * t + c.p), 0);
+    const cv = el('canvas', { class: 'stage', 'aria-label': 'Two noisy signals and their alignment' }); lab.append(cv);
+    const ctr = el('div', { class: 'controls' }); lab.append(ctr);
+    const ti = slider(ctr, { id: 'l2-ti', label: 'Instrumental delay τ_i on antenna 2', min: 0, max: 300, step: 1, value: 20, fmt: v => v + ' ns' });
+    const mlab = el('div', { class: 'caption' }, 'Coherence |sinc(Δν Δτ)|'); const meter = el('div', { class: 'meter' }, '<i></i>');
+    lab.append(mlab, meter);
+    const ro = el('div', { class: 'readouts' }); lab.append(ro);
+    const rD = readout(ro, 'Δτ'), rC = readout(ro, 'coherence');
+    function draw() {
+      const { ctx, w, h } = fit(cv, 0.5);
+      ctx.clearRect(0, 0, w, h);
+      const tiv = +ti.value, T = 500, n = 700;
+      const rows = [{ y: h * 0.28, f: t => sig(t - TG), lab: 'antenna 1: arrives τ_g later', col: COL.teal },
+                    { y: h * 0.70, f: t => sig(t - tiv), lab: 'antenna 2 after delay τ_i', col: COL.grape }];
+      for (const r of rows) {
+        ctx.strokeStyle = COL.faint; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(10, r.y); ctx.lineTo(w - 10, r.y); ctx.stroke();
+        ctx.strokeStyle = r.col; ctx.lineWidth = 1.6; ctx.beginPath();
+        for (let i = 0; i <= n; i++) { const t = 150 + T * i / n; const x = 10 + (w - 20) * i / n; const y = r.y - r.f(t) * h * 0.028; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+        ctx.stroke();
+        text(ctx, r.lab, 12, r.y - h * 0.19, { color: r.col, size: 12, weight: 800 });
+      }
+      const d = TG - tiv, coh = Math.abs(sinc(BW * d));
+      rD.textContent = d.toFixed(0) + ' ns'; rC.textContent = coh.toFixed(2);
+      meter.firstChild.style.width = (coh * 100).toFixed(1) + '%';
+      meter.firstChild.style.background = coh >= 0.9 ? COL.teal : (coh > 0.5 ? COL.amber : COL.tomato);
+      api.goal(coh >= 0.9, `coherence ${coh.toFixed(2)}`);
+    }
+    ti.addEventListener('input', draw); draw();
+    return () => {};
+  },
+  questions: [{
+    q: 'Why do we need the instrumental delay τ_i at all?',
+    opts: [
+      { t: 'A receiver records a whole band Δν, and two copies of a band-limited signal only stay correlated within about 1/Δν of each other.', ok: true },
+      { t: 'To cancel the receiver noise.', hint: 'Receiver noise is removed by averaging, which is the next level.' },
+      { t: 'To change the observing frequency.', hint: 'A delay shifts the signal in time; it does not change its frequency.' }
+    ],
+    why: `<p>Summed over a band, the correlation is R ∝ cos(2πν₀Δτ) · sinc(Δν Δτ). With Δν = 20 MHz the sinc envelope dies within about 50 ns, only 15 m of light travel. Long baselines have delays of microseconds to milliseconds, so without τ<sub>i</sub> the two signals look like unrelated noise and the product averages to zero.</p>
+    <p>Think of two recordings of the same song made at different distances: you must shift one of them so the same note plays at the same moment before you can compare them.</p>`
+  }, {
+    q: 'τ_i is computed for the target direction, the phase centre. What happens to a source elsewhere in the field?',
+    opts: [
+      { t: 'It keeps a small leftover delay, Δτ ≈ b Δθ / c.', ok: true },
+      { t: 'It is lined up perfectly as well.', hint: 'τ_g depends on direction, but there is only one τ_i per baseline.' },
+      { t: 'It vanishes from the data.', hint: 'It is still there; what changes is its phase (and, if Δτ is large, its amplitude).' }
+    ],
+    why: `<p>Only the phase centre is lined up exactly. The leftover delay is useful: it becomes the phase that tells us <i>where</i> each source is, the e<sup>−2πi(ul+vm)</sup> in the visibility.</p>
+    <p>If the leftover delay grows too large, sinc(Δν Δτ) drops and distant sources are smeared and dimmed: <b>bandwidth smearing</b>. The rule of thumb is (Δν/ν)(θ/θ<sub>res</sub>) ≪ 1, which is why wide-field arrays such as LOFAR keep very narrow channels.</p>`
+  }]
+});
+
+// L3: multiply and average
+LEVELS.push({
+  title: 'Multiply, then average',
+  brief: `<p>The correlator does only two things: it <b>multiplies</b> the two lined-up voltages, sample by sample, and then <b>averages</b> the products over time.</p>
+  <div class="formula">R = ⟨V₁ · V₂⟩</div>
+  <p>This level takes it in three small steps. Use the step buttons on the right.</p>
+  <p class="note">Step 1: what each antenna records. Step 2: what multiplying does. Step 3: why averaging pulls out a signal hidden in noise.</p>`,
+  goal: 'In step 3, run the correlator until the sky signal is detected at 5σ or more.',
+  mount(lab, api) {
+    const steps = el('div', { class: 'btns', role: 'tablist' }); lab.append(steps);
+    const names = ['Step 1 · Record', 'Step 2 · Multiply', 'Step 3 · Average'];
+    const tabs = names.map((n, i) => { const b = el('button', { class: 'btn', type: 'button', role: 'tab' }, n); b.addEventListener('click', () => show(i)); steps.append(b); return b; });
+    const body = el('div', { class: 'lab' }); lab.append(body);
+    let stop = () => {};
+    // smooth random signals built from a few sinusoids
+    const mk = (n, f0, f1) => Array.from({ length: n }, () => ({ f: f0 + (f1 - f0) * Math.random(), p: 2 * Math.PI * Math.random() }));
+    const ev = (cs, t) => cs.reduce((s, c) => s + Math.cos(2 * Math.PI * c.f * t + c.p), 0) / Math.sqrt(cs.length / 2);
+    const SKY = mk(14, 0.6, 1.6), N1 = mk(14, 0.6, 1.6), N2 = mk(14, 0.6, 1.6);
+
+    function step1() {
+      body.innerHTML = `<p><b>What each antenna records.</b> Both antennas see the <span style="color:var(--tomato);font-weight:800">same sky signal</span>, but each adds its own receiver noise, which is usually far stronger. By eye the two recordings look unrelated.</p>`;
+      const cv = el('canvas', { class: 'stage', 'aria-label': 'Two recorded voltages' }); body.append(cv);
+      const ctr = el('div', { class: 'controls' }); body.append(ctr);
+      const amp = slider(ctr, { id: 'l3-amp', label: 'Sky signal strength (relative to the noise)', min: 0.05, max: 1.5, step: 0.05, value: 0.25, fmt: v => v.toFixed(2) + '×' });
+      const btns = el('div', { class: 'btns' }); body.append(btns);
+      const rev = el('button', { class: 'btn', type: 'button', 'aria-pressed': 'false' }, 'Reveal the hidden sky signal'); btns.append(rev);
+      const nx = el('button', { class: 'btn primary', type: 'button' }, 'Next: multiply'); btns.append(nx);
+      body.append(el('p', { class: 'note' }, 'Try a strong sky signal: the two traces start to look alike. Real sky signals are like the weakest setting, or far weaker.'));
+      let on = false;
+      function draw() {
+        const { ctx, w, h } = fit(cv, 0.5); ctx.clearRect(0, 0, w, h);
+        const A = +amp.value, n = 500, T = 12;
+        const rows = [{ y: h * 0.3, nz: N1, lab: 'antenna 1: V₁ = sky + noise₁', col: COL.teal }, { y: h * 0.75, nz: N2, lab: 'antenna 2: V₂ = sky + noise₂', col: COL.grape }];
+        for (const r of rows) {
+          ctx.strokeStyle = COL.faint; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(10, r.y); ctx.lineTo(w - 10, r.y); ctx.stroke();
+          ctx.strokeStyle = r.col; ctx.lineWidth = 1.8; ctx.beginPath();
+          for (let i = 0; i <= n; i++) { const t = T * i / n, x = 10 + (w - 20) * i / n, y = r.y - (A * ev(SKY, t) + ev(r.nz, t)) * h * 0.06; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+          ctx.stroke();
+          if (on) { ctx.strokeStyle = COL.tomato; ctx.lineWidth = 2.5; ctx.beginPath(); for (let i = 0; i <= n; i++) { const t = T * i / n, x = 10 + (w - 20) * i / n, y = r.y - A * ev(SKY, t) * h * 0.06; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.stroke(); }
+          text(ctx, r.lab, 12, r.y - h * 0.2, { color: r.col, size: 12, weight: 800 });
+        }
+      }
+      amp.addEventListener('input', draw);
+      rev.addEventListener('click', () => { on = !on; rev.classList.toggle('on', on); rev.setAttribute('aria-pressed', String(on)); rev.textContent = on ? 'Hide the sky signal' : 'Reveal the hidden sky signal'; draw(); });
+      nx.addEventListener('click', () => show(1));
+      draw(); return () => {};
+    }
+
+    function step2() {
+      body.innerHTML = `<p><b>What multiplying does.</b> Take away the noise and keep one frequency. Antenna 2's copy is delayed by the leftover Δτ = τ<sub>g</sub> − τ<sub>i</sub>, so its wave is shifted by a phase φ = 2πνΔτ.</p>
+      <div class="formula">V₁(t) = cos(2πνt)<br>V₂(t) = cos(2πν(t − Δτ)) = cos(2πνt − φ)<br>V₁·V₂ = ½ cos φ &nbsp;+&nbsp; ½ cos(4πνt − φ)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;no t here &nbsp;&nbsp;&nbsp;&nbsp;wiggles at 2ν</div>
+      <p><b>Why is there still a phase φ?</b> Level 2 lined the signals up to within about 1/Δν, enough for them to be correlated. But inside that window each wave still oscillates many times, and τ<sub>i</sub> is exact only for the phase centre. So a leftover phase remains. It is zero at the phase centre and grows as the source moves away from it.</p>
+      <p><b>Then filter.</b> Averaging over time is a <b>low-pass filter</b>: it removes the fast 2ν wiggle and keeps ½ cos φ. That term has no t in it, so over these few nanoseconds the output is a <b>flat line</b>. The cosine appears only when φ itself changes, as the source drifts across the sky over minutes. Press <i>Let the source drift</i> to see it.</p>`;
+      const cv = el('canvas', { class: 'stage', 'aria-label': 'Two waves, their product and the filtered output' }); body.append(cv);
+      const ctr = el('div', { class: 'controls' }); body.append(ctr);
+      const ph = slider(ctr, { id: 'l3-phi', label: 'Leftover phase φ (source moving away from the phase centre)', min: 0, max: 360, step: 1, value: 40, fmt: v => v + '°' });
+      const btns = el('div', { class: 'btns' }); body.append(btns);
+      const flt = el('button', { class: 'btn', type: 'button', 'aria-pressed': 'false' }, 'Apply the low-pass filter (average)'); btns.append(flt);
+      const dr = el('button', { class: 'btn', type: 'button' }, 'Let the source drift'); btns.append(dr);
+      const nx = el('button', { class: 'btn primary', type: 'button' }, 'Next: average with noise'); btns.append(nx);
+      const out = el('p', { class: 'goal', style: 'background: var(--panel)', 'aria-live': 'polite' }); body.append(out);
+      let on = false;
+      function draw() {
+        const { ctx, w, h } = fit(cv, 0.8); ctx.clearRect(0, 0, w, h);
+        const phi = +ph.value * Math.PI / 180, n = 500, cyc = 4, lvl = 0.5 * Math.cos(phi);
+        const plotW = w - 20;
+        const rows = [
+          { y: h * 0.12, f: x => Math.cos(x), lab: 'V₁ = cos(2πνt)', col: COL.teal, sc: h * 0.06 },
+          { y: h * 0.33, f: x => Math.cos(x - phi), lab: 'V₂ = cos(2πνt − φ)', col: COL.grape, sc: h * 0.06 },
+          { y: h * 0.58, f: x => Math.cos(x) * Math.cos(x - phi), lab: '× multiply: V₁·V₂ (fast wiggle around a level)', col: COL.ink, sc: h * 0.09 }
+        ];
+        rows.forEach(r => {
+          ctx.strokeStyle = COL.faint; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(10, r.y); ctx.lineTo(10 + plotW, r.y); ctx.stroke();
+          ctx.strokeStyle = r.col; ctx.lineWidth = 2; ctx.beginPath();
+          for (let i = 0; i <= n; i++) { const x = 2 * Math.PI * cyc * i / n, X = 10 + plotW * i / n, Y = r.y - r.f(x) * r.sc; i ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); }
+          ctx.stroke();
+          text(ctx, r.lab, 12, r.y - r.sc - 9, { color: r.col, size: 12, weight: 800 });
+        });
+        // filtered output row
+        const fy = h * 0.86, fsc = h * 0.09, fw = on ? plotW * 0.62 : plotW;
+        ctx.strokeStyle = COL.faint; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(10, fy); ctx.lineTo(10 + fw, fy); ctx.stroke();
+        text(ctx, '→ low-pass filter (average): output', 12, fy - fsc - 9, { color: COL.tomato, size: 12, weight: 800 });
+        if (on) {
+          ctx.strokeStyle = COL.tomato; ctx.lineWidth = 3.5; ctx.beginPath(); ctx.moveTo(10, fy - lvl * fsc); ctx.lineTo(10 + fw, fy - lvl * fsc); ctx.stroke();
+          text(ctx, lvl.toFixed(3), 14 + fw, fy - lvl * fsc, { color: COL.tomato, size: 13, weight: 900 });
+          // fringe inset: the output against phi
+          const ix0 = 10 + plotW * 0.72, ix1 = 10 + plotW, iy = fy;
+          ctx.strokeStyle = COL.faint; ctx.strokeRect(ix0, iy - fsc * 1.15, ix1 - ix0, fsc * 2.3);
+          ctx.beginPath(); ctx.moveTo(ix0, iy); ctx.lineTo(ix1, iy); ctx.stroke();
+          ctx.strokeStyle = COL.tomato; ctx.lineWidth = 1.5; ctx.beginPath();
+          for (let i = 0; i <= 100; i++) { const p = 2 * Math.PI * i / 100, X = ix0 + (ix1 - ix0) * i / 100, Y = iy - 0.5 * Math.cos(p) * fsc * 2; i ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); }
+          ctx.stroke();
+          ctx.fillStyle = COL.tomato; ctx.beginPath(); ctx.arc(ix0 + (ix1 - ix0) * (+ph.value / 360), iy - lvl * fsc * 2, 5, 0, 2 * Math.PI); ctx.fill();
+          text(ctx, 'output vs φ: the fringe', (ix0 + ix1) / 2, iy + fsc * 1.15 + 9, { color: COL.muted, size: 11, align: 'center' });
+        } else {
+          text(ctx, 'press the filter button', 10 + plotW / 2, fy, { color: COL.muted, size: 12, align: 'center' });
+        }
+        out.innerHTML = on
+          ? `<strong>What the correlator reports</strong><span>The filtered output is <b>${lvl.toFixed(3)}</b> = ½ cos ${(+ph.value)}°. It is flat because φ is fixed while the source stays put. That single number is the correlator's answer for this baseline at this moment: one point on the fringe (the red dot in the small plot). As the source drifts, φ changes and the dot runs along the cosine. It is largest, 0.5, when the source sits at the phase centre (φ = 0), zero at φ = 90°, and negative beyond.</span>`
+          : `<strong>What the correlator reports</strong><span>Not yet: the product still wiggles. Apply the filter to keep only its slow part.</span>`;
+      }
+      ph.addEventListener('input', draw);
+      let drifting = null;
+      dr.addEventListener('click', () => {
+        if (drifting) { clearInterval(drifting); drifting = null; dr.textContent = 'Let the source drift'; return; }
+        if (!on) { on = true; flt.classList.add('on'); flt.setAttribute('aria-pressed', 'true'); flt.textContent = 'Filter on'; }
+        dr.textContent = 'Stop';
+        drifting = setInterval(() => { ph.value = (+ph.value + 3) % 361; ph.dispatchEvent(new Event('input')); }, 50);
+      });
+      flt.addEventListener('click', () => { on = !on; flt.classList.toggle('on', on); flt.setAttribute('aria-pressed', String(on)); flt.textContent = on ? 'Filter on' : 'Apply the low-pass filter (average)'; draw(); });
+      nx.addEventListener('click', () => show(2));
+      draw(); return () => { if (drifting) clearInterval(drifting); };
+    }
+
+    function step3() {
+      const PS = 0.04;
+      body.innerHTML = `<p><b>Averaging pulls the signal out of the noise.</b> Now the noise is back, and the sky is only 4% of the noise power. Each single product (grey bars) is mostly noise: positive or negative at random.</p>
+      <p>Because the two noises are unrelated, their products cancel on average. The shared sky part is always there, so it survives. The running average (green line) wanders at first and then settles; its uncertainty (orange band) shrinks as 1/√N.</p>`;
+      const cv = el('canvas', { class: 'stage', 'aria-label': 'Running average of the correlator output' }); body.append(cv);
+      const btns = el('div', { class: 'btns' }); body.append(btns);
+      const run = el('button', { class: 'btn primary', type: 'button' }, 'Start correlator');
+      const rst = el('button', { class: 'btn', type: 'button' }, 'Reset');
+      btns.append(run, rst);
+      const ro = el('div', { class: 'readouts' }); body.append(ro);
+      const rN = readout(ro, 'samples N'), rT = readout(ro, 'time'), rM = readout(ro, 'average'), rS = readout(ro, 'detection');
+      body.append(el('p', { class: 'note' }, 'Detection = average ÷ its uncertainty. 5σ means the average sits five uncertainties above zero.'));
+      let N = 0, sum = 0, sum2 = 0, hist = [], last = [], running = false, raf;
+      function add(k) {
+        for (let i = 0; i < k; i++) { const x = Math.sqrt(PS) * gauss(); const p = (x + gauss()) * (x + gauss()); N++; sum += p; sum2 += p * p; last.push(p); if (last.length > 120) last.shift(); }
+        const m = sum / N, sd = Math.sqrt(Math.max(sum2 / N - m * m, 1e-12)); hist.push([N, m, sd / Math.sqrt(N)]);
+      }
+      function draw() {
+        const { ctx, w, h } = fit(cv, 0.62); ctx.clearRect(0, 0, w, h);
+        const top = h * 0.2;
+        text(ctx, 'latest single products V₁·V₂', 12, 12, { color: COL.muted, size: 12 });
+        ctx.strokeStyle = COL.faint; ctx.beginPath(); ctx.moveTo(10, top); ctx.lineTo(w - 10, top); ctx.stroke();
+        ctx.fillStyle = COL.muted;
+        last.forEach((p, i) => { const x = 10 + (w - 20) * i / 120; const y = top - Math.max(-2.5, Math.min(2.5, p)) * h * 0.035; ctx.fillRect(x, Math.min(y, top), Math.max(1.5, (w - 20) / 160), Math.abs(y - top)); });
+        const x0 = 46, x1 = w - 14, y0 = h * 0.36, y1 = h - 26;
+        const lx = n => x0 + (x1 - x0) * (Math.log10(n) / 5.5), ly = v => y0 + (y1 - y0) * (0.5 - v / 0.5);
+        ctx.strokeStyle = COL.faint; ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
+        ctx.strokeStyle = COL.ink; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(x0, ly(0)); ctx.lineTo(x1, ly(0)); ctx.stroke(); ctx.setLineDash([]);
+        [[0, '0'], [0.2, '+0.2'], [-0.2, '−0.2']].forEach(([v, s]) => text(ctx, s, x0 - 6, ly(v), { align: 'right', size: 11, color: COL.muted }));
+        [1, 10, 100, 1e3, 1e4, 1e5].forEach(n => text(ctx, n >= 1000 ? (n / 1000) + 'k' : String(n), lx(n), y1 + 12, { align: 'center', size: 11, color: COL.muted }));
+        text(ctx, 'running average, against number of samples N (log scale)', x0 + 6, y0 + 12, { size: 12, color: COL.muted });
+        if (hist.length > 1) {
+          ctx.fillStyle = 'rgba(244,168,44,0.4)'; ctx.beginPath();
+          hist.forEach(([n, m, e], i) => { const X = lx(n), Y = ly(Math.min(0.5, m + e)); i ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); });
+          for (let i = hist.length - 1; i >= 0; i--) { const [n, m, e] = hist[i]; ctx.lineTo(lx(n), ly(Math.max(-0.5, m - e))); }
+          ctx.closePath(); ctx.fill();
+          ctx.strokeStyle = COL.teal; ctx.lineWidth = 2.5; ctx.beginPath();
+          hist.forEach(([n, m], i) => { const X = lx(n), Y = ly(Math.max(-0.5, Math.min(0.5, m))); i ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); });
+          ctx.stroke();
+        }
+        const snr = hist.length ? hist[hist.length - 1][1] / hist[hist.length - 1][2] : 0;
+        if (snr >= 5) { ctx.strokeStyle = COL.tomato; ctx.setLineDash([2, 4]); ctx.beginPath(); ctx.moveTo(x0, ly(PS)); ctx.lineTo(x1, ly(PS)); ctx.stroke(); ctx.setLineDash([]); text(ctx, 'true sky level 0.04', x1 - 4, ly(PS) - 10, { align: 'right', size: 11, color: COL.tomato, weight: 800 }); }
+        rN.textContent = N.toLocaleString('en-GB');
+        const tus = N * 25 / 1000; rT.textContent = tus < 1000 ? tus.toFixed(1) + ' µs' : (tus / 1000).toFixed(2) + ' ms';
+        rM.textContent = N ? (sum / N).toFixed(4) : '–'; rS.textContent = snr.toFixed(1) + 'σ';
+        api.goal(snr >= 5, `${snr.toFixed(1)}σ after ${N.toLocaleString('en-GB')} samples`);
+      }
+      function tick() { if (!running) return; add(Math.max(5, Math.round(N * 0.02))); if (N > 320000) { running = false; run.textContent = 'Start correlator'; } draw(); raf = requestAnimationFrame(tick); }
+      run.addEventListener('click', () => { running = !running; run.textContent = running ? 'Pause' : 'Start correlator'; if (running) tick(); });
+      rst.addEventListener('click', () => { running = false; run.textContent = 'Start correlator'; N = sum = sum2 = 0; hist = []; last = []; draw(); });
+      draw();
+      return () => { running = false; cancelAnimationFrame(raf); };
+    }
+
+    const makers = [step1, step2, step3];
+    function show(i) {
+      stop(); tabs.forEach((t, k) => { t.classList.toggle('on', k === i); t.setAttribute('aria-selected', String(k === i)); });
+      stop = makers[i]() || (() => {});
+    }
+    show(0);
+    return () => stop();
+  },
+  questions: [{
+    q: 'What does the time average actually do?',
+    opts: [
+      { t: 'It keeps the slowly varying part of V₁V₂ (the fringe) and averages away the fast 2ν term and the uncorrelated receiver noise.', ok: true },
+      { t: 'It improves the angular resolution.', hint: 'Resolution is set by the baseline, θ ≈ λ/b. Averaging only fights noise.' },
+      { t: 'It removes the geometric delay.', hint: 'That was the job of τ_i in the previous level.' }
+    ],
+    why: `<p>cos a · cos b = ½[cos(a − b) + cos(a + b)]. The (a − b) term depends only on the delay and changes slowly: that is the fringe we want. The (a + b) term oscillates at twice the observing frequency and averages to zero.</p>
+    <p>Most of each voltage is receiver noise, different at each antenna, so its products are randomly positive and negative and shrink as 1/√N. This is the radiometer equation again, σ ∝ 1/√(Δν t). But do not average for too long: Earth rotation keeps changing τ<sub>g</sub>, and the fringe smears out (<b>time smearing</b>).</p>`
+  }]
+});
+
+// L4: cos and sin
+LEVELS.push({
+  title: 'Cosine is only half the story',
+  brief: `<p>The product you just averaged gives R<sub>c</sub> ∝ A cos φ, with the leftover phase from level 3, φ = 2πν(τ<sub>g</sub> − τ<sub>i</sub>). Here τ<sub>i</sub> is fixed at the phase centre, but τ<sub>g</sub> depends on where the source is. So moving the source changes φ. For a small offset l from the centre, φ ≈ 2πul. A is how bright the source is.</p>
+  <p>The cosine alone hides two things. This level has two steps, one for each:</p>
+  <p class="note">Step 1: is the source left or right of the centre? Step 2: is it a faint source at the centre, or a bright one off centre?</p>
+  <p>In each step, first try without the 90° branch, then add it. The branch shifts one signal by a quarter period and gives R<sub>s</sub> ∝ A sin φ. Together they form one complex number.</p>
+  <div class="formula">V = R<sub>c</sub> − i R<sub>s</sub> = A e<sup>−iφ</sup></div>`,
+  goal: 'Solve both steps using the readings, not a guess: find the side of the mystery source, then find which source is the bright one.',
+  mount(lab, api) {
+    const steps = el('div', { class: 'btns', role: 'tablist' }); lab.append(steps);
+    const names = ['Step 1 · Left or right?', 'Step 2 · Faint or off centre?'];
+    const tabs = names.map((n, i) => { const b = el('button', { class: 'btn', type: 'button', role: 'tab' }, n); b.addEventListener('click', () => show(i)); steps.append(b); return b; });
+    const body = el('div', { class: 'lab' }); lab.append(body);
+    const solved = [false, false];
+    function check() { tabs.forEach((t, i) => { t.textContent = names[i] + (solved[i] ? ' ✓' : ''); }); api.goal(solved[0] && solved[1], `step 1 ${solved[0] ? 'solved' : 'open'} · step 2 ${solved[1] ? 'solved' : 'open'}`); }
+
+    // draw a phasor; with sine off only the real part is known
+    function phasor(cv, A, phi, sine, col = COL.teal, label = 'V') {
+      const { ctx, w, h } = fit(cv, 0.8);
+      ctx.clearRect(0, 0, w, h);
+      const cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.38;
+      axes(ctx, w, h, cx, cy, 'Re', 'Im');
+      ctx.strokeStyle = COL.faint; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 2 * Math.PI); ctx.stroke();
+      const re = A * Math.cos(phi), im = -A * Math.sin(phi);
+      if (sine) {
+        arrow(ctx, cx, cy, cx + R * re, cy - R * im, col, 3);
+        text(ctx, `${label}  (A = ${A.toFixed(2)})`, cx + R * re + (re >= 0 ? 8 : -8), cy - R * im + (im >= 0 ? -10 : 12), { color: col, size: 12, weight: 900, align: re >= 0 ? 'left' : 'right' });
+      } else {
+        ctx.strokeStyle = col; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + R * re, cy); ctx.stroke();
+        ctx.setLineDash([3, 3]); ctx.strokeStyle = COL.muted; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(cx + R * re, cy - R * 1.0); ctx.lineTo(cx + R * re, cy + R * 0.95); ctx.stroke(); ctx.setLineDash([]);
+        text(ctx, 'V could be anywhere', w / 2, h - 22, { color: COL.muted, size: 11, align: 'center' });
+        text(ctx, 'on the dashed line', w / 2, h - 9, { color: COL.muted, size: 11, align: 'center' });
+      }
+    }
+    function sineButton(parent, onChange) {
+      const b = el('button', { class: 'btn', type: 'button', 'aria-pressed': 'false' }, 'Add the 90° branch');
+      let on = false;
+      b.addEventListener('click', () => { on = !on; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); b.textContent = on ? '90° branch on: remove it' : 'Add the 90° branch'; onChange(on); });
+      parent.append(b); return b;
+    }
+
+    function step1() {
+      body.innerHTML = `<p><b>Left or right?</b> Move the source across the phase centre. Without the 90° branch, watch R<sub>c</sub>: a source at +0.15 and one at −0.15 give the same value. Then add the branch and watch R<sub>s</sub>.</p>`;
+      const pair = el('div', { class: 'pair' }); body.append(pair);
+      const f1 = el('figure'), f2 = el('figure'); pair.append(f1, f2);
+      const cvF = el('canvas', { class: 'stage', 'aria-label': 'Fringe pattern and source position' }), cvP = el('canvas', { class: 'stage', 'aria-label': 'Visibility phasor' });
+      f1.append(cvF, el('figcaption', {}, 'Source on a fringe pattern')); f2.append(cvP, el('figcaption', {}, 'The visibility as an arrow'));
+      const ctr = el('div', { class: 'controls' }); body.append(ctr);
+      const ls = slider(ctr, { id: 'l4-l', label: 'Source position (in fringe spacings)', min: -0.5, max: 0.5, step: 0.01, value: 0.15, fmt: v => (v >= 0 ? '+' : '') + v.toFixed(2) });
+      const btns = el('div', { class: 'btns' }); body.append(btns);
+      let sine = false;
+      sineButton(btns, on => { sine = on; draw(); });
+      const ro = el('div', { class: 'readouts' }); body.append(ro);
+      const rc = readout(ro, 'R_c'), rs = readout(ro, 'R_s');
+      const myst = el('div', { class: 'goal', style: 'background: var(--panel)' }); body.append(myst);
+      const mysteryL = (Math.random() < 0.5 ? -1 : 1) * (0.1 + 0.25 * Math.random());
+      myst.innerHTML = `<strong>Mystery source</strong><span class="m-read"></span><div class="btns"><button class="btn" type="button" data-side="-1">It is on the left</button><button class="btn" type="button" data-side="1">It is on the right</button></div><p class="hint m-msg" aria-live="polite"></p>`;
+      function draw() {
+        const l = +ls.value, phi = 2 * Math.PI * l;
+        const { ctx, w, h } = fit(cvF, 0.8);
+        ctx.clearRect(0, 0, w, h);
+        for (let x = 0; x < w; x++) { const lx = (x / w - 0.5) * 1.6; const v = 0.5 + 0.5 * Math.cos(2 * Math.PI * lx); ctx.fillStyle = `rgba(22,110,102,${0.08 + 0.4 * v})`; ctx.fillRect(x, 20, 1, h - 60); }
+        const sx = w / 2 + l / 1.6 * w;
+        ctx.strokeStyle = COL.ink; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(w / 2, 14); ctx.lineTo(w / 2, h - 34); ctx.stroke(); ctx.setLineDash([]);
+        text(ctx, 'phase centre', w / 2, h - 24, { align: 'center', size: 11, color: COL.muted });
+        ctx.fillStyle = COL.tomato; ctx.beginPath(); ctx.arc(sx, h / 2 - 10, 9, 0, 2 * Math.PI); ctx.fill(); ctx.strokeStyle = COL.ink; ctx.lineWidth = 2; ctx.stroke();
+        text(ctx, 'left', 8, h - 10, { size: 11, color: COL.muted }); text(ctx, 'right', w - 8, h - 10, { size: 11, color: COL.muted, align: 'right' });
+        phasor(cvP, 1, phi, sine);
+        rc.textContent = Math.cos(phi).toFixed(2); rs.textContent = sine ? Math.sin(phi).toFixed(2) : 'not measured';
+        const mphi = 2 * Math.PI * mysteryL;
+        $('.m-read', myst).innerHTML = `Readings: <span class="readout"><b>R_c</b>${Math.cos(mphi).toFixed(2)}</span> <span class="readout"><b>R_s</b>${sine ? Math.sin(mphi).toFixed(2) : 'not measured'}</span>`;
+      }
+      ls.addEventListener('input', draw);
+      myst.addEventListener('click', e => {
+        const b = e.target.closest('button[data-side]'); if (!b) return;
+        const msg = $('.m-msg', myst);
+        if (!sine) { msg.style.color = COL.tomato; msg.textContent = 'With only R_c, left and right give the same reading, so that was a guess. Add the 90° branch and use R_s.'; return; }
+        if (+b.dataset.side === Math.sign(mysteryL)) { msg.style.color = COL.teal; msg.textContent = 'Correct. R_s has the same sign as the offset: the sine branch breaks the left/right tie.'; solved[0] = true; check(); }
+        else { msg.style.color = COL.tomato; msg.textContent = 'Not that side. Move the explore source to the right: which sign does R_s have?'; }
+      });
+      draw(); return () => {};
+    }
+
+    function step2() {
+      body.innerHTML = `<p><b>Faint or off centre?</b> One of these two sources is <b>faint and sits at the phase centre</b> (A = 0.31, φ = 0°). The other is <b>bright and off centre</b> (A = 1, φ = ±72°). Without the 90° branch they give the same R<sub>c</sub>. Which one is bright?</p>`;
+      const pair = el('div', { class: 'pair' }); body.append(pair);
+      const brightIsX = Math.random() < 0.5, sgn = Math.random() < 0.5 ? -1 : 1;
+      const srcs = brightIsX ? [[1, sgn * 0.4 * Math.PI], [0.31, 0]] : [[0.31, 0], [1, sgn * 0.4 * Math.PI]];
+      const figs = ['X', 'Y'].map((n, i) => {
+        const f = el('figure'); pair.append(f);
+        const cv = el('canvas', { class: 'stage', 'aria-label': 'Visibility of source ' + n }); f.append(cv);
+        const ro = el('div', { class: 'readouts' }); f.append(ro);
+        const rc = readout(ro, 'R_c'), rs = readout(ro, 'R_s');
+        f.append(el('figcaption', {}, 'Source ' + n));
+        return { n, cv, rc, rs, A: srcs[i][0], phi: srcs[i][1] };
+      });
+      const btns = el('div', { class: 'btns' }); body.append(btns);
+      let sine = false;
+      sineButton(btns, on => { sine = on; draw(); });
+      const ask = el('div', { class: 'goal', style: 'background: var(--panel)' }); body.append(ask);
+      ask.innerHTML = `<strong>Which one is the bright source?</strong><div class="btns"><button class="btn" type="button" data-pick="0">Source X</button><button class="btn" type="button" data-pick="1">Source Y</button></div><p class="hint a-msg" aria-live="polite"></p>`;
+      const explain = el('p', { class: 'note' }); body.append(explain);
+      function draw() {
+        figs.forEach(f => {
+          phasor(f.cv, f.A, f.phi, sine, COL.teal, f.n);
+          f.rc.textContent = (f.A * Math.cos(f.phi)).toFixed(2);
+          f.rs.textContent = sine ? (f.A * Math.sin(f.phi)).toFixed(2) : 'not measured';
+        });
+        explain.innerHTML = sine
+          ? 'With the 90° branch the arrows are complete. The amplitude A = √(R<sub>c</sub>² + R<sub>s</sub>²) is the arrow length: 0.31 for the faint source and 1.00 for the bright one. The phase φ says the bright one is off centre.'
+          : 'Without the 90° branch you only know the shadow of each arrow on the Re axis. Both shadows are 0.31 long, so the two sources look identical.';
+      }
+      ask.addEventListener('click', e => {
+        const b = e.target.closest('button[data-pick]'); if (!b) return;
+        const msg = $('.a-msg', ask), pick = +b.dataset.pick, right = brightIsX ? 0 : 1;
+        if (!sine) { msg.style.color = COL.tomato; msg.textContent = 'Both show R_c = 0.31, so that was a guess. Add the 90° branch and compare the arrow lengths.'; return; }
+        if (pick === right) { msg.style.color = COL.teal; msg.textContent = `Correct. Source ${figs[right].n} has A = 1.00; it only looked faint because it sits off centre, where cos φ is small.`; solved[1] = true; check(); }
+        else { msg.style.color = COL.tomato; msg.textContent = 'Not that one. Compare the arrow lengths: A = √(R_c² + R_s²).'; }
+      });
+      draw(); return () => {};
+    }
+
+    const makers = [step1, step2];
+    let stop = () => {};
+    function show(i) { stop(); tabs.forEach((t, k) => { t.classList.toggle('on', k === i); t.setAttribute('aria-selected', String(k === i)); }); stop = makers[i]() || (() => {}); }
+    show(0); check();
+    return () => stop();
+  },
+  questions: [{
+    q: 'Why add a second product with one signal shifted by 90°?',
+    opts: [
+      { t: 'cos φ alone cannot tell +φ from −φ, or a faint source from a phase near 90°. Adding sin φ gives both amplitude and phase.', ok: true },
+      { t: 'To double the sensitivity.', hint: 'The sine branch adds information about phase, not more signal.' },
+      { t: 'To measure a second frequency.', hint: 'Both products use the same band; one is just shifted by a quarter period.' }
+    ],
+    why: `<p>Picture a clock hand. Its shadow on the horizontal axis (cosine) cannot tell you whether the hand points up or down, or how long it is. Add the shadow on the vertical axis (sine) and the hand is fully known.</p>
+    <p>So V = R<sub>c</sub> − i R<sub>s</sub> = A e<sup>−iφ</sup>, with amplitude A = √(R<sub>c</sub>² + R<sub>s</sub>²) (how strong) and phase φ (where). In terms of the sky, the cosine part responds to the symmetric part of the brightness and the sine part to the antisymmetric part.</p>`
+  }]
+});
+
+// L5: fringes build the image (V -> I)
+LEVELS.push({
+  title: 'Fringes build the image',
+  brief: `<p>So far we went from the sky to one number per baseline: V(u,v) = ∬ I(l,m) e<sup>−2πi(ul+vm)</sup> dl dm. Making an image runs this <b>backwards</b>, from the visibilities to the sky:</p>
+  <div class="formula">I(l,m) = ∬ V(u,v) e<sup>+2πi(ul+vm)</sup> du dv<br>&nbsp;&nbsp;≈ Σ<sub>k</sub> A<sub>k</sub> cos(2π(u<sub>k</sub>l + v<sub>k</sub>m) − φ<sub>k</sub>)</div>
+  <p>Each measured visibility puts <b>one fringe</b> back on the sky: a stripe pattern. The length √(u² + v²) sets how fine the stripes are (spacing ≈ 1/√(u² + v²) = λ/b), the direction of (u, v) sets which way they run, the amplitude A sets how strong they are and the phase φ shifts them sideways.</p>
+  <p>The sky here is hidden. In step 1, pick a baseline, look at its fringe, and add it to your image. In step 2, add fringes by the hundred and watch them pile up into a picture.</p>`,
+  goal: 'Add fringes until the two brightest spots in your image land on the two hidden sources.',
+  mount(lab, api) {
+    const FIELD = 8, NG = 110, UMAX = 0.35;
+    const SRC = [[-1.2, 2.0, 1.0], [2.2, -0.4, 0.8]]; // l, m (arcsec), flux
+    const TOT = SRC.reduce((s, x) => s + x[2], 0);
+    const LS = new Float32Array(NG * NG), MS = new Float32Array(NG * NG);
+    for (let j = 0; j < NG; j++) for (let i = 0; i < NG; i++) { LS[j * NG + i] = (i / (NG - 1) - 0.5) * 2 * FIELD; MS[j * NG + i] = (0.5 - j / (NG - 1)) * 2 * FIELD; }
+    const vis = (u, v) => { let re = 0, im = 0; for (const [l, m, f] of SRC) { const a = -2 * Math.PI * (u * l + v * m); re += f * Math.cos(a); im += f * Math.sin(a); } return [re, im]; };
+    // add (sign = +1) or remove (sign = -1) the fringe of baseline (u, v) and its mirror
+    function addFringe(acc, u, v, sign) { const [re, im] = vis(u, v); for (let k = 0; k < acc.length; k++) { const a = 2 * Math.PI * (u * LS[k] + v * MS[k]); acc[k] += sign * 2 * (re * Math.cos(a) - im * Math.sin(a)); } }
+    const toPx = (S, x, y) => [(x / (2 * FIELD) + 0.5) * S, (0.5 - y / (2 * FIELD)) * S];
+    function paint(cv, vals, maxAbs, label) {
+      const { ctx, w, h } = fit(cv, 1);
+      const img = ctx.createImageData(NG, NG);
+      for (let k = 0; k < NG * NG; k++) {
+        const v = maxAbs > 0 ? vals[k] / maxAbs : 0; let r, g, b;
+        if (v >= 0) { r = 255 + (42 - 255) * v; g = 253 + (37 - 253) * v; b = 246 + (33 - 246) * v; }
+        else { const t = Math.min(1, -v); r = 255 + (238 - 255) * t; g = 253 + (90 - 253) * t; b = 246 + (58 - 246) * t; }
+        img.data[4 * k] = r; img.data[4 * k + 1] = g; img.data[4 * k + 2] = b; img.data[4 * k + 3] = 255;
+      }
+      const off = document.createElement('canvas'); off.width = off.height = NG; off.getContext('2d').putImageData(img, 0, 0);
+      ctx.clearRect(0, 0, w, h); ctx.imageSmoothingEnabled = true; ctx.drawImage(off, 0, 0, w, h);
+      if (label) text(ctx, label, 8, h - 10, { size: 11, color: COL.ink });
+      return { ctx, w, h };
+    }
+    function showImage(cv, acc, reveal, emptyLabel) {
+      let mx = 0; for (const x of acc) mx = Math.max(mx, Math.abs(x));
+      const g = paint(cv, acc, mx, emptyLabel);
+      if (reveal) for (const [l, m] of SRC) { const [px, py] = toPx(g.w, l, m); g.ctx.strokeStyle = COL.teal; g.ctx.lineWidth = 2.5; g.ctx.beginPath(); g.ctx.arc(px, py, 11, 0, 2 * Math.PI); g.ctx.stroke(); }
+    }
+    function peaksOK(vals, n) {
+      if (n < 3) return false;
+      let k1 = 0; for (let k = 1; k < vals.length; k++) if (vals[k] > vals[k1]) k1 = k;
+      let k2 = -1;
+      for (let k = 0; k < vals.length; k++) { if (Math.hypot(LS[k] - LS[k1], MS[k] - MS[k1]) < 2) continue; if (k2 < 0 || vals[k] > vals[k2]) k2 = k; }
+      const near = (k, s) => Math.hypot(LS[k] - s[0], MS[k] - s[1]) < 1.0;
+      return (near(k1, SRC[0]) && near(k2, SRC[1])) || (near(k1, SRC[1]) && near(k2, SRC[0]));
+    }
+    function revealButton(parent, onChange) {
+      const b = el('button', { class: 'btn', type: 'button', 'aria-pressed': 'false' }, 'Reveal the true sky'); let on = false;
+      b.addEventListener('click', () => { on = !on; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); b.textContent = on ? 'Hide the true sky' : 'Reveal the true sky'; onChange(on); });
+      parent.append(b);
+    }
+
+    const steps = el('div', { class: 'btns', role: 'tablist' }); lab.append(steps);
+    const names = ['Step 1 · One fringe at a time', 'Step 2 · Many fringes'];
+    const tabs = names.map((n, i) => { const b = el('button', { class: 'btn', type: 'button', role: 'tab' }, n); b.addEventListener('click', () => show(i)); steps.append(b); return b; });
+    const body = el('div', { class: 'lab' }); lab.append(body);
+
+    function step1() {
+      body.innerHTML = `<p><b>One fringe at a time.</b> Choose a baseline, look at its fringe on the left, then add it to your image on the right.</p>`;
+      const pair = el('div', { class: 'pair' }); body.append(pair);
+      const f1 = el('figure'), f2 = el('figure'); pair.append(f1, f2);
+      const cvF = el('canvas', { class: 'stage', 'aria-label': 'The fringe of the chosen baseline' }), cvI = el('canvas', { class: 'stage', 'aria-label': 'Image built from the fringes so far' });
+      const capI = el('figcaption', {}, 'Your image: sum of fringes');
+      f1.append(cvF, el('figcaption', {}, 'Next fringe, from this baseline')); f2.append(cvI, capI);
+      const ctr = el('div', { class: 'controls' }); body.append(ctr);
+      const L = slider(ctr, { id: 'l5-len', label: 'Baseline length √(u² + v²)', min: 0.03, max: UMAX, step: 0.005, value: 0.08, fmt: v => v.toFixed(3) + ' per arcsec → spacing ' + (1 / v).toFixed(1) + '″' });
+      const B = slider(ctr, { id: 'l5-dir', label: 'Baseline direction', min: 0, max: 179, step: 1, value: 20, fmt: v => v + '°' });
+      const btns = el('div', { class: 'btns' }); body.append(btns);
+      const addB = el('button', { class: 'btn primary', type: 'button' }, 'Add this fringe');
+      const undo = el('button', { class: 'btn', type: 'button' }, 'Undo');
+      const rnd = el('button', { class: 'btn', type: 'button' }, 'Random baseline');
+      btns.append(addB, undo, rnd);
+      let reveal = false; revealButton(btns, on => { reveal = on; drawImage(); });
+      const ro = el('div', { class: 'readouts' }); body.append(ro);
+      const rUV = readout(ro, '(u, v)'), rA = readout(ro, 'amplitude A'), rP = readout(ro, 'phase φ'), rN = readout(ro, 'fringes added');
+      const added = [], acc = new Float32Array(NG * NG).fill(TOT);
+      function drawFringe() {
+        const len = +L.value, dir = +B.value * Math.PI / 180, u = len * Math.cos(dir), v = len * Math.sin(dir);
+        const [re, im] = vis(u, v), A = Math.hypot(re, im), phi = Math.atan2(-im, re);
+        const fr = new Float32Array(NG * NG); addFringe(fr, u, v, 0.5);
+        const g1 = paint(cvF, fr, TOT, `spacing ${(1 / len).toFixed(1)}″ · A = ${A.toFixed(2)}`);
+        const r = Math.min(g1.w, g1.h) * 0.16, cx = g1.w - r - 10, cy = r + 10, c = g1.ctx;
+        c.fillStyle = 'rgba(255,249,236,0.92)'; c.fillRect(cx - r - 6, cy - r - 6, 2 * r + 12, 2 * r + 12);
+        c.strokeStyle = COL.ink; c.lineWidth = 1.5; c.strokeRect(cx - r - 6, cy - r - 6, 2 * r + 12, 2 * r + 12);
+        c.strokeStyle = COL.faint; c.beginPath(); c.moveTo(cx - r, cy); c.lineTo(cx + r, cy); c.moveTo(cx, cy - r); c.lineTo(cx, cy + r); c.stroke();
+        const k = r / UMAX;
+        c.fillStyle = 'rgba(22,110,102,0.45)'; for (const [au, av] of added) { c.beginPath(); c.arc(cx + au * k, cy - av * k, 2.5, 0, 2 * Math.PI); c.fill(); c.beginPath(); c.arc(cx - au * k, cy + av * k, 2.5, 0, 2 * Math.PI); c.fill(); }
+        c.fillStyle = COL.tomato; c.beginPath(); c.arc(cx + u * k, cy - v * k, 4, 0, 2 * Math.PI); c.fill(); c.beginPath(); c.arc(cx - u * k, cy + v * k, 4, 0, 2 * Math.PI); c.fill();
+        text(c, 'uv', cx - r, cy - r + 4, { size: 10, color: COL.muted });
+        rUV.textContent = `(${u.toFixed(3)}, ${v.toFixed(3)})`; rA.textContent = A.toFixed(2); rP.textContent = (phi * 180 / Math.PI).toFixed(0) + '°';
+      }
+      function drawImage() {
+        showImage(cvI, acc, reveal, added.length ? '' : 'only the total flux: no structure yet');
+        capI.textContent = `Your image: sum of ${added.length} fringe${added.length === 1 ? '' : 's'}` + (reveal ? ' (circles: true sources)' : '');
+        rN.textContent = added.length; undo.disabled = !added.length;
+        const ok = peaksOK(acc, added.length);
+        api.goal(ok, ok ? `found both sources with ${added.length} fringes` : `${added.length} fringe${added.length === 1 ? '' : 's'} added`);
+      }
+      let t; const later = () => { clearTimeout(t); t = setTimeout(drawFringe, 20); };
+      L.addEventListener('input', later); B.addEventListener('input', later);
+      addB.addEventListener('click', () => { const len = +L.value, dir = +B.value * Math.PI / 180, u = len * Math.cos(dir), v = len * Math.sin(dir); added.push([u, v]); addFringe(acc, u, v, 1); drawFringe(); drawImage(); });
+      undo.addEventListener('click', () => { const p = added.pop(); if (p) addFringe(acc, p[0], p[1], -1); drawFringe(); drawImage(); });
+      rnd.addEventListener('click', () => { L.value = (0.03 + 0.32 * Math.random()).toFixed(3); B.value = Math.floor(180 * Math.random()); L.dispatchEvent(new Event('input')); B.dispatchEvent(new Event('input')); });
+      drawFringe(); drawImage();
+      return () => clearTimeout(t);
+    }
+
+    function step2() {
+      body.innerHTML = `<p><b>Many fringes.</b> A real array measures thousands of visibilities. Add random baselines in bulk and watch the image. Each fringe alone is just stripes. Where many stripes agree, the sources build up; everywhere else the stripes cancel.</p>`;
+      const pair = el('div', { class: 'pair' }); body.append(pair);
+      const f1 = el('figure'), f2 = el('figure'); pair.append(f1, f2);
+      const cvU = el('canvas', { class: 'stage', 'aria-label': 'uv plane with all baselines' }), cvI = el('canvas', { class: 'stage', 'aria-label': 'Image from many fringes' });
+      const capI = el('figcaption', {}, 'Image');
+      f1.append(cvU, el('figcaption', {}, 'uv plane: every baseline added')); f2.append(cvI, capI);
+      const btns = el('div', { class: 'btns' }); body.append(btns);
+      const adds = [2, 10, 100, 1000].map(n => { const b = el('button', { class: 'btn' + (n === 2 ? ' primary' : ''), type: 'button' }, `Add ${n}`); b.dataset.n = n; btns.append(b); return b; });
+      const clr = el('button', { class: 'btn', type: 'button' }, 'Clear'); btns.append(clr);
+      let reveal = false; revealButton(btns, on => { reveal = on; draw(); });
+      const ro = el('div', { class: 'readouts' }); body.append(ro);
+      const rN = readout(ro, 'fringes'), rR = readout(ro, 'finest spacing');
+      body.append(el('p', { class: 'note' }, 'Even with 1000 fringes the spots keep a size: no baseline here is longer than |u| = 0.35 per arcsec, so detail finer than about 1/(2 × 0.35) ≈ 1.4″ is never measured. That size is the resolution.'));
+      let uv = [], acc = new Float32Array(NG * NG).fill(TOT), busy = false;
+      function draw() {
+        const { ctx, w, h } = fit(cvU, 1);
+        ctx.clearRect(0, 0, w, h);
+        const cx = w / 2, cy = h / 2, k = (w / 2 - 14) / UMAX;
+        axes(ctx, w, h, cx, cy, 'u', 'v');
+        ctx.strokeStyle = COL.faint; ctx.beginPath(); ctx.arc(cx, cy, UMAX * k, 0, 2 * Math.PI); ctx.stroke();
+        const dot = uv.length > 300 ? 1.4 : 2.6;
+        ctx.fillStyle = uv.length > 300 ? 'rgba(22,110,102,0.5)' : COL.teal;
+        for (const [u, v] of uv) { ctx.fillRect(cx + u * k - dot / 2, cy - v * k - dot / 2, dot, dot); ctx.fillRect(cx - u * k - dot / 2, cy + v * k - dot / 2, dot, dot); }
+        showImage(cvI, acc, reveal, uv.length ? '' : 'only the total flux: no structure yet');
+        capI.textContent = `Image from ${uv.length.toLocaleString('en-GB')} fringe${uv.length === 1 ? '' : 's'}` + (reveal ? ' (circles: true sources)' : '');
+        rN.textContent = uv.length.toLocaleString('en-GB');
+        let mx = 0; for (const [u, v] of uv) mx = Math.max(mx, Math.hypot(u, v));
+        rR.textContent = uv.length ? (1 / mx).toFixed(1) + '″' : '–';
+        if (peaksOK(acc, uv.length)) api.goal(true, `found both sources with ${uv.length} fringes`);
+      }
+      function addN(n) {
+        if (busy) return; busy = true; adds.forEach(b => b.disabled = true);
+        let left = n;
+        const chunk = () => {
+          const m = Math.min(left, 25);
+          for (let i = 0; i < m; i++) { const len = 0.03 + (UMAX - 0.03) * Math.sqrt(Math.random()), dir = Math.PI * Math.random(), u = len * Math.cos(dir), v = len * Math.sin(dir); uv.push([u, v]); addFringe(acc, u, v, 1); }
+          left -= m; draw();
+          if (left > 0) setTimeout(chunk, 0); else { busy = false; adds.forEach(b => b.disabled = false); }
+        };
+        chunk();
+      }
+      adds.forEach(b => b.addEventListener('click', () => addN(+b.dataset.n)));
+      clr.addEventListener('click', () => { if (busy) return; uv = []; acc = new Float32Array(NG * NG).fill(TOT); draw(); });
+      draw();
+      return () => { busy = false; };
+    }
+
+    const makers = [step1, step2];
+    let stop = () => {};
+    function show(i) { stop(); tabs.forEach((t, k) => { t.classList.toggle('on', k === i); t.setAttribute('aria-selected', String(k === i)); }); stop = makers[i]() || (() => {}); }
+    show(0);
+    return () => stop();
+  },
+  questions: [{
+    q: 'The fringe spacing is ≈ 1/√(u² + v²). Does v matter, or only u?',
+    opts: [
+      { t: 'Both. The length √(u² + v²) sets how fine the fringes are; the direction of (u, v) sets which way they run.', ok: true },
+      { t: 'Only u matters.', hint: 'Keep the length fixed and turn the direction slider: the stripes rotate.' },
+      { t: 'v only matters near the celestial pole.', hint: 'v is just the second component of the baseline; it matters everywhere.' }
+    ],
+    why: `<p>The stripes are perpendicular to (u, v). Fringes that all run the same way only carry information along one axis: a baseline perpendicular to the line joining two sources puts both on the same stripe, however long it is. That is why your image needed fringes in several directions.</p>
+    <p>This is why we want baselines in every direction: the length gives resolution, the direction says along which axis. Missing directions give an elongated beam.</p>`
+  }, {
+    q: 'Can a single visibility contain more than one source?',
+    opts: [
+      { t: 'Yes. Every source in the field adds its own fringe-weighted contribution; V is an integral over the whole sky I(l, m).', ok: true },
+      { t: 'No, each baseline only ever sees one source.', hint: 'Look at the amplitude A as you change the baseline: it rises and falls because both sources add into the same number.' }
+    ],
+    why: `<p>Measuring, the sky I(l, m) is weighted by the fringe and summed into one number, so every source adds in. When the two sources fall on opposite stripes they cancel and A drops; on the same stripe they add. Imaging runs it backwards: each visibility puts its fringe back, and only where many fringes agree do sources stand out.</p>`
+  }]
+});
+
+// L6: antennas and uv plane
+LEVELS.push({
+  title: 'Antennas make the uv plane',
+  brief: `<p>Every pair of antennas is a baseline, and every baseline is one point in the <b>uv plane</b>: its separation measured in wavelengths. Each also gives the mirror point (−u, −v), because the sky is real.</p>
+  <div class="formula">(u, v) = (ΔE, ΔN) / λ &nbsp;for a source directly overhead<br>N antennas → N(N − 1)/2 baselines</div>
+  <p class="note">(u, v) is the baseline as seen from the source. For a source overhead that is just the east and north separation. For any other source it is foreshortened, and it turns as the Earth rotates: that is level 7.</p>
+  <p>Drag the antennas (λ = 2 m, like LOFAR at 144 MHz). Short baselines see large structures; long baselines see fine detail.</p>`,
+  goal: 'Make at least one uv point inside the small circle (a short baseline) and one outside the big circle (a long baseline).',
+  mount(lab, api) {
+    const LAM = 2, FIELD = 60, UVMAX = 80, R_IN = 10, R_OUT = 55;
+    const pair = el('div', { class: 'pair' }); lab.append(pair);
+    const f1 = el('figure'), f2 = el('figure'); pair.append(f1, f2);
+    const cvA = el('canvas', { class: 'stage', 'aria-label': 'Antenna layout, drag to move' }), cvU = el('canvas', { class: 'stage', 'aria-label': 'uv plane' });
+    f1.append(cvA, el('figcaption', {}, 'Your array (drag the antennas), ±60 m')); f2.append(cvU, el('figcaption', {}, 'uv plane, in wavelengths'));
+    const btns = el('div', { class: 'btns' }); lab.append(btns);
+    const add = el('button', { class: 'btn', type: 'button' }, 'Add antenna'), rem = el('button', { class: 'btn', type: 'button' }, 'Remove antenna');
+    btns.append(add, rem);
+    const ro = el('div', { class: 'readouts' }); lab.append(ro);
+    const rN = readout(ro, 'antennas'), rB = readout(ro, 'baselines'), rP = readout(ro, 'uv points');
+    const ants = state.ants;
+    let drag = -1, geomA = null;
+    function baselines() { const out = []; for (let i = 0; i < ants.length; i++) for (let j = i + 1; j < ants.length; j++) out.push([i, j, (ants[j][0] - ants[i][0]) / LAM, (ants[j][1] - ants[i][1]) / LAM]); return out; }
+    function draw() {
+      let { ctx, w, h } = fit(cvA, 1);
+      geomA = { w, h };
+      ctx.clearRect(0, 0, w, h);
+      const toPx = (x, y) => [w / 2 + x / FIELD * (w / 2 - 14), h / 2 - y / FIELD * (h / 2 - 14)];
+      ctx.strokeStyle = COL.faint; ctx.lineWidth = 1;
+      for (let g = -60; g <= 60; g += 20) { const [a] = toPx(g, 0), [, b] = toPx(0, g); ctx.beginPath(); ctx.moveTo(a, 0); ctx.lineTo(a, h); ctx.moveTo(0, b); ctx.lineTo(w, b); ctx.stroke(); }
+      const bl = baselines();
+      ctx.strokeStyle = COL.amber; ctx.lineWidth = 2.5;
+      bl.forEach(([i, j]) => { const [x0, y0] = toPx(...ants[i]), [x1, y1] = toPx(...ants[j]); ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); });
+      ants.forEach((a, i) => { const [x, y] = toPx(...a); ctx.fillStyle = drag === i ? COL.tomato : COL.teal; ctx.beginPath(); ctx.arc(x, y, 9, 0, 2 * Math.PI); ctx.fill(); ctx.strokeStyle = COL.ink; ctx.lineWidth = 2; ctx.stroke(); text(ctx, String.fromCharCode(65 + i), x + 12, y - 10, { size: 12, weight: 900 }); });
+      text(ctx, 'N', 14, 16, { size: 11, color: COL.muted }); text(ctx, 'E', w - 14, h - 12, { size: 11, color: COL.muted, align: 'right' });
+      ({ ctx, w, h } = fit(cvU, 1));
+      ctx.clearRect(0, 0, w, h);
+      const cx = w / 2, cy = h / 2, k = (w / 2 - 14) / UVMAX;
+      axes(ctx, w, h, cx, cy, 'u', 'v');
+      ctx.setLineDash([5, 4]); ctx.lineWidth = 2;
+      ctx.strokeStyle = COL.grape; ctx.beginPath(); ctx.arc(cx, cy, R_IN * k, 0, 2 * Math.PI); ctx.stroke();
+      ctx.strokeStyle = COL.tomato; ctx.beginPath(); ctx.arc(cx, cy, R_OUT * k, 0, 2 * Math.PI); ctx.stroke(); ctx.setLineDash([]);
+      let inner = false, outer = false;
+      bl.forEach(([, , u, v]) => {
+        const r = Math.hypot(u, v); if (r < R_IN) inner = true; if (r > R_OUT) outer = true;
+        ctx.fillStyle = COL.teal; ctx.beginPath(); ctx.arc(cx + u * k, cy - v * k, 5, 0, 2 * Math.PI); ctx.fill();
+        ctx.fillStyle = 'rgba(22,110,102,0.4)'; ctx.beginPath(); ctx.arc(cx - u * k, cy + v * k, 5, 0, 2 * Math.PI); ctx.fill();
+      });
+      text(ctx, 'short', cx + R_IN * k + 3, cy - R_IN * k, { size: 11, color: COL.grape });
+      text(ctx, 'long', cx + R_OUT * k * 0.72, cy - R_OUT * k * 0.72 - 6, { size: 11, color: COL.tomato });
+      rN.textContent = ants.length; rB.textContent = bl.length; rP.textContent = 2 * bl.length;
+      add.disabled = ants.length >= 7; rem.disabled = ants.length <= 3;
+      api.goal(inner && outer, `${inner ? 'short ✓' : 'short ✗'} · ${outer ? 'long ✓' : 'long ✗'}`);
+    }
+    function toM(e) { const r = cvA.getBoundingClientRect(); const x = e.clientX - r.left, y = e.clientY - r.top; return [(x - r.width / 2) / (r.width / 2 - 14) * FIELD, -(y - r.height / 2) / (r.height / 2 - 14) * FIELD]; }
+    cvA.addEventListener('pointerdown', e => { const [x, y] = toM(e); let best = -1, bd = 1e9; ants.forEach((a, i) => { const d = Math.hypot(a[0] - x, a[1] - y); if (d < bd) { bd = d; best = i; } }); if (bd < 10) { drag = best; cvA.setPointerCapture(e.pointerId); draw(); } });
+    cvA.addEventListener('pointermove', e => { if (drag < 0) return; const [x, y] = toM(e); ants[drag] = [Math.max(-FIELD, Math.min(FIELD, x)), Math.max(-FIELD, Math.min(FIELD, y))]; draw(); });
+    const end = () => { if (drag >= 0) { drag = -1; save(); draw(); } };
+    cvA.addEventListener('pointerup', end); cvA.addEventListener('pointercancel', end);
+    add.addEventListener('click', () => { if (ants.length < 7) { ants.push([Math.round((Math.random() - 0.5) * 80), Math.round((Math.random() - 0.5) * 80)]); save(); draw(); } });
+    rem.addEventListener('click', () => { if (ants.length > 3) { ants.pop(); save(); draw(); } });
+    draw();
+    return () => {};
+  },
+  questions: [{
+    q: 'An array has 6 antennas. How many baselines, and how many uv points in one snapshot?',
+    opts: [
+      { t: '15 baselines and 30 uv points.', ok: true },
+      { t: '6 baselines and 12 uv points.', hint: 'Count pairs, not antennas: N(N − 1)/2.' },
+      { t: '36 baselines and 36 uv points.', hint: 'An antenna does not pair with itself, and A–B is the same baseline as B–A.' }
+    ],
+    why: `<p>N(N − 1)/2 = 15 baselines. Each gives (u, v) and its mirror (−u, −v), because for a real sky V(−u, −v) = V*(u, v). So 30 points.</p>
+    <p>LOFAR has dozens of stations and the SKA will have hundreds, so the number of baselines grows roughly as N²/2. Even so, one snapshot leaves the uv plane mostly empty.</p>`
+  }]
+});
+
+// L7: Earth rotation
+LEVELS.push({
+  title: 'Let the Earth do the work',
+  brief: `<p>As the Earth turns, each baseline, seen from the source, rotates and changes its projected length. Every baseline traces an ellipse in the uv plane. This is <b>Earth-rotation aperture synthesis</b>, the idea behind Martin Ryle's Nobel Prize.</p>
+  <div class="formula">u = (X sin H + Y cos H) / λ<br>v = (−X sin δ cos H + Y sin δ sin H + Z cos δ) / λ</div>
+  <p>H is the hour angle, δ the source declination, and (X, Y, Z) the baseline. Your array from level 6 sits at latitude 52°. The right panel shows <b>your image</b> of a small test sky, made by adding up the fringes of all your uv samples, as in level 5. Press <i>Reveal the true sky</i> to compare. Track longer and watch your image creep towards the truth, without ever quite reaching it.</p>`,
+  goal: 'Track the source long enough to cover at least three times as much of the uv plane as one snapshot.',
+  mount(lab, api) {
+    const LAM = 2, LAT = 52 * Math.PI / 180;
+    const pair = el('div', { class: 'pair' }); lab.append(pair);
+    const f1 = el('figure'), f2 = el('figure'); pair.append(f1, f2);
+    const cvU = el('canvas', { class: 'stage', 'aria-label': 'uv tracks' }), cvB = el('canvas', { class: 'stage', 'aria-label': 'Your image of the test sky' });
+    const capB = el('figcaption', {}, 'Your image');
+    f1.append(cvU, el('figcaption', {}, 'uv coverage')); f2.append(cvB, capB);
+    const views = el('div', { class: 'btns', role: 'tablist', 'aria-label': 'Right panel shows' }); f2.append(views);
+    let view = 'image';
+    const VIEWS = [['image', 'Your image'], ['sky', 'Reveal the true sky']];
+    const vbtn = VIEWS.map(([k, n]) => { const b = el('button', { class: 'btn' + (k === view ? ' on' : ''), type: 'button', role: 'tab' }, n); b.addEventListener('click', () => { view = k; vbtn.forEach((x, i) => x.classList.toggle('on', VIEWS[i][0] === view)); draw(true); }); views.append(b); return b; });
+    const ctr = el('div', { class: 'controls' }); lab.append(ctr);
+    const SP = slider(ctr, { id: 'l7-span', label: 'Tracking time (centred on transit)', min: 0, max: 12, step: 0.25, value: 0, fmt: v => v.toFixed(2) + ' h' });
+    const DE = slider(ctr, { id: 'l7-dec', label: 'Source declination δ', min: 10, max: 90, step: 1, value: 60, fmt: v => v + '°' });
+    const btns = el('div', { class: 'btns' }); lab.append(btns);
+    const play = el('button', { class: 'btn primary', type: 'button' }, 'Play 12 hours'); btns.append(play);
+    const ro = el('div', { class: 'readouts' }); lab.append(ro);
+    const rC = readout(ro, 'coverage'), rS = readout(ro, 'snapshot'), rR = readout(ro, 'ratio');
+    const ants = state.ants;
+    let raf, playing = false, beamTimer;
+    function bls() { const o = []; for (let i = 0; i < ants.length; i++) for (let j = i + 1; j < ants.length; j++) { const E = ants[j][0] - ants[i][0], N = ants[j][1] - ants[i][1]; o.push([-N * Math.sin(LAT), E, N * Math.cos(LAT)]); } return o; }
+    function samples(span, dec, step) {
+      const out = [], b = bls(), n = Math.max(1, Math.round(span / step) + 1);
+      for (let k = 0; k < n; k++) {
+        const H = (n === 1 ? 0 : -span / 2 + span * k / (n - 1)) * Math.PI / 12;
+        for (const [X, Y, Z] of b) {
+          const u = (X * Math.sin(H) + Y * Math.cos(H)) / LAM;
+          const v = (-X * Math.sin(dec) * Math.cos(H) + Y * Math.sin(dec) * Math.sin(H) + Z * Math.cos(dec)) / LAM;
+          out.push([u, v], [-u, -v]);
+        }
+      }
+      return out;
+    }
+    function rmax() { let m = 1; for (const [X, Y, Z] of bls()) m = Math.max(m, Math.hypot(X, Y, Z) / LAM); return m; }
+    function coverage(pts, R) {
+      const G = 22, hit = new Set(); let inside = 0;
+      for (let i = 0; i < G; i++) for (let j = 0; j < G; j++) { const x = (i + 0.5) / G * 2 - 1, y = (j + 0.5) / G * 2 - 1; if (x * x + y * y <= 1) inside++; }
+      for (const [u, v] of pts) { const i = Math.floor((u / R + 1) / 2 * G), j = Math.floor((v / R + 1) / 2 * G); if (i >= 0 && j >= 0 && i < G && j < G) hit.add(i * G + j); }
+      return hit.size / inside;
+    }
+    // a small sky, in units of the array's resolution 1/R: two points and one extended blob
+    const SKY = [[0.9, 1.1, 1.0, 0], [-1.5, -0.4, 0.7, 0], [0.3, -1.4, 1.6, 0.45]]; // l, m, flux, size
+    function drawBeam(pts, R) {
+      const { ctx, w, h } = fit(cvB, 1);
+      const n = 60, ext = 3.2 / R, img = ctx.createImageData(n, n), vals = new Float32Array(n * n);
+      const sky = SKY.map(([l, m, f, sz]) => [l / R, m / R, f, sz / R]);
+      const vis = view === 'image' ? pts.map(([u, v]) => { let re = 0, im = 0; for (const [l0, m0, f, sg] of sky) { const a = f * Math.exp(-2 * Math.PI * Math.PI * sg * sg * (u * u + v * v)), ph = -2 * Math.PI * (u * l0 + v * m0); re += a * Math.cos(ph); im += a * Math.sin(ph); } return [u, v, re, im]; }) : null;
+      let mx = 0;
+      for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
+        const l = (i / (n - 1) - 0.5) * 2 * ext, m = (0.5 - j / (n - 1)) * 2 * ext; let s = 0;
+        if (view === 'beam') { for (const [u, v] of pts) s += Math.cos(2 * Math.PI * (u * l + v * m)); s /= pts.length; }
+        else if (view === 'image') { for (const [u, v, re, im] of vis) { const a = 2 * Math.PI * (u * l + v * m); s += re * Math.cos(a) - im * Math.sin(a); } }
+        else { for (const [l0, m0, f, sg] of sky) { const d = Math.max(sg, 0.18 / R); s += f / (d * d) * Math.exp(-((l - l0) ** 2 + (m - m0) ** 2) / (2 * d * d)); } }
+        vals[j * n + i] = s; mx = Math.max(mx, Math.abs(s));
+      }
+      for (let k = 0; k < n * n; k++) {
+        const v = view === 'beam' ? vals[k] : vals[k] / mx;
+        let r, g, b;
+        if (v >= 0) { r = 255 + (42 - 255) * v; g = 253 + (37 - 253) * v; b = 246 + (33 - 246) * v; }
+        else { const t = Math.min(1, -v * 2.2); r = 255 + (238 - 255) * t; g = 253 + (90 - 253) * t; b = 246 + (58 - 246) * t; }
+        img.data[4 * k] = r; img.data[4 * k + 1] = g; img.data[4 * k + 2] = b; img.data[4 * k + 3] = 255;
+      }
+      const off = document.createElement('canvas'); off.width = off.height = n; off.getContext('2d').putImageData(img, 0, 0);
+      ctx.clearRect(0, 0, w, h); ctx.imageSmoothingEnabled = true; ctx.drawImage(off, 0, 0, w, h);
+      const note = { beam: '', image: 'red: negative ripples from missing uv samples', sky: 'what is really there' }[view];
+      text(ctx, note, 8, h - 10, { size: 11, color: COL.ink });
+      capB.textContent = { beam: '', image: 'Your image: the sky as seen through your uv samples', sky: 'True sky: two point sources and one extended source' }[view];
+    }
+    function draw(beamNow) {
+      const span = +SP.value, dec = +DE.value * Math.PI / 180, R = rmax() * 1.05;
+      const pts = samples(span, dec, 0.1), snap = samples(0, dec, 0.1);
+      const { ctx, w, h } = fit(cvU, 1);
+      ctx.clearRect(0, 0, w, h);
+      const cx = w / 2, cy = h / 2, k = (w / 2 - 14) / R;
+      axes(ctx, w, h, cx, cy, 'u', 'v');
+      ctx.fillStyle = COL.teal;
+      for (const [u, v] of pts) { ctx.beginPath(); ctx.arc(cx + u * k, cy - v * k, 2.2, 0, 2 * Math.PI); ctx.fill(); }
+      ctx.fillStyle = COL.tomato;
+      for (const [u, v] of snap) { ctx.beginPath(); ctx.arc(cx + u * k, cy - v * k, 3.5, 0, 2 * Math.PI); ctx.fill(); }
+      text(ctx, 'red: snapshot at transit', 8, h - 10, { size: 11, color: COL.tomato });
+      const cov = coverage(pts, R), cs = coverage(snap, R), ratio = cov / cs;
+      rC.textContent = (cov * 100).toFixed(1) + '%'; rS.textContent = (cs * 100).toFixed(1) + '%'; rR.textContent = ratio.toFixed(1) + '×';
+      api.goal(ratio >= 3, `coverage ${ratio.toFixed(1)}× the snapshot`);
+      clearTimeout(beamTimer);
+      const doBeam = () => drawBeam(samples(span, dec, 0.25), R);
+      if (beamNow) doBeam(); else beamTimer = setTimeout(doBeam, 60);
+    }
+    SP.addEventListener('input', () => draw(false)); DE.addEventListener('input', () => draw(false));
+    play.addEventListener('click', () => {
+      if (playing) { playing = false; play.textContent = 'Play 12 hours'; return; }
+      playing = true; play.textContent = 'Pause'; if (+SP.value >= 12) SP.value = 0;
+      const stepF = () => { if (!playing) return; SP.value = Math.min(12, +SP.value + 0.25); SP.dispatchEvent(new Event('input')); if (+SP.value >= 12) { playing = false; play.textContent = 'Play 12 hours'; return; } raf = setTimeout(stepF, 90); };
+      stepF();
+    });
+    draw(true);
+    return () => { playing = false; clearTimeout(raf); clearTimeout(beamTimer); };
+  },
+  questions: [{
+    q: 'If we track the source for longer, does the resolution improve?',
+    opts: [
+      { t: 'No. Resolution is set by the longest baseline, θ ≈ λ / B_max. Longer tracks improve sensitivity and fill the uv plane, which cleans up the image.', ok: true },
+      { t: 'Yes, the resolution improves as 1/√t.', hint: 'Look at your image: the sources keep roughly the same size; only the ripples around them fade.' },
+      { t: 'Yes, because the Earth rotation makes the baselines longer.', hint: 'Rotation changes the projected baseline, but never beyond its true length.' }
+    ],
+    why: `<p>Time buys two things: lower noise (σ ∝ 1/√t) and more uv samples. More samples mean weaker ripples around each source, so the image is more faithful. The size of each source spot, the resolution, is fixed by the longest baseline.</p>`
+  }, {
+    q: 'Even after 12 hours the uv plane has gaps. What does that mean for imaging?',
+    opts: [
+      { t: 'Many different skies fit the same visibilities, so imaging is an inverse problem that needs extra assumptions: CLEAN, priors, or learned models.', ok: true },
+      { t: 'Nothing: the Fourier transform fills the gaps automatically.', hint: 'Look at your image after 12 hours: the ripples that remain come from the gaps.' },
+      { t: 'We simply need to observe at one more frequency.', hint: 'More frequencies help fill the uv plane, but some gaps (the centre, the outskirts) always remain.' }
+    ],
+    why: `<p>The data are incomplete: whatever falls in the gaps is unconstrained. Deconvolution (CLEAN), regularised methods and, more recently, AI models all supply the missing information in different ways. Choosing those assumptions well, and checking that they do not invent structure, is the subject of the rest of the talk.</p>`
+  }]
+});
+
+// ---------- shell ----------
+const levelsNav = $('#levels'), card = $('#level'), cp = $('#checkpoint'), prevB = $('#prev'), nextB = $('#next');
+let cleanup = () => {};
+function levelDone(i) { return !!state.goals[i] && LEVELS[i].questions.every((_, k) => state.solved[i + ':' + k]); }
+function renderNav() {
+  levelsNav.innerHTML = '';
+  LEVELS.forEach((L, i) => {
+    const b = el('button', { class: 'chip', type: 'button' }, `<span class="n">${i + 1}</span>${L.title}`);
+    b.dataset.state = i === state.current ? 'current' : (levelDone(i) ? 'done' : 'open');
+    if (i > state.unlocked) b.disabled = true;
+    b.addEventListener('click', () => go(i));
+    levelsNav.append(b);
+  });
+  const fin = el('button', { class: 'chip', type: 'button' }, '<span class="n">★</span>Finale');
+  fin.dataset.state = state.current === LEVELS.length ? 'current' : 'open';
+  if (state.unlocked < LEVELS.length) fin.disabled = true;
+  fin.addEventListener('click', () => go(LEVELS.length));
+  levelsNav.append(fin);
+}
+function renderCheckpoint(i) {
+  const L = LEVELS[i];
+  cp.innerHTML = `<p class="eyebrow">Checkpoint</p><h3>Before you move on</h3><div class="qs"></div>`;
+  const qs = $('.qs', cp);
+  L.questions.forEach((Q, k) => {
+    const id = i + ':' + k, box = el('div', { class: 'q' });
+    box.append(el('p', {}, Q.q));
+    const opts = el('div', { class: 'opts' }); box.append(opts);
+    const hint = el('p', { class: 'hint', 'aria-live': 'polite' }); box.append(hint);
+    const why = el('div', { class: 'why' }, `<strong>Answer</strong>${Q.why}`); why.hidden = !state.solved[id]; box.append(why);
+    Q.opts.forEach(o => {
+      const b = el('button', { class: 'opt', type: 'button' }, o.t);
+      if (state.solved[id] && o.ok) b.dataset.mark = 'right';
+      b.addEventListener('click', () => {
+        if (o.ok) { b.dataset.mark = 'right'; hint.textContent = ''; why.hidden = false; state.solved[id] = true; save(); updatePager(); renderNav(); }
+        else { b.dataset.mark = 'wrong'; hint.textContent = o.hint || 'Not quite. Try again.'; }
+      });
+      opts.append(b);
+    });
+    const reveal = el('button', { class: 'btn', type: 'button' }, 'Show the answer');
+    reveal.hidden = !!state.solved[id];
+    reveal.addEventListener('click', () => { [...opts.children].forEach((b, n) => { if (Q.opts[n].ok) b.dataset.mark = 'right'; }); why.hidden = false; reveal.hidden = true; state.solved[id] = true; save(); updatePager(); renderNav(); });
+    box.append(reveal);
+    qs.append(box);
+  });
+}
+function updatePager() {
+  const i = state.current;
+  prevB.disabled = i === 0;
+  if (i >= LEVELS.length) { nextB.hidden = true; return; }
+  nextB.hidden = false;
+  const ok = levelDone(i);
+  nextB.disabled = !ok;
+  nextB.textContent = i === LEVELS.length - 1 ? 'Finish' : 'Next level';
+  if (ok && state.unlocked < i + 1) { state.unlocked = i + 1; save(); }
+}
+function finale() {
+  card.innerHTML = `<div class="finale"><p class="eyebrow">Finale</p><h2 style="font-size:clamp(1.8rem,4vw,2.8rem);margin:0;font-weight:900;line-height:1.05">You built an interferometer</h2>
+  <ol>
+    <li>Two antennas see the same wave with a geometric delay τ<sub>g</sub> = b sin θ / c.</li>
+    <li>Receivers digitise a band; an instrumental delay τ<sub>i</sub> lines the signals up towards the phase centre.</li>
+    <li>The correlator multiplies and averages: noise falls as 1/√N, the fringe survives.</li>
+    <li>A 90° branch adds the sine: one complex visibility V = A e<sup>−iφ</sup>.</li>
+    <li>Each visibility is one Fourier component at (u, v). Imaging runs it backwards: every visibility puts its fringe back, and the fringes add up to a picture.</li>
+    <li>Antenna pairs set where we sample the uv plane.</li>
+    <li>Earth rotation turns points into tracks, but gaps remain: imaging is an inverse problem.</li>
+  </ol>
+  <p class="note">Next in the talk: how we solve that inverse problem at scale, and where AI helps.</p>
+  <div class="btns"><button class="btn primary" type="button" id="again">Play again</button></div></div>`;
+  $('#again', card).addEventListener('click', resetAll);
+  cp.hidden = true;
+}
+function go(i) {
+  cleanup(); cleanup = () => {};
+  state.current = i; save();
+  renderNav();
+  if (i >= LEVELS.length) { finale(); updatePager(); return; }
+  const L = LEVELS[i];
+  card.innerHTML = `<div class="level-head"><p class="eyebrow">Level ${i + 1} of ${LEVELS.length}</p><h2>${L.title}</h2></div>
+  <div class="level-grid"><div class="brief">${L.brief}<div class="goal" data-done="false"><strong>Goal</strong><span>${L.goal}</span><span class="status" aria-live="polite"></span></div></div><div class="lab"></div></div>`;
+  const goalBox = $('.goal', card), status = $('.status', card);
+  const api = {
+    goal(done, msg) {
+      const was = !!state.goals[i];
+      status.textContent = (done || was) ? `Done. ${msg}` : `Now: ${msg}`;
+      goalBox.dataset.done = String(done || was);
+      if (done && !was) { state.goals[i] = true; save(); cp.hidden = false; renderCheckpoint(i); updatePager(); renderNav(); }
+    }
+  };
+  cp.hidden = !state.goals[i];
+  if (state.goals[i]) renderCheckpoint(i);
+  cleanup = L.mount($('.lab', card), api) || (() => {});
+  updatePager();
+}
+function resetAll() {
+  state = { unlocked: 0, goals: {}, solved: {}, current: 0, ants: DEFAULT_ANTS.map(a => a.slice()) };
+  save(); go(0); window.scrollTo({ top: 0 });
+}
+prevB.addEventListener('click', () => { if (state.current > 0) go(state.current - 1); });
+nextB.addEventListener('click', () => { if (levelDone(state.current)) { go(state.current + 1); card.scrollIntoView({ block: 'start' }); } });
+$('#reset').addEventListener('click', resetAll);
+let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => go(state.current), 150); });
+function fromHash() {
+  const m = /^#level-([1-7])$/.exec(location.hash);
+  if (!m) return false;
+  const i = +m[1] - 1;
+  if (state.unlocked < i) { state.unlocked = i; save(); }
+  go(i); return true;
+}
+window.addEventListener('hashchange', fromHash);
+if (!fromHash()) go(Math.min(state.current || 0, state.unlocked));
+})();
+</script>
+
+</body>
+</html>
